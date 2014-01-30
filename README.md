@@ -1,4 +1,4 @@
-Example Unity App using Heyzap Adsunity-example-app
+Example Unity App using Heyzap Ads
 =================
 
 ### Running the App

@@ -5,4 +5,4 @@ This project contains the [Unity StarTrooper sample project](https://www.assetst
 
 The app repurposes the *shoot missile* button to show a Heyzap Ad. All code using the Heyzap Ads SDK is located in `PlayerControls.js`
 
-<img src="/unity-example-app/Screenshots/starTrooper.jpg">
+<img src="https://raw2.github.com/Heyzap/unity-example-app/master/Screenshots/starTrooper.jpg">

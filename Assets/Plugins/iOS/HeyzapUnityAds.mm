@@ -74,18 +74,18 @@ extern void UnitySendMessage(const char *, const char *, const char *);
 extern "C" {
     void hz_ads_start(int flags) {
         HeyzapUnityAdDelegate *delegate = [[HeyzapUnityAdDelegate alloc] init];
+        [HeyzapAds startWithOptions: flags];
         [HeyzapAds setFramework: @"unity3d"];
         [HeyzapAds setDelegate: delegate];
         [HeyzapAds setIncentiveDelegate: delegate];
-        [HeyzapAds setOptions: flags];
     }
     
      void hz_ads_start_app(int flags) {
         HeyzapUnityAdDelegate *delegate = [[HeyzapUnityAdDelegate alloc] init];
+        [HeyzapAds startWithOptions: flags];
         [HeyzapAds setFramework: @"unity3d"];
         [HeyzapAds setDelegate: delegate];
         [HeyzapAds setIncentiveDelegate: delegate];
-        [HeyzapAds setOptions: flags];
      }
 
      //Interstitial

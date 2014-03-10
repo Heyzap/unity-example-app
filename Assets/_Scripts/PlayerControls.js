@@ -23,9 +23,8 @@ function Awake () {
 	}
 	System.Console.WriteLine("Starting heyzap");
 	
+	// Heyzap will automatically preload ads.
 	HeyzapAds.start(HeyzapAds.FLAG_NO_OPTIONS);
-	
-	HZInterstitialAd.fetch("");
 	
 	HeyzapAds.setDisplayListener(function(adState : String, adTag : String){
 	
@@ -37,7 +36,6 @@ function Awake () {
 
         if (adState == "hide") {
             System.Console.WriteLine("Ad hidden");
-            HZInterstitialAd.fetch("");
         }
 
         if (adState == "click") {
@@ -46,7 +44,6 @@ function Awake () {
 
         if (adState == "failed") {
             System.Console.WriteLine("Ad failed to show");
-            HZInterstitialAd.fetch("");
         }
 
         if (adState == "available") {
@@ -55,7 +52,6 @@ function Awake () {
 
         if (adState == "fetch_failed") {
             System.Console.WriteLine("Ad fetch failed");
-            HZInterstitialAd.fetch("");
         }
     });
 

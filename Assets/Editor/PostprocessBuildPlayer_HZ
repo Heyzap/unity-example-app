@@ -21,17 +21,6 @@ try:
     pb.add_framework("CoreGraphics.framework")
     pb.add_framework("QuartzCore.framework")
     pb.add_framework("CoreTelephony.framework")
-
-    # Add the linker flags
-    pb.add_build_setting("Release", "OTHER_LDFLAGS", "-ObjC")
-    pb.add_build_setting("Release", "OTHER_LDFLAGS", "-all_load")
-    pb.add_build_setting("Debug", "OTHER_LDFLAGS", "-ObjC")
-    pb.add_build_setting("Debug", "OTHER_LDFLAGS", "-all_load")
-
-    if (os.path.exists(r'Assets/Plugins/iOS/Heyzap.bundle')):
-      # Copy the bundle into the tree
-      dir_util.copy_tree(os.path.join(os.getcwd(), r'Assets/Plugins/iOS/Heyzap.bundle'), sys.argv[1] + '/Heyzap.bundle')
-      # Add the bundle into the project
-      pb.add_bundle('Heyzap.bundle')
+    
 except:
   e = sys.exc_info()[0]

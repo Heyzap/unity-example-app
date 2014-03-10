@@ -5,10 +5,13 @@ import os
 import subprocess
 import sys
 import stat
+import pipes
 
 files = glob.glob("Assets/Editor/PostprocessBuildPlayer_*")
 for filename in files:
-    callcmd = [filename] + sys.argv[1:]
+    unescaped = [filename] + sys.argv[1:]
+    callcmd = [pipes.quote(x) for x in unescaped]
+
     try:
         # Make sure sub-script is executable.
         st = os.stat(filename)

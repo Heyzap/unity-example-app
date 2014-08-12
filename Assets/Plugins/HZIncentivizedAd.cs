@@ -33,13 +33,17 @@ using System;
 
 public class HZIncentivizedAd : MonoBehaviour {
   
-  public static void show() {
+  public delegate void AdDisplayListener( string state, string tag );
+  private static AdDisplayListener adDisplayListener;
+  private static HZIncentivizedAd _instance = null;
+
+  public static void show(string tag="default") {
     #if UNITY_ANDROID
-    HZIncentivizedAdAndroid.show();
+    HZIncentivizedAdAndroid.show(tag);
     #endif
 
     #if UNITY_IPHONE
-    HZIncentivizedAdIOS.show();
+    HZIncentivizedAdIOS.show(tag);
     #endif
   }
 
@@ -53,26 +57,24 @@ public class HZIncentivizedAd : MonoBehaviour {
     #endif
   }
   
-  public static void fetch() {
+  public static void fetch(string tag="default") {
     #if UNITY_ANDROID
-    HZIncentivizedAdAndroid.fetch();
+    HZIncentivizedAdAndroid.fetch(tag);
     #endif
 
     #if UNITY_IPHONE
-    HZIncentivizedAdIOS.fetch();
+    HZIncentivizedAdIOS.fetch(tag);
     #endif
   }
   
-  public static bool isAvailable() {
+  public static bool isAvailable(string tag="default") {
     #if UNITY_ANDROID
-    return HZIncentivizedAdAndroid.isAvailable();
-    #endif
-
-    #if UNITY_IPHONE
-    return HZIncentivizedAdIOS.isAvailable();
-    #endif
-    
+    return HZIncentivizedAdAndroid.isAvailable(tag);
+    #elif UNITY_IPHONE
+    return HZIncentivizedAdIOS.isAvailable(tag);
+    #else
     return false;
+    #endif
   }
 
   public static void setUserIdentifier(string identifier) {
@@ -84,17 +86,40 @@ public class HZIncentivizedAd : MonoBehaviour {
     HZIncentivizedAdIOS.setUserIdentifier(identifier);
     #endif
   }
+
+  public static void initReceiver(){
+    if (_instance == null) {
+      GameObject receiverObject = new GameObject("HZIncentivizedAd");
+      DontDestroyOnLoad(receiverObject);
+      _instance = receiverObject.AddComponent<HZIncentivizedAd>();
+    }
+  }
+
+  public static void setDisplayListener(AdDisplayListener listener) {
+    adDisplayListener = listener;
+  }
+    
+  public void setDisplayState(string message) {
+    string[] displayStateParams = message.Split(',');
+    setDisplayStates(displayStateParams[0], displayStateParams[1]); 
+  }
+  
+  public static void setDisplayStates(string state, string tag) {
+    if (adDisplayListener != null) {
+      adDisplayListener(state, tag);
+    }
+  }
 }
 
 #if UNITY_IPHONE
 public class HZIncentivizedAdIOS : MonoBehaviour {
 
-  public static void show() {
-    hz_ads_show_incentivized();
+  public static void show(string tag) {
+    hz_ads_show_incentivized(tag);
   }
 
   [DllImport ("__Internal")]
-  private static extern void hz_ads_show_incentivized();
+  private static extern void hz_ads_show_incentivized(string tag);
 
   public static void hide() {
     hz_ads_hide_incentivized();
@@ -103,19 +128,19 @@ public class HZIncentivizedAdIOS : MonoBehaviour {
   [DllImport ("__Internal")]
   private static extern void hz_ads_hide_incentivized();
 
-  public static void fetch() {
-    hz_ads_fetch_incentivized();
+  public static void fetch(string tag) {
+    hz_ads_fetch_incentivized(tag);
   }
 
   [DllImport ("__Internal")]
-  private static extern void hz_ads_fetch_incentivized();
+  private static extern void hz_ads_fetch_incentivized(string tag);
 
-  public static bool isAvailable() {
-    return hz_ads_incentivized_is_available();
+  public static bool isAvailable(string tag) {
+    return hz_ads_incentivized_is_available(tag);
   }
 
   [DllImport ("__Internal")]
-  private static extern bool hz_ads_incentivized_is_available();
+  private static extern bool hz_ads_incentivized_is_available(string tag);
 
   public static void setUserIdentifier(string identifier) {
     hz_ads_incentivized_set_user_identifier(identifier);
@@ -129,12 +154,12 @@ public class HZIncentivizedAdIOS : MonoBehaviour {
 #if UNITY_ANDROID
 public class HZIncentivizedAdAndroid : MonoBehaviour {
   
-  public static void show() {
+  public static void show(string tag) {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        jc.CallStatic("showIncentivized"); 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+        jc.CallStatic("showIncentivized", tag); 
       }
   }
 
@@ -142,35 +167,33 @@ public class HZIncentivizedAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("hideIncentivized");
       }
   }
 
-  public static void fetch() {
+  public static void fetch(string tag) {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        jc.CallStatic("fetchIncentivized"); 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+        jc.CallStatic("fetchIncentivized", tag); 
       }
   }
   
-  public static Boolean isAvailable() {
+  public static Boolean isAvailable(string tag) {
     if(Application.platform != RuntimePlatform.Android) return false;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        return jc.CallStatic<Boolean>("isIncentivizedAvailable");
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+        return jc.CallStatic<Boolean>("isIncentivizedAvailable", tag);
       }
-
-      return false;
   }
 
   public static void setUserIdentifier(string identifier) {
     if(Application.platform != RuntimePlatform.Android) return;
     AndroidJNIHelper.debug = false;
-    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
       jc.CallStatic("setIncentivizedUserIdentifier", identifier);
     }
   }

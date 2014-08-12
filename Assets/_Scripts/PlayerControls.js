@@ -24,7 +24,7 @@ function Awake () {
 	System.Console.WriteLine("Starting heyzap");
 	
 	// Heyzap will automatically preload ads.
-	HeyzapAds.start(HeyzapAds.FLAG_NO_OPTIONS);
+	HeyzapAds.start("0e92d74b1380cf5fec01b630e522b241", HeyzapAds.FLAG_NO_OPTIONS);
 	
 	HeyzapAds.setDisplayListener(function(adState : String, adTag : String){
 	

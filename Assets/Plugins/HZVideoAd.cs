@@ -33,10 +33,14 @@ using System;
 
 public class HZVideoAd : MonoBehaviour {
   
+  public delegate void AdDisplayListener( string state, string tag );
+  private static AdDisplayListener adDisplayListener;
+  private static HZVideoAd _instance = null;
+  
   public static void show(string tag="default") {
     #if UNITY_ANDROID
     HZVideoAdAndroid.show(tag);
-	  #endif
+    #endif
 
     #if UNITY_IPHONE
     HZVideoAdIOS.show(tag);
@@ -46,7 +50,7 @@ public class HZVideoAd : MonoBehaviour {
   public static void hide() {
     #if UNITY_ANDROID
     HZVideoAdAndroid.hide();
-  	#endif
+    #endif
 
     #if UNITY_IPHONE
     HZVideoAdIOS.hide();
@@ -65,14 +69,35 @@ public class HZVideoAd : MonoBehaviour {
   
   public static bool isAvailable(string tag="default") {
     #if UNITY_ANDROID
-  	return HZVideoAdAndroid.isAvailable(tag);
-  	#endif
-
-    #if UNITY_IPHONE
+    return HZVideoAdAndroid.isAvailable(tag);
+    #elif UNITY_IPHONE
     return HZVideoAdIOS.isAvailable(tag);
+    #else
+    return false;
     #endif
-		
-	 return false;
+  }
+
+  public static void initReceiver(){
+    if (_instance == null) {
+      GameObject receiverObject = new GameObject("HZVideoAd");
+      DontDestroyOnLoad(receiverObject);
+      _instance = receiverObject.AddComponent<HZVideoAd>();
+    }
+  }
+
+  public static void setDisplayListener(AdDisplayListener listener) {
+    adDisplayListener = listener;
+  }
+    
+  public void setDisplayState(string message) {
+    string[] displayStateParams = message.Split(',');
+    setDisplayStates(displayStateParams[0], displayStateParams[1]); 
+  }
+  
+  public static void setDisplayStates(string state, string tag) {
+    if (adDisplayListener != null) {
+      adDisplayListener(state, tag);
+    }
   }
 }
 
@@ -117,8 +142,8 @@ public class HZVideoAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        jc.CallStatic("showVideo", tag); 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+        jc.CallStatic("showVideo", tag);
       }
   }
 
@@ -126,7 +151,7 @@ public class HZVideoAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("hideVideo");
       }
   }
@@ -135,20 +160,18 @@ public class HZVideoAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("fetchVideo", tag); 
       }
   }
-	
+  
   public static Boolean isAvailable(string tag="default") {
     if(Application.platform != RuntimePlatform.Android) return false;
 
-      AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        return jc.CallStatic<Boolean>("isVideoAvailable", tag);
-      }
-
-      return false;
+    AndroidJNIHelper.debug = false;
+    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+      return jc.CallStatic<Boolean>("isVideoAvailable", tag);
+    }
   }
 }
 #endif

@@ -1,3 +1,4 @@
+
 //
 //  HeyzapAds.cs
 //
@@ -41,16 +42,19 @@ public class HeyzapAds : MonoBehaviour {
   public static int FLAG_INSTALL_TRACKING_ONLY = 1 << 1;
   public static int AMAZON = 1 << 2;
 
-  public static void start(int options) {
+  public static void start(string publisher_id, int options) {
     #if UNITY_ANDROID
-    HeyzapAdsAndroid.start(options);
+    HeyzapAdsAndroid.start(publisher_id, options);
     #endif
 
     #if UNITY_IPHONE
-    HeyzapAdsIOS.start(options);
+    HeyzapAdsIOS.start(publisher_id, options);
     #endif
 
     HeyzapAds.initReceiver();
+    HZInterstitialAd.initReceiver();
+    HZVideoAd.initReceiver();
+    HZIncentivizedAd.initReceiver();
   }
 
   public static void setDisplayListener(AdDisplayListener listener) {
@@ -79,23 +83,23 @@ public class HeyzapAds : MonoBehaviour {
 
 #if UNITY_IPHONE
 public class HeyzapAdsIOS : MonoBehaviour {
-    public static void start(int options=0) {
-      hz_ads_start_app(options);
+    public static void start(string publisher_id, int options=0) {
+      hz_ads_start_app(publisher_id, options);
     }
 
     [DllImport ("__Internal")]
-    private static extern void hz_ads_start_app(int flags);
+    private static extern void hz_ads_start_app(string publisher_id, int flags);
 }
 #endif
 
 #if UNITY_ANDROID
 public class HeyzapAdsAndroid : MonoBehaviour {
-    public static void start(int options=0) {
+    public static void start(string publisher_id, int options=0) {
       if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false; 
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        jc.CallStatic("start", options);
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+        jc.CallStatic("start", publisher_id, options);
       }
     }
 }

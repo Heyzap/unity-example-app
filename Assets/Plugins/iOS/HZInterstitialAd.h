@@ -52,8 +52,9 @@
 /**
  *  Shows an interstitial ad for a given tag, if available.
  *
- *  @param tag        An identifier for the location of the ad which you can use to disable the ad from your dashboard.
- *  @param completion A block called when the ad is shown or failed to show. result contains whether or not the fetch was successful, and if not, error contains the reason why.
+ *  @param tag An identifier for the location/context of the ad which you can use to disable the ad from your dashboard.
+ *  @param completion A block called when the ad is shown or failed to show. result contains whether 
+ *         or not the fetch was successful, and if not, error contains the reason why.
  */
 + (void) showForTag:(NSString *)tag completion:(void (^)(BOOL result, NSError *error))completion;
 

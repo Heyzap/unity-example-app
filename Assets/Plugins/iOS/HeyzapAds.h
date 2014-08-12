@@ -41,7 +41,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"0.0.0"
+#define SDK_VERSION @"6.6.3"
 
 typedef NS_ENUM(NSUInteger, HZAdOptions) {
     HZAdOptionsNone = 0 << 0,
@@ -115,14 +115,14 @@ typedef NS_ENUM(NSUInteger, HZAdOptions) {
 
 /** The HZIncentivizedAdDelegate protocol provides global information about using an incentivized ad. If you want to give the user a reward
  after successfully finishing an incentivized ad, implement the didCompleteAd method */
-@protocol HZIncentivizedAdDelegate<NSObject>
+@protocol HZIncentivizedAdDelegate<HZAdsDelegate>
 
 @optional
 
 /** Called when a user successfully completes viewing an ad */
-- (void)didCompleteAd;
+- (void)didCompleteAdWithTag: (NSString *) tag;
 /** Called when a user does not complete the viewing of an ad */
-- (void)didFailToCompleteAd;
+- (void)didFailToCompleteAdWithTag: (NSString *) tag;
 
 @end
 
@@ -144,10 +144,16 @@ typedef NS_ENUM(NSUInteger, HZAdOptions) {
  */
 + (void) setIncentiveDelegate: (id<HZIncentivizedAdDelegate>) delegate;
 
-+ (void) startWithAppStoreID: (int) appID andOptions: (HZAdOptions) options DEPRECATED_ATTRIBUTE;
-+ (void) startWithOptions:(HZAdOptions)options andFramework: (NSString *) framework;
-+ (void) startWithOptions: (HZAdOptions) options; //Only use this method if you are using the Social SDK.
-+ (void) start;
+
+/**
+ *
+ *
+ */
+
++ (void) startWithPublisherID: (NSString *) publisherID andOptions: (HZAdOptions) options;
++ (void) startWithPublisherID:(NSString *)publisherID andOptions:(HZAdOptions)options andFramework: (NSString *) framework;
++ (void) startWithPublisherID: (NSString *) publisherID;
+
 + (BOOL) isStarted;
 + (void) setDebugLevel:(HZDebugLevel)debugLevel;
 + (void) setDebug:(BOOL)choice;

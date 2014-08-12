@@ -32,21 +32,25 @@ using System.Runtime.InteropServices;
 using System;
 
 public class HZInterstitialAd : MonoBehaviour {
+
+  public delegate void AdDisplayListener( string state, string tag );
+  private static AdDisplayListener adDisplayListener;
+  private static HZInterstitialAd _instance = null;
   
   public static void show(string tag="default") {
     #if UNITY_ANDROID
     HZInterstitialAdAndroid.show(tag);
-	  #endif
+    #endif
 
     #if UNITY_IPHONE
     HZInterstitialAdIOS.show(tag);
-	  #endif
+    #endif
   }
 
   public static void hide() {
     #if UNITY_ANDROID
     HZInterstitialAdAndroid.hide();
-  	#endif
+    #endif
 
     #if UNITY_IPHONE
     HZInterstitialAdIOS.hide();
@@ -65,14 +69,35 @@ public class HZInterstitialAd : MonoBehaviour {
   
   public static bool isAvailable(string tag="default") {
     #if UNITY_ANDROID
-  	return HZInterstitialAdAndroid.isAvailable(tag);
-  	#endif
-		
-  	#if UNITY_IPHONE
-  	return HZInterstitialAdIOS.isAvailable(tag);
-  	#endif
-		
-	 return false;
+    return HZInterstitialAdAndroid.isAvailable(tag);
+    #elif UNITY_IPHONE
+    return HZInterstitialAdIOS.isAvailable(tag);
+    #else
+    return false;
+    #endif
+  }
+
+  public static void initReceiver(){
+    if (_instance == null) {
+      GameObject receiverObject = new GameObject("HZInterstitialAd");
+      DontDestroyOnLoad(receiverObject);
+      _instance = receiverObject.AddComponent<HZInterstitialAd>();
+    }
+  }
+
+  public static void setDisplayListener(AdDisplayListener listener) {
+    adDisplayListener = listener;
+  }
+    
+  public void setDisplayState(string message) {
+    string[] displayStateParams = message.Split(',');
+    setDisplayStates(displayStateParams[0], displayStateParams[1]); 
+  }
+  
+  public static void setDisplayStates(string state, string tag) {
+    if (adDisplayListener != null) {
+      adDisplayListener(state, tag);
+    }
   }
 }
 
@@ -117,7 +142,7 @@ public class HZInterstitialAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("showInterstitial", tag); 
       }
   }
@@ -126,7 +151,7 @@ public class HZInterstitialAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("hideInterstitial");
       }
   }
@@ -135,20 +160,18 @@ public class HZInterstitialAdAndroid : MonoBehaviour {
     if(Application.platform != RuntimePlatform.Android) return;
 
       AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
+      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("fetchInterstitial", tag); 
       }
   }
-	
+  
   public static Boolean isAvailable(string tag="default") {
     if(Application.platform != RuntimePlatform.Android) return false;
 
-      AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.ads.UnityHelper")) { 
-        return jc.CallStatic<Boolean>("isInterstitialAvailable", tag);
-      }
-
-      return false;
+    AndroidJNIHelper.debug = false;
+    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+      return jc.CallStatic<Boolean>("isInterstitialAvailable", tag);
+    }
   }
 }
 #endif

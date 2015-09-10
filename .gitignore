@@ -8,3 +8,5 @@
 *.csproj
 *.unityproj
 *.sln
+
+*.pyc*

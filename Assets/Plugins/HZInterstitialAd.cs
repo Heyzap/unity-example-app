@@ -1,7 +1,7 @@
 //
 //  HZInterstitialAd.cs
 //
-//  Copyright 2013 Smart Balloon, Inc. All Rights Reserved
+//  Copyright 2015 Heyzap, Inc. All Rights Reserved
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -42,18 +42,8 @@ public class HZInterstitialAd : MonoBehaviour {
     HZInterstitialAdAndroid.show(tag);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZInterstitialAdIOS.show(tag);
-    #endif
-  }
-
-  public static void hide() {
-    #if UNITY_ANDROID
-    HZInterstitialAdAndroid.hide();
-    #endif
-
-    #if UNITY_IPHONE
-    HZInterstitialAdIOS.hide();
     #endif
   }
   
@@ -62,7 +52,7 @@ public class HZInterstitialAd : MonoBehaviour {
     HZInterstitialAdAndroid.fetch(tag);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZInterstitialAdIOS.fetch(tag);
     #endif
   }
@@ -70,12 +60,40 @@ public class HZInterstitialAd : MonoBehaviour {
   public static bool isAvailable(string tag="default") {
     #if UNITY_ANDROID
     return HZInterstitialAdAndroid.isAvailable(tag);
-    #elif UNITY_IPHONE
+    #elif UNITY_IPHONE && !UNITY_EDITOR
     return HZInterstitialAdIOS.isAvailable(tag);
     #else
     return false;
     #endif
   }
+
+	public static void chartboostFetchForLocation(string location) {
+		#if UNITY_ANDROID
+		HZInterstitialAdAndroid.chartboostFetchForLocation(location);
+		#elif UNITY_IPHONE && !UNITY_EDITOR
+		HZInterstitialAdIOS.chartboostFetchForLocation(location);
+		#else
+		#endif
+	}
+
+  public static bool chartboostIsAvailableForLocation(string location) {
+		#if UNITY_ANDROID
+		return HZInterstitialAdAndroid.chartboostIsAvailableForLocation(location);
+		#elif UNITY_IPHONE && !UNITY_EDITOR
+		return HZInterstitialAdIOS.chartboostIsAvailableForLocation(location);
+		#else
+		return false;
+		#endif
+  }
+
+	public static void chartboostShowForLocation(string location) {
+		#if UNITY_ANDROID
+		HZInterstitialAdAndroid.chartboostShowForLocation(location);
+		#elif UNITY_IPHONE && !UNITY_EDITOR
+		HZInterstitialAdIOS.chartboostShowForLocation(location);
+		#else
+		#endif
+	}
 
   public static void initReceiver(){
     if (_instance == null) {
@@ -101,7 +119,7 @@ public class HZInterstitialAd : MonoBehaviour {
   }
 }
 
-#if UNITY_IPHONE
+#if UNITY_IPHONE && !UNITY_EDITOR
 public class HZInterstitialAdIOS : MonoBehaviour {
 
   public static void show(string tag="default") {
@@ -110,13 +128,6 @@ public class HZInterstitialAdIOS : MonoBehaviour {
 
   [DllImport ("__Internal")]
   private static extern void hz_ads_show_interstitial(string tag);
-
-  public static void hide() {
-    hz_ads_hide_interstitial();
-  }
-
-  [DllImport ("__Internal")]
-  private static extern void hz_ads_hide_interstitial();
 
   public static void fetch(string tag="default") {
     hz_ads_fetch_interstitial(tag);
@@ -132,6 +143,29 @@ public class HZInterstitialAdIOS : MonoBehaviour {
   [DllImport ("__Internal")]
   private static extern bool hz_ads_interstitial_is_available(string tag);
 
+	// Chartboost functions
+
+  public static void chartboostFetchForLocation(string location) {
+    hz_fetch_chartboost_for_location(location);
+  }
+
+  [DllImport ("__Internal")]
+  private static extern void hz_fetch_chartboost_for_location(string location);
+
+  public static bool chartboostIsAvailableForLocation(string location) {
+    return hz_chartboost_is_available_for_location(location);
+  }
+
+  [DllImport ("__Internal")]
+  private static extern bool hz_chartboost_is_available_for_location(string location);
+
+  public static void chartboostShowForLocation(string location) {
+    hz_show_chartboost_for_location(location);
+  }
+
+  [DllImport ("__Internal")]
+  private static extern void hz_show_chartboost_for_location(string location);
+
 }
 #endif
 
@@ -144,15 +178,6 @@ public class HZInterstitialAdAndroid : MonoBehaviour {
       AndroidJNIHelper.debug = false;
       using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("showInterstitial", tag); 
-      }
-  }
-
-  public static void hide() {
-    if(Application.platform != RuntimePlatform.Android) return;
-
-      AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-        jc.CallStatic("hideInterstitial");
       }
   }
 
@@ -171,6 +196,33 @@ public class HZInterstitialAdAndroid : MonoBehaviour {
     AndroidJNIHelper.debug = false;
     using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
       return jc.CallStatic<Boolean>("isInterstitialAvailable", tag);
+    }
+  }
+
+  public static void chartboostShowForLocation(string location) {
+    if(Application.platform != RuntimePlatform.Android) return;
+
+    AndroidJNIHelper.debug = false;
+    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+      jc.CallStatic("chartboostLocationShow", location);
+    }
+  }
+
+  public static Boolean chartboostIsAvailableForLocation(string location) {
+    if(Application.platform != RuntimePlatform.Android) return false;
+
+    AndroidJNIHelper.debug = false;
+    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+      return jc.CallStatic<Boolean>("chartboostLocationIsAvailable", location);
+    }
+  }
+
+  public static void chartboostFetchForLocation(string location) {
+    if(Application.platform != RuntimePlatform.Android) return;
+
+    AndroidJNIHelper.debug = false;
+    using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+      jc.CallStatic("chartboostLocationFetch", location);
     }
   }
 }

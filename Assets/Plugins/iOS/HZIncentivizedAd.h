@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Smart Balloon, Inc.
+ * Copyright (c) 2015, Heyzap, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * * Neither the name of 'Smart Balloon, Inc.' nor the names of its contributors
+ * * Neither the name of 'Heyzap, Inc.' nor the names of its contributors
  *   may be used to endorse or promote products derived from this software
  *   without specific prior written permission.
  *
@@ -30,25 +30,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+@protocol HZIncentivizedAdDelegate;
+
 #import <Foundation/Foundation.h>
 #import "HeyzapAds.h"
+#import "HZShowOptions.h"
 
-/** HZIncentivizedAd is responsible for fetching and showing incentivized video ads. */
+@class HZShowOptions;
+
+/** HZIncentivizedAd is responsible for fetching and showing incentivized video ads. All methods on this class must be called from the main queue. */
 @interface HZIncentivizedAd : NSObject
 
-+ (void) setDelegate: (id) delegate;
++ (void)setDelegate:(id<HZIncentivizedAdDelegate>)delegate;
 
-/** Shows an incentivized video ad if one is available */
+/** Shows an incentivized video ad if one is available. */
 + (void) show;
 
-/** Shows an incentivized video ad if one with the particlar tag is available
+/** Shows an incentivized video ad if one with the particlar tag is available.
   *
   * @param tag Tag name describing the location or context for the ad to be shown.
   */
 + (void) showForTag: (NSString *) tag;
 
-/** Dismisses the current ad, if visible. */
-+ (void) hide;
+/** Shows an incentivized video with the given options.
+ *
+ * @param options HZShowOptions object containing properties for configuring how the ad is shown.
+ */
++ (void) showWithOptions: (HZShowOptions *) options;
 
 /** Fetches an incentivized video ad from Heyzap. */
 + (void) fetch;
@@ -75,19 +84,37 @@
  */
 + (void) fetchForTag: (NSString *) tag withCompletion:(void (^)(BOOL, NSError *))completion;
 
+
 /**
- *  Whether or not a video ad is ready to show
+ *  Fetches an incentivized video ad for each of the given tags.
  *
- *  @return If the video is ready to show
+ *  @param tags An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
+ */
++ (void) fetchForTags:(NSArray *)tags;
+
+
+/**
+ *  Fetches an incentivized video ad for each of the given tags with an optional completion handler.
+ *
+ *  @param tag        An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
+ *  @param completion A block called when an ad for each tag is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
+ */
++ (void) fetchForTags:(NSArray *)tags withCompletion:(void (^)(BOOL result, NSError *error))completion;
+
+
+/**
+ *  Whether or not an incentivized video ad is ready to show.
+ *
+ *  @return If an incentivized video ad is ready to show.
  */
 + (BOOL) isAvailable;
 
 /**
- *  Whether or not an incentivized ad is ready to show for the particular tag.
+ *  Whether or not an incentivized video ad is ready to show for the given tag.
  *
  *  @param tag Tag name describing the location or context for the ad to be shown.
  *  
- *  @return If the video is ready to show
+ *  @return If an incentivized video ad is ready to show.
  */
 + (BOOL) isAvailableForTag: (NSString *) tag;
 
@@ -97,7 +124,6 @@
  *  @param userIdentifier Any unique identifier, like a username, email, or ID that your server-side database uses.
  */
 + (void) setUserIdentifier: (NSString *) userIdentifier;
-
 
 + (void) setCreativeID: (int) creativeID;
 @end

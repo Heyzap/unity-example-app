@@ -1,7 +1,7 @@
 //
 //  HZIncentivizedAd.cs
 //
-//  Copyright 2013 Smart Balloon, Inc. All Rights Reserved
+//  Copyright 2015 Heyzap, Inc. All Rights Reserved
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -42,18 +42,8 @@ public class HZIncentivizedAd : MonoBehaviour {
     HZIncentivizedAdAndroid.show(tag);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZIncentivizedAdIOS.show(tag);
-    #endif
-  }
-
-  public static void hide() {
-    #if UNITY_ANDROID
-    HZIncentivizedAdAndroid.hide();
-    #endif
-
-    #if UNITY_IPHONE
-    HZIncentivizedAdIOS.hide();
     #endif
   }
   
@@ -62,7 +52,7 @@ public class HZIncentivizedAd : MonoBehaviour {
     HZIncentivizedAdAndroid.fetch(tag);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZIncentivizedAdIOS.fetch(tag);
     #endif
   }
@@ -70,7 +60,7 @@ public class HZIncentivizedAd : MonoBehaviour {
   public static bool isAvailable(string tag="default") {
     #if UNITY_ANDROID
     return HZIncentivizedAdAndroid.isAvailable(tag);
-    #elif UNITY_IPHONE
+    #elif UNITY_IPHONE && !UNITY_EDITOR
     return HZIncentivizedAdIOS.isAvailable(tag);
     #else
     return false;
@@ -82,7 +72,7 @@ public class HZIncentivizedAd : MonoBehaviour {
     HZIncentivizedAdAndroid.setUserIdentifier(identifier);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZIncentivizedAdIOS.setUserIdentifier(identifier);
     #endif
   }
@@ -111,7 +101,7 @@ public class HZIncentivizedAd : MonoBehaviour {
   }
 }
 
-#if UNITY_IPHONE
+#if UNITY_IPHONE && !UNITY_EDITOR
 public class HZIncentivizedAdIOS : MonoBehaviour {
 
   public static void show(string tag) {
@@ -120,13 +110,6 @@ public class HZIncentivizedAdIOS : MonoBehaviour {
 
   [DllImport ("__Internal")]
   private static extern void hz_ads_show_incentivized(string tag);
-
-  public static void hide() {
-    hz_ads_hide_incentivized();
-  }
-
-  [DllImport ("__Internal")]
-  private static extern void hz_ads_hide_incentivized();
 
   public static void fetch(string tag) {
     hz_ads_fetch_incentivized(tag);
@@ -160,15 +143,6 @@ public class HZIncentivizedAdAndroid : MonoBehaviour {
       AndroidJNIHelper.debug = false;
       using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("showIncentivized", tag); 
-      }
-  }
-
-  public static void hide() {
-    if(Application.platform != RuntimePlatform.Android) return;
-
-      AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-        jc.CallStatic("hideIncentivized");
       }
   }
 

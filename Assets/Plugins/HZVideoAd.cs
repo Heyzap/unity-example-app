@@ -1,7 +1,7 @@
 //
 //  HZVideoAd.cs
 //
-//  Copyright 2014 Smart Balloon, Inc. All Rights Reserved
+//  Copyright 2015 Heyzap, Inc. All Rights Reserved
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -42,18 +42,8 @@ public class HZVideoAd : MonoBehaviour {
     HZVideoAdAndroid.show(tag);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZVideoAdIOS.show(tag);
-    #endif
-  }
-
-  public static void hide() {
-    #if UNITY_ANDROID
-    HZVideoAdAndroid.hide();
-    #endif
-
-    #if UNITY_IPHONE
-    HZVideoAdIOS.hide();
     #endif
   }
   
@@ -62,7 +52,7 @@ public class HZVideoAd : MonoBehaviour {
     HZVideoAdAndroid.fetch(tag);
     #endif
 
-    #if UNITY_IPHONE
+    #if UNITY_IPHONE && !UNITY_EDITOR
     HZVideoAdIOS.fetch(tag);
     #endif
   }
@@ -70,7 +60,7 @@ public class HZVideoAd : MonoBehaviour {
   public static bool isAvailable(string tag="default") {
     #if UNITY_ANDROID
     return HZVideoAdAndroid.isAvailable(tag);
-    #elif UNITY_IPHONE
+    #elif UNITY_IPHONE && !UNITY_EDITOR
     return HZVideoAdIOS.isAvailable(tag);
     #else
     return false;
@@ -101,7 +91,7 @@ public class HZVideoAd : MonoBehaviour {
   }
 }
 
-#if UNITY_IPHONE
+#if UNITY_IPHONE && !UNITY_EDITOR
 public class HZVideoAdIOS : MonoBehaviour {
 
   public static void show(string tag="default") {
@@ -110,13 +100,6 @@ public class HZVideoAdIOS : MonoBehaviour {
 
   [DllImport ("__Internal")]
   private static extern void hz_ads_show_video(string tag);
-
-  public static void hide() {
-    hz_ads_hide_video();
-  }
-
-  [DllImport ("__Internal")]
-  private static extern void hz_ads_hide_video();
 
   public static void fetch(string tag="default") {
     hz_ads_fetch_video(tag);
@@ -144,15 +127,6 @@ public class HZVideoAdAndroid : MonoBehaviour {
       AndroidJNIHelper.debug = false;
       using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
         jc.CallStatic("showVideo", tag);
-      }
-  }
-
-  public static void hide() {
-    if(Application.platform != RuntimePlatform.Android) return;
-
-      AndroidJNIHelper.debug = false;
-      using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-        jc.CallStatic("hideVideo");
       }
   }
 

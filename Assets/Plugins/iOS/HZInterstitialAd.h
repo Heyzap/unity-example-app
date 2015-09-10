@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Smart Balloon, Inc.
+ * Copyright (c) 2015, Heyzap, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- * * Neither the name of 'Smart Balloon, Inc.' nor the names of its contributors
+ * * Neither the name of 'Heyzap, Inc.' nor the names of its contributors
  *   may be used to endorse or promote products derived from this software
  *   without specific prior written permission.
  *
@@ -30,11 +30,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 #import <Foundation/Foundation.h>
+#import "HZShowOptions.h"
+#import "HZShowOptions.h"
+
+@class HZShowOptions;
 
 @protocol HZAdsDelegate;
 
-/** HZInterstitialAd is responsible for fetching and showing interstitial ads. */
+/** HZInterstitialAd is responsible for fetching and showing interstitial ads. All methods on this class must be called from the main queue. */
 @interface HZInterstitialAd : NSObject
 
 #pragma mark - Showing Ads
@@ -47,7 +52,7 @@
  *
  *  @param tag An identifier for the location of the ad which you can use to disable the ad from your dashboard.
  */
-+ (void) showForTag: (NSString *) tag;
++ (void) showForTag:(NSString *)tag;
 
 /**
  *  Shows an interstitial ad for a given tag, if available.
@@ -57,6 +62,12 @@
  *         or not the fetch was successful, and if not, error contains the reason why.
  */
 + (void) showForTag:(NSString *)tag completion:(void (^)(BOOL result, NSError *error))completion;
+
+/** Shows an interstitial ad with the given options.
+ *
+ * @param options HZShowOptions object containing properties for configuring how the ad is shown.
+ */
++ (void) showWithOptions: (HZShowOptions *) options;
 
 #pragma mark - Callbacks
 
@@ -74,7 +85,7 @@
  *
  *  @param completion A block called when the ad is fetched or failed to fetch. result contains whether or not the fetch was successful, and if not, error contains the reason why.
  */
-+ (void) fetchWithCompletion: (void (^)(BOOL result, NSError *error))completion;
++ (void) fetchWithCompletion:(void (^)(BOOL result, NSError *error))completion;
 
 
 /**
@@ -82,18 +93,35 @@
  *
  *  @param tag An identifier for the location of the ad which you can use to disable the ad from your dashboard.
  */
-+ (void) fetchForTag: (NSString *) tag;
++ (void) fetchForTag:(NSString *) tag;
 
 
 /**
- *  Fetches an interstitial ad for the given tag with an optional completion handler
+ *  Fetches an interstitial ad for the given tag with an optional completion handler.
  *
  *  @param tag        An identifier for the location of the ad which you can use to disable the ad from your dashboard.
- *  @param completion A block called when the ad is fetched or failed to fetch. result contains whether or not the fetch was successful, and if not, error contains the reason why.
+ *  @param completion A block called when the ad is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
  */
-+ (void) fetchForTag:(NSString *)tag withCompletion: (void (^)(BOOL result, NSError *error))completion;
++ (void) fetchForTag:(NSString *)tag withCompletion:(void (^)(BOOL result, NSError *error))completion;
 
-/** Whether or not an ad is available to show. */
+
+/**
+ *  Fetches an interstitial ad for each of the given tags.
+ *
+ *  @param tags An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
+ */
++ (void) fetchForTags:(NSArray *)tags;
+
+
+/**
+ *  Fetches an interstitial ad for each of the given tags with an optional completion handler.
+ *
+ *  @param tag        An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
+ *  @param completion A block called when an ad for each tag is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
+ */
++ (void) fetchForTags:(NSArray *)tags withCompletion:(void (^)(BOOL result, NSError *error))completion;
+
+/** Whether or not an interstitial ad is available to show. */
 + (BOOL) isAvailable;
 
 
@@ -102,18 +130,15 @@
  *
  *  @param tag An identifier for the location of the ad which you can use to disable the ad from your dashboard.
  *
- *  @return If the ad was available
+ *  @return If an interstitial ad is available to show.
  */
-+ (BOOL) isAvailableForTag: (NSString *) tag;
-
-/** Dismisses the current ad, if visible. */
-+ (void) hide;
++ (BOOL) isAvailableForTag:(NSString *)tag;
 
 
 #pragma mark - Private methods
 
 + (void) setCreativeID:(int)creativeID;
-
-+ (void)showAdWithOptions:(NSDictionary *)options;
++ (void)forceTestCreative:(BOOL)forceTestCreative;
++ (void)setCreativeType:(NSString *)creativeType;
 
 @end

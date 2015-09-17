@@ -51,7 +51,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.1.5"
+#define SDK_VERSION @"9.1.8"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -96,8 +96,9 @@ extern NSString * const HZNetworkChartboost;
 extern NSString * const HZNetworkAdColony;
 extern NSString * const HZNetworkAdMob;
 extern NSString * const HZNetworkIAd;
-extern NSString * const HZNetworkHyperMX;
+extern NSString * const HZNetworkHyprMX;
 extern NSString * const HZNetworkHeyzapExchange;
+extern NSString * const HZNetworkLeadbolt;
 
 // General Network Callbacks
 extern NSString * const HZNetworkCallbackInitialized;

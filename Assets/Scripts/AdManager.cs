@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.Assertions.Must;
 using System.Collections;
+using Heyzap;
 
 public class AdManager : MonoBehaviour 
 {
@@ -49,25 +50,25 @@ public class AdManager : MonoBehaviour
 			this.console.Append("[" + network + "]: " + callback);
 		};
 
-		HeyzapAds.setNetworkCallbackListener(networkCallbackListner);
-		HeyzapAds.start("ENTER_YOUR_PUBLISHER_ID_HERE",HeyzapAds.FLAG_NO_OPTIONS);
+		HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
+		HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE",HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.setDisplayListener(delegate(string adState, string adTag)
         {
             this.console.Append("BANNER: " + adState + " Tag : " + adTag);
         });
 
-        HZInterstitialAd.setDisplayListener(delegate(string adState, string adTag)
+        HZInterstitialAd.SetDisplayListener(delegate(string adState, string adTag)
         {
             this.console.Append("INTERSTITIAL: " + adState + " Tag : " + adTag);
         });
 
-        HZIncentivizedAd.setDisplayListener(delegate(string adState, string adTag)
+        HZIncentivizedAd.SetDisplayListener(delegate(string adState, string adTag)
                                       {
             this.console.Append("INCENTIVIZED: " + adState + " Tag : " + adTag);
         });
         
-        HZVideoAd.setDisplayListener(delegate(string adState, string adTag)
+        HZVideoAd.SetDisplayListener(delegate(string adState, string adTag)
                                             {
             this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
         });
@@ -78,7 +79,7 @@ public class AdManager : MonoBehaviour
         // UI defaults
         this.bannerPosition = HZBannerAd.POSITION_TOP;
         this.SelectedAdType = AdType.Interstitial;
-        HeyzapAds.hideDebugLogs();
+        HeyzapAds.HideDebugLogs();
 	}
 
 	public void InterstitialSelected(bool selected) {
@@ -103,6 +104,31 @@ public class AdManager : MonoBehaviour
 		if (selected) {
 			this.SelectedAdType = AdType.Banner;
 		}
+	}
+
+	public void IsAvailableButton() {
+		const string tag = this.adTag();
+
+		bool available = false;
+
+		switch (this.SelectedAdType) {
+		case AdType.Interstitial:
+			available = HZInterstitialAd.IsAvailable(tag);
+			break;
+		case AdType.Video:
+			available = HZVideoAd.IsAvailable(tag);
+			break;
+		case AdType.Incentivized:
+			available = HZVideoAd.IsAvailable(tag);
+			break;
+		case AdType.Banner:
+			// Not applicable
+			break;
+		}
+
+		const string availabilityMessage = available ? "available" : "not available";
+
+		this.console.Append(this.SelectedAdType.ToString() + " with tag: " + tag + " is " + availabilityMessage);
 	}
 
 	public void ShowButton()
@@ -130,13 +156,13 @@ public class AdManager : MonoBehaviour
         this.console.Append("Fetching " + this.SelectedAdType.ToString() + " with tag: " + tag);
         switch(this.SelectedAdType) {
     		case AdType.Interstitial:
-    			HZInterstitialAd.fetch(tag);
+    			HZInterstitialAd.Fetch(tag);
     			break;
     		case AdType.Video:
-    			HZVideoAd.fetch(tag);
+    			HZVideoAd.Fetch(tag);
     			break;
     		case AdType.Incentivized:
-    			HZIncentivizedAd.fetch(tag);
+    			HZIncentivizedAd.Fetch(tag);
     			break;
 		}
 	}
@@ -144,24 +170,24 @@ public class AdManager : MonoBehaviour
 	public void HideButton() {
 		if (this.SelectedAdType == AdType.Banner) {
             this.console.Append("Hiding Banner");
-			HZBannerAd.hide();
+			HZBannerAd.Hide();
 		}
 	}
 
     public void DestroyButton() {
         if (this.SelectedAdType == AdType.Banner) {
             this.console.Append("Destroying Banner");
-            HZBannerAd.destroy();
+            HZBannerAd.Destroy();
         }
     }
 
     public void DebugLogSwitch(bool on) {
         if (on) {
             this.console.Append("Enabling debug logging");
-            HeyzapAds.showDebugLogs();
+            HeyzapAds.ShowDebugLogs();
         } else {
             this.console.Append("Disabling debug logging");
-            HeyzapAds.hideDebugLogs();
+            HeyzapAds.HideDebugLogs();
         }
     }
 
@@ -180,7 +206,7 @@ public class AdManager : MonoBehaviour
 	public void ShowMediationTest()
 	{
         this.console.Append("Showing mediation test suite");
-		HeyzapAds.showMediationTestSuite();
+		HeyzapAds.ShowMediationTestSuite();
 	}
 
     private void ShowAdTypeControls() {

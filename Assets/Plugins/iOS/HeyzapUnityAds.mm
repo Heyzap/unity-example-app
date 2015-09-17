@@ -99,7 +99,7 @@ extern void UnitySendMessage(const char *, const char *, const char *);
 
 - (void) sendMessageForKlass: (NSString *) klass withMessage: (NSString *) message andTag: (NSString *) tag {
     NSString *unityMessage = [NSString stringWithFormat: @"%@,%@", message, tag];
-    UnitySendMessage([klass UTF8String], "setDisplayState", [unityMessage UTF8String]);
+    UnitySendMessage([klass UTF8String], "SetCallback", [unityMessage UTF8String]);
 }
 
 @end
@@ -133,7 +133,7 @@ extern "C" {
             [HeyzapAds networkCallbackWithBlock:^(NSString *network, NSString *callback) {
                 NSString *unityMessage = [NSString stringWithFormat: @"%@,%@", network, callback];
                 NSString *klassName = @"HeyzapAds";
-                UnitySendMessage([klassName UTF8String], "setNetworkCallbackMessage", [unityMessage UTF8String]);
+                UnitySendMessage([klassName UTF8String], "SetNetworkCallbackMessage", [unityMessage UTF8String]);
             }];
         });
     }
@@ -173,6 +173,13 @@ extern "C" {
     void hz_ads_show_incentivized(const char *tag) {
         [HZIncentivizedAd showForTag: [NSString stringWithUTF8String: tag]];
     }
+
+    void hz_ads_show_incentivized_with_custom_info(const char *tag, const char *customInfo) {
+        HZShowOptions *showOptions = [HZShowOptions new];
+        showOptions.tag = [NSString stringWithUTF8String: tag];
+        showOptions.incentivizedInfo = [NSString stringWithUTF8String: customInfo];
+        [HZIncentivizedAd showWithOptions:showOptions];
+    }
     
     void hz_ads_hide_incentivized() {
         //[HZIncentivizedAd hide];
@@ -184,14 +191,6 @@ extern "C" {
     
     bool hz_ads_incentivized_is_available(const char *tag) {
         return [HZIncentivizedAd isAvailableForTag: [NSString stringWithUTF8String: tag]];
-    }
-    
-    void hz_ads_incentivized_set_user_identifier(const char *identifier) {
-        NSString *userID = [NSString stringWithUTF8String:identifier];
-        if ([userID isEqualToString:@""]) {
-            userID = nil;
-        }
-        return [HZIncentivizedAd setUserIdentifier: userID];
     }
     
     void hz_ads_show_banner(const char *position, const char *tag) {
@@ -298,18 +297,22 @@ extern "C" {
         return [HeyzapAds isNetworkInitialized:HZNetworkChartboost];
     }
     
-    void hz_fetch_chartboost_for_location(const char *location) {
-        NSString *nsLocation = [NSString stringWithUTF8String:location];
-        
+    // Calling hz_fetch_chartboost_for_location recursively won't keep the `const char *` in memory
+    // Since I want to call it recursively, I immediately convert to an `NSString *` in `hz_fetch_chartboost_for_location`
+    void hz_fetch_chartboost_for_location_objc(NSString *location) {
         if (!hz_chartboost_enabled()) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                hz_fetch_chartboost_for_location(location);
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                hz_fetch_chartboost_for_location_objc(location);
             });
             return;
         }
         
-        
-        [HZUnityAdapterChartboostProxy cacheInterstitial:nsLocation];
+        [HZUnityAdapterChartboostProxy cacheInterstitial:location];
+    }
+    
+    void hz_fetch_chartboost_for_location(const char *location) {
+        NSString *nsLocation = [NSString stringWithUTF8String:location];
+        hz_fetch_chartboost_for_location_objc(nsLocation);
     }
     
     bool hz_chartboost_is_available_for_location(const char *location) {

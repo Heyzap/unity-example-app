@@ -12,6 +12,8 @@
 @import Security;
 @import StoreKit;
 @import iAd;
+@import MessageUI;
+@import Social;
 
 @interface HZMediationImports : NSObject
 @end

@@ -122,8 +122,9 @@
  *  (Optional) As a layer of added security, you can specify an identifier for the user. You can opt to receive a server-to-server callback with the provided userIdentifier.
  *
  *  @param userIdentifier Any unique identifier, like a username, email, or ID that your server-side database uses.
+ *  @deprecated This method has been deprecated and may be removed in a future version of the SDK.
  */
-+ (void) setUserIdentifier: (NSString *) userIdentifier;
++ (void) setUserIdentifier: (NSString *) userIdentifier __attribute__((deprecated("Please use the `incentivizedInfo` string that can be passed to calls to `showWithOptions()` instead if you want to pass information to your server regarding rewarded videos. More info about this feature can be found at https://developers.heyzap.com/docs/advanced-publishing ")));
 
 + (void) setCreativeID: (int) creativeID;
 @end

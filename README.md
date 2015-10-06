@@ -24,6 +24,6 @@ In order to utilize the test app with your own settings on your Heyzap dashboard
 If you do not do these things, 3rd-party networks will not be available in the test app, since your third-party credentials will not be retrieved from Heyzap's servers.
 
 ### Mediated ad networks
-The Heyzap SDK (`v9.1.8`) is already included. To use this sample app with other frameworks, follow the [instructions on our site](https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements) to add other frameworks.
+The Heyzap SDK (`v9.1.13`) is already included. To use this sample app with other networks, follow the [instructions on our site](https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements) to add other frameworks/libraries/jars.
 
 The sample app requires Unity 5 to run.

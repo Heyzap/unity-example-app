@@ -26,4 +26,11 @@ If you do not do these things, 3rd-party networks will not be available in the t
 ### Mediated ad networks
 The Heyzap SDK (`v9.1.13`) is already included. To use this sample app with other networks, follow the [instructions on our site](https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements) to add other frameworks/libraries/jars.
 
+To update the version of the Heyzap SDK in this project, you must first remove all traces of the Heyzap SDK from the project first by deleting the following directories:
+
+* `Editor/Heyzap/`
+* `Plugins/Heyzap/`
+* `Plugins/Android/Heyzap/`
+* `Plugins/iOS/Heyzap/`
+
 The sample app requires Unity 5 to run.

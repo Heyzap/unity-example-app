@@ -34,73 +34,20 @@
 @protocol HZIncentivizedAdDelegate;
 
 #import <Foundation/Foundation.h>
-#import "HeyzapAds.h"
-#import "HZShowOptions.h"
-
-@class HZShowOptions;
 
 /** HZIncentivizedAd is responsible for fetching and showing incentivized video ads. All methods on this class must be called from the main queue. */
 @interface HZIncentivizedAd : NSObject
 
-+ (void)setDelegate:(id<HZIncentivizedAdDelegate>)delegate;
-
-/** Shows an incentivized video ad if one is available. */
-+ (void) show;
-
-/** Shows an incentivized video ad if one with the particlar tag is available.
-  *
-  * @param tag Tag name describing the location or context for the ad to be shown.
-  */
-+ (void) showForTag: (NSString *) tag;
-
-/** Shows an incentivized video with the given options.
- *
- * @param options HZShowOptions object containing properties for configuring how the ad is shown.
- */
-+ (void) showWithOptions: (HZShowOptions *) options;
-
-/** Fetches an incentivized video ad from Heyzap. */
+/** Fetches an incentivized video ad. */
 + (void) fetch;
 
 /**
- *  Fetches an incentivized video ad from Heyzap.
+ *  Fetches an incentivized video ad.
  *
- *  @param tag An identifier for the location/context of the ad which you can use to disable the ad from your dashboard.
+ *  @param completion completion A block called when the ad is fetched or failed to fetch. result contains whether or not the fetch was successful, and if not, error contains the reason why.
+
  */
-
-+ (void) fetchForTag:(NSString *)tag;
-
-/**
- *  Fetches an incentivized video ad from Heyzap.
- *
- *  @param completion A block called when the video is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
- */
-+ (void) fetchWithCompletion: (void (^)(BOOL result, NSError *error))completion;
-
-/**
- *  Fetches an incentivized video ad from Heyzap with a tag.
- *  @param tag Tag name describing the location or context for the ad to be shown.
- *  @param completion A block called when the video is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
- */
-+ (void) fetchForTag: (NSString *) tag withCompletion:(void (^)(BOOL, NSError *))completion;
-
-
-/**
- *  Fetches an incentivized video ad for each of the given tags.
- *
- *  @param tags An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
- */
-+ (void) fetchForTags:(NSArray *)tags;
-
-
-/**
- *  Fetches an incentivized video ad for each of the given tags with an optional completion handler.
- *
- *  @param tag        An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
- *  @param completion A block called when an ad for each tag is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
- */
-+ (void) fetchForTags:(NSArray *)tags withCompletion:(void (^)(BOOL result, NSError *error))completion;
-
++ (void)fetchWithCompletion:(void (^)(BOOL result, NSError *error))completion;
 
 /**
  *  Whether or not an incentivized video ad is ready to show.
@@ -109,22 +56,11 @@
  */
 + (BOOL) isAvailable;
 
-/**
- *  Whether or not an incentivized video ad is ready to show for the given tag.
- *
- *  @param tag Tag name describing the location or context for the ad to be shown.
- *  
- *  @return If an incentivized video ad is ready to show.
- */
-+ (BOOL) isAvailableForTag: (NSString *) tag;
+/** Shows an incentivized video ad if one is available. */
++ (void) show;
 
-/**
- *  (Optional) As a layer of added security, you can specify an identifier for the user. You can opt to receive a server-to-server callback with the provided userIdentifier.
- *
- *  @param userIdentifier Any unique identifier, like a username, email, or ID that your server-side database uses.
- *  @deprecated This method has been deprecated and may be removed in a future version of the SDK.
- */
-+ (void) setUserIdentifier: (NSString *) userIdentifier __attribute__((deprecated("Please use the `incentivizedInfo` string that can be passed to calls to `showWithOptions()` instead if you want to pass information to your server regarding rewarded videos. More info about this feature can be found at https://developers.heyzap.com/docs/advanced-publishing ")));
+#pragma mark - Callbacks
 
-+ (void) setCreativeID: (int) creativeID;
++ (void)setDelegate:(id<HZIncentivizedAdDelegate>)delegate;
+
 @end

@@ -35,82 +35,59 @@ namespace Heyzap {
     /// Heyzap wrapper for iOS and Android via Unity. For more information, see https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements .
     /// </summary>
     public class HeyzapAds : MonoBehaviour {
-        public delegate void NetworkCallbackListener(string network, string callback);
 
-        private static NetworkCallbackListener networkCallbackListener;
         private static HeyzapAds _instance = null;
         
         #region Flags for the call to HeyzapAds.StartWithOptions()
-        public static int FLAG_NO_OPTIONS = 0 << 0;
-        public static int FLAG_DISABLE_AUTOMATIC_FETCHING = 1 << 0;
-        public static int FLAG_INSTALL_TRACKING_ONLY = 1 << 1;
-        public static int AMAZON = 1 << 2;
-        public static int DISABLE_FIRST_AUTOMATIC_FETCH = 1 << 3;
-        public static int DISABLE_MEDIATION = 1 << 4;
-        #endregion
-
-        #region String constants for internal use
-        public const string DEFAULT_TAG = "default";
-
-        public class NetworkCallback {
-            public static string INITIALIZED = "initialized";
-            public static string SHOW = "show";
-            public static string AVAILABLE = "available";
-            public static string HIDE = "hide";
-            public static string FETCH_FAILED = "fetch_failed";
-            public static string CLICK = "click";
-            public static string DISMISS = "dismiss";
-            public static string INCENTIVIZED_RESULT_COMPLETE = "incentivized_result_complete";
-            public static string INCENTIVIZED_RESULT_INCOMPLETE = "incentivized_result_incomplete";
-            public static string AUDIO_STARTING = "audio_starting";
-            public static string AUDIO_FINISHED = "audio_finished";
-
-            // currently sent in Android, but they were removed for iOS
-            public static string BANNER_LOADED = "banner-loaded";
-            public static string BANNER_CLICK = "banner-click";
-            public static string BANNER_HIDE = "banner-hide";
-            public static string BANNER_DISMISS = "banner-dismiss";
-            public static string BANNER_FETCH_FAILED = "banner-fetch_failed";
-
-            public static string LEAVE_APPLICATION = "leave_application";
-
-            // Facebook Specific
-            public static string FACEBOOK_LOGGING_IMPRESSION = "logging_impression";
-
-            // Chartboost Specific
-            public static string CHARTBOOST_MOREAPPS_FETCH_FAILED = "moreapps-fetch_failed";
-            public static string CHARTBOOST_MOREAPPS_HIDE = "moreapps-hide";
-            public static string CHARTBOOST_MOREAPPS_DISMISS = "moreapps-dismiss";
-            public static string CHARTBOOST_MOREAPPS_CLICK = "moreapps-click";
-            public static string CHARTBOOST_MOREAPPS_SHOW = "moreapps-show";
-            public static string CHARTBOOST_MOREAPPS_AVAILABLE = "moreapps-available";
-            public static string CHARTBOOST_MOREAPPS_CLICK_FAILED = "moreapps-click_failed";
-        }
-        #endregion
-
-        #region Network names
-        public class Network {
-            public static string HEYZAP = "heyzap";
-            public static string HEYZAP_CROSS_PROMO = "heyzap_cross_promo";
-            public static string HEYZAP_EXCHANGE = "heyzap_exchange";
-            public static string FACEBOOK = "facebook";
-            public static string UNITYADS = "unityads";
-            public static string APPLOVIN = "applovin";
-            public static string VUNGLE = "vungle";
-            public static string CHARTBOOST = "chartboost";
-            public static string ADCOLONY = "adcolony";
-            public static string ADMOB = "admob";
-            public static string IAD = "iad";
-            public static string LEADBOLT = "leadbolt";
-        }
-        #endregion
-
         /// <summary>
-        /// Starts the Heyzap SDK. Call this method as soon as possible in your app to ensure Heyzap has time to initialize before you want to show an ad.
+        /// Use this flag to start the Heyzap SDK with no extra configuration options. This is the default behavior if no options are passed when the SDK is started.
         /// </summary>
-        /// <param name="publisher_id">Your publisher ID. This can be found on your Heyzap dashboards - see https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements for more information.</param>
+        public const int FLAG_NO_OPTIONS = 0 << 0; // 0
+        /// <summary>
+        /// Use this flag to disable automatic prefetching of ads. You must call a `Fetch` method for every ad unit before a matching call to a `Show` method.
+        /// </summary>
+        public const int FLAG_DISABLE_AUTOMATIC_FETCHING = 1 << 0; // 1
+        /// <summary>
+        /// Use this flag to disable all advertising functionality of the Heyzap SDK. This should only be used if you're integrating the SDK solely as an install tracker.
+        /// </summary>
+        public const int FLAG_INSTALL_TRACKING_ONLY = 1 << 1; // 2
+        /// <summary>
+        /// (Android only) Use this flag to tell the Heyzap SDK that this app is being distributed on the Amazon App Store.
+        /// </summary>
+        public const int FLAG_AMAZON = 1 << 2; // 4
+        /// <summary>
+        /// Use this flag to disable the mediation features of the Heyzap SDK. Only Heyzap ads will be available.
+        /// You should set this flag if you are using Heyzap through another mediation tool to avoid potential conflicts.
+        /// </summary>
+        public const int FLAG_DISABLE_MEDIATION = 1 << 3; // 8
+        /// <summary>
+        /// (iOS only) Use this flag to stop the Heyzap SDK from automatically recording in-app purchases.
+        /// </summary>
+        public const int FLAG_DISABLE_AUTOMATIC_IAP_RECORDING = 1 << 4; // 16
+        /// <summary>
+        /// (Android only) Use this flag to disable all non-native ads & ad networks that don't support native ads.
+        /// </summary>
+        public const int FLAG_NATIVE_ADS_ONLY = 1 << 5; // 32
+        /// <summary>
+        /// Use this flag to to mark mediated ads as "child-directed". This value will be passed on to networks that support sending such an option (for purposes of the Children's Online Privacy Protection Act (COPPA)).
+        /// Currently, only AdMob uses this option's value. The AdMob setting will be left alone if this flag is not passed when the Heyzap SDK is started.
+        /// </summary>
+        public const int FLAG_CHILD_DIRECTED_ADS = 1 << 6; // 64
+
+        [Obsolete("Use FLAG_AMAZON instead - we refactored the flags to be consistently named.")]
+        public const int AMAZON = FLAG_AMAZON;
+        [Obsolete("Use FLAG_DISABLE_MEDIATION instead - we refactored the flags to be consistently named.")]
+        public const int DISABLE_MEDIATION = FLAG_DISABLE_MEDIATION;
+        #endregion
+
+        #region Public API
+        /// <summary>
+        /// Starts the Heyzap SDK. Call this method as soon as possible in your app to ensure Fyber has time to initialize before you want to show an ad.
+        /// </summary>
+        /// <param name="appID"> Your Fyber App ID. See the transition docs or the Fyber Dashboard for this value.</param>
+        /// <param name="securityToken"> Your Fyber Security Token. See the transition docs or the Fyber Dashboard for this value.</param>
         /// <param name="options">A bitmask of options you can pass to this call to change the way Heyzap will work.</param>
-        public static void Start(string publisher_id, int options) {
+        public static void Start(string appID, string securityToken, int options) {
             #if !UNITY_EDITOR
 
             #if UNITY_ANDROID
@@ -118,139 +95,20 @@ namespace Heyzap {
             #endif
 
             #if UNITY_IPHONE
-            HeyzapAdsIOS.Start(publisher_id, options);
+            HeyzapAdsIOS.Start(appID, securityToken, options);
             #endif
 
             HeyzapAds.InitReceiver();
             HZInterstitialAd.InitReceiver();
-            HZVideoAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
-            HZBannerAd.InitReceiver();
 
             #endif
         }
-        
-        /// <summary>
-        /// Returns the remote data you've set on the Heyzap Dashboards, which will be a JSON dictionary in string format.
-        /// </summary>
-        public static string GetRemoteData(){
-            #if UNITY_ANDROID
-            return HeyzapAdsAndroid.GetRemoteData();
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HeyzapAdsIOS.GetRemoteData();
-            #else 
-            return "{}";
-            #endif
-        }
 
-        /// <summary>
-        /// Shows the mediation test suite.
-        /// </summary>
-        public static void ShowMediationTestSuite() {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.ShowMediationTestSuite();
-            #endif
-
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ShowMediationTestSuite();
-            #endif
-        }
-        
-        /// <summary>
-        /// (Android only) Call this method in your back button pressed handler to make sure the back button does what the user should expect when ads are showing.
-        /// </summary>
-        /// <returns><c>true</c>, if Heyzap handled the back button press (in which case your code should not do anything else), and <c>false</c> if Heyzap did not handle the back button press (in which case your app may want to do something).</returns>
-        public static Boolean OnBackPressed() {
-            #if UNITY_ANDROID
-            return HeyzapAdsAndroid.OnBackPressed();
-
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HeyzapAdsIOS.OnBackPressed();
-
-            #else
-            return false;
-            #endif
-        }
-
-        /// <summary>
-        /// Returns whether or not the given network has been initialized by Heyzap yet.
-        /// </summary>
-        /// <returns><c>true</c> if is network initialized the specified network; otherwise, <c>false</c>.</returns>
-        /// <param name="network">The name of the network in question. Use the strings in HeyzapAds.Network to ensure the name matches what we expect.</param>
-        public static Boolean IsNetworkInitialized(string network) {
-            #if UNITY_ANDROID
-            return HeyzapAdsAndroid.IsNetworkInitialized(network);
-
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HeyzapAdsIOS.IsNetworkInitialized(network);
-
-            #else
-            return false;
-            #endif
-        }
-        
-        /// <summary>
-        /// Sets the NetworkCallbackListener, which receives messages about specific networks, such as when a specific network fetches an ad.
-        /// </summary>
-        public static void SetNetworkCallbackListener(NetworkCallbackListener listener) {
-            networkCallbackListener = listener;
-        }
-        
-        /// <summary>
-        /// (iOS only) Pauses expensive work, like ad fetches, until ResumeExpensiveWork() is called. Note that calling this method will affect ad availability.
-        /// </summary>
-        public static void PauseExpensiveWork() {
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.PauseExpensiveWork();
-            #endif
-        }
-
-        /// <summary>
-        /// (iOS only) Unpauses expensive work, like ad fetches. Only relevant after a call to PauseExpensiveWork().
-        /// </summary>
-        public static void ResumeExpensiveWork() {
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ResumeExpensiveWork();
-            #endif
-        }
-
-        /// <summary>
-        /// Enables verbose debug logging for the Heyzap SDK.
-        /// </summary>
-        public static void ShowDebugLogs() {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.ShowDebugLogs();
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ShowDebugLogs();
-            #endif
-        }
-
-        /// <summary>
-        /// Hides all debug logs coming from the Heyzap SDK.
-        /// </summary>
-        public static void HideDebugLogs() {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.HideDebugLogs();
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.HideDebugLogs();
-            #endif
-        }
+       
+        #endregion
 
         #region Internal methods
-        public void SetNetworkCallbackMessage(string message) {
-            string[] networkStateParams = message.Split(',');
-            SetNetworkCallback(networkStateParams[0], networkStateParams[1]); 
-        }
-
-        protected static void SetNetworkCallback(string network, string callback) {
-            if (networkCallbackListener != null) {
-                networkCallbackListener(network, callback);
-            }
-        }
 
         public static void InitReceiver(){
             if (_instance == null) {
@@ -259,69 +117,9 @@ namespace Heyzap {
                 _instance = receiverObject.AddComponent<HeyzapAds>();
             }
         }
-
-        public static string TagForString(string tag) {
-            if (tag == null) {
-                tag = HeyzapAds.DEFAULT_TAG;
-            }
-            
-            return tag;
-        }
         #endregion
 
-        #region Deprecated methods
-        //-------- Deprecated methods - will be removed in a future version of the SDK -------- //
-        
-        [Obsolete("Use the Start() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void start(string publisher_id, int options) {
-            Start(publisher_id, options);
-        }
 
-        [Obsolete("Use the GetRemoteData() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static string getRemoteData(){
-            return GetRemoteData();
-        }
-
-        [Obsolete("Use the ShowMediationTestSuite() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void showMediationTestSuite() {
-            ShowMediationTestSuite();
-        }
-
-        [Obsolete("Use the IsNetworkInitialized(String) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static Boolean isNetworkInitialized(string network) {
-            return IsNetworkInitialized(network);
-        }
-
-        [Obsolete("Use the SetNetworkCallbackListener(NetworkCallbackListener) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void setNetworkCallbackListener(NetworkCallbackListener listener) {
-            SetNetworkCallbackListener(listener);
-        }
-
-        [Obsolete("Use the PauseExpensiveWork() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void pauseExpensiveWork() {
-            PauseExpensiveWork();
-        }
-
-        [Obsolete("Use the ResumeExpensiveWork() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void resumeExpensiveWork() {
-            ResumeExpensiveWork();
-        }
-
-        [Obsolete("Use the ShowDebugLogs() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void showDebugLogs() {
-            ShowDebugLogs();
-        }
-
-        [Obsolete("Use the HideDebugLogs() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void hideDebugLogs() {
-            HideDebugLogs();
-        }
-
-        [Obsolete("Use the OnBackPressed() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static Boolean onBackPressed() {
-            return OnBackPressed();
-        }
-        #endregion
     }
 
     #region Platform-specific translations
@@ -329,65 +127,13 @@ namespace Heyzap {
     public class HeyzapAdsIOS : MonoBehaviour {
 
         [DllImport ("__Internal")]
-        private static extern void hz_ads_start_app(string publisher_id, int flags);
+        private static extern void hz_ads_start_app(string appID, string securityToken, int flags);
 
-        [DllImport ("__Internal")]
-        private static extern void hz_ads_show_mediation_debug_view_controller();
-
-        [DllImport ("__Internal")]
-        private static extern string hz_ads_get_remote_data();
-
-        [DllImport ("__Internal")]
-        private static extern bool hz_ads_is_network_initialized(string network);
-
-        [DllImport ("__Internal")]
-        private static extern void hz_pause_expensive_work();
-
-        [DllImport ("__Internal")]
-        private static extern void hz_resume_expensive_work();
-
-        [DllImport ("__Internal")]
-        private static extern void hz_ads_hide_debug_logs();
-
-        [DllImport ("__Internal")]
-        private static extern void hz_ads_show_debug_logs();
-
-
-        public static void Start(string publisher_id, int options=0) {
-            hz_ads_start_app(publisher_id, options);
-        }
-        
-        public static void ShowMediationTestSuite() {
-            hz_ads_show_mediation_debug_view_controller();
+        public static void Start(string appID, string securityToken, int options=0) {
+            hz_ads_start_app(appID, securityToken, options);
         }
 
-        public static Boolean OnBackPressed(){
-            return false;
-        }
 
-        public static bool IsNetworkInitialized(string network) {
-            return hz_ads_is_network_initialized(network);
-        }
-
-        public static string GetRemoteData(){
-            return hz_ads_get_remote_data();
-        }
-
-        public static void PauseExpensiveWork() {
-            hz_pause_expensive_work();
-        }
-
-        public static void ResumeExpensiveWork() {
-            hz_resume_expensive_work();
-        }
-
-        public static void ShowDebugLogs() {
-            hz_ads_show_debug_logs();
-        }
-        
-        public static void HideDebugLogs() {
-            hz_ads_hide_debug_logs();
-        }
     }
     #endif
 

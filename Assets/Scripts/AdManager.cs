@@ -51,6 +51,11 @@ public class AdManager : MonoBehaviour {
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {
             this.console.Append("BANNER: " + adState + " Tag : " + adTag);
+            if (adState == "loaded") {
+                Rect dimensions = new Rect();
+                HZBannerAd.GetCurrentBannerDimensions(out dimensions);
+                this.console.Append(string.Format("    (x,y): ({0},{1}) - WxH: {2}x{3}", dimensions.x, dimensions.y, dimensions.width, dimensions.height));
+            }
         });
 
         HZInterstitialAd.SetDisplayListener(delegate(string adState, string adTag) {

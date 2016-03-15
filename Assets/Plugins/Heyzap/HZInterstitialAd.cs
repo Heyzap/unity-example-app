@@ -35,7 +35,7 @@ namespace Heyzap {
     /// </summary>
     public class HZInterstitialAd : MonoBehaviour {
 
-        public delegate void AdDisplayListener(string state, string tag);
+        public delegate void AdDisplayListener(string state);
         private static AdDisplayListener adDisplayListener;
         private static HZInterstitialAd _instance = null;
 
@@ -44,69 +44,37 @@ namespace Heyzap {
         /// Shows an ad with the default options.
         /// </summary>
         public static void Show() {
-            HZInterstitialAd.ShowWithOptions(null);
-        }
-
-        /// <summary>
-        /// Shows an ad with the given options.
-        /// </summary>
-        /// <param name="showOptions"> The options to show the ad with, or the default options if <c>null</c></param> 
-        public static void ShowWithOptions(HZShowOptions showOptions) {
-            if (showOptions == null) {
-                showOptions = new HZShowOptions();
-            }
-
             #if UNITY_ANDROID
-            HZInterstitialAdAndroid.ShowWithOptions(showOptions);
+            HZInterstitialAdAndroid.Show();
             #endif
-            
+
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HZInterstitialAdIOS.ShowWithOptions(showOptions);
+            HZInterstitialAdIOS.Show();
             #endif
         }
-
-        //provided since JS can't use default parameters
+            
         /// <summary>
-        /// Fetches an ad for the default ad tag.
+        /// Fetches an ad
         /// </summary>
         public static void Fetch() {
-            HZInterstitialAd.Fetch(null);
-        }
-        /// <summary>
-        /// Fetches an ad for the given ad tag.
-        /// </summary>
-        /// <param name="tag">The ad tag to fetch an ad for.</param>
-        public static void Fetch(string tag) {
-            tag = HeyzapAds.TagForString(tag);
-
             #if UNITY_ANDROID
-            HZInterstitialAdAndroid.Fetch(tag);
+            HZInterstitialAdAndroid.Fetch();
             #endif
-            
+
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HZInterstitialAdIOS.Fetch(tag);
+            HZInterstitialAdIOS.Fetch();
             #endif
         }
       
-        //provided since JS can't use default parameters
         /// <summary>
-        /// Returns whether or not an ad is available for the default ad tag.
+        /// Returns whether or not an ad is available.
         /// </summary>
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
         public static bool IsAvailable() {
-            return HZInterstitialAd.IsAvailable(null);
-        }
-        /// <summary>
-        /// Returns whether or not an ad is available for the given ad tag.
-        /// </summary>
-        /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
-        public static bool IsAvailable(string tag) {
-            tag = HeyzapAds.TagForString(tag);
-
             #if UNITY_ANDROID
-            return HZInterstitialAdAndroid.IsAvailable(tag);
+            return HZInterstitialAdAndroid.IsAvailable();
             #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HZInterstitialAdIOS.IsAvailable(tag);
+            return HZInterstitialAdIOS.IsAvailable();
             #else
             return false;
             #endif
@@ -119,45 +87,6 @@ namespace Heyzap {
             HZInterstitialAd.adDisplayListener = listener;
         }
 
-        #region Chartboost-specific methods
-        /// <summary>
-        /// Fetches an ad from Chartboost for the given CBLocation.
-        /// </summary>
-        public static void ChartboostFetchForLocation(string location) {
-            #if UNITY_ANDROID
-            HZInterstitialAdAndroid.chartboostFetchForLocation(location);
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            HZInterstitialAdIOS.chartboostFetchForLocation(location);
-            #else
-            #endif
-        }
-
-        /// <summary>
-        /// Returns whether an ad is available at the given CBLocation.
-        /// </summary>
-        public static bool ChartboostIsAvailableForLocation(string location) {
-            #if UNITY_ANDROID
-            return HZInterstitialAdAndroid.chartboostIsAvailableForLocation(location);
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HZInterstitialAdIOS.chartboostIsAvailableForLocation(location);
-            #else
-            return false;
-            #endif
-        }
-
-        /// <summary>
-        /// Attempts to show an ad from Chartboost for the given CBLocation.
-        /// </summary>
-        public static void ChartboostShowForLocation(string location) {
-            #if UNITY_ANDROID
-            HZInterstitialAdAndroid.chartboostShowForLocation(location);
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            HZInterstitialAdIOS.chartboostShowForLocation(location);
-            #else
-            #endif
-        }
-        #endregion
-
         #region Internal methods
         public static void InitReceiver(){
             if (_instance == null) {
@@ -168,66 +97,9 @@ namespace Heyzap {
         }
 
         public void SetCallback(string message) {
-            string[] displayStateParams = message.Split(',');
-            HZInterstitialAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]); 
+			HZInterstitialAd.adDisplayListener(message);
         }
 
-        protected static void SetCallbackStateAndTag(string state, string tag) {
-            if (HZInterstitialAd.adDisplayListener != null) {
-                HZInterstitialAd.adDisplayListener(state, tag);
-            }
-        }
-        #endregion
-
-        #region Deprecated methods
-        //-------- Deprecated methods - will be removed in a future version of the SDK -------- //
-        
-        [Obsolete("Use the Fetch() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void fetch() {
-            HZInterstitialAd.Fetch();
-        }
-        [Obsolete("Use the Fetch(string) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void fetch(string tag) {
-            HZInterstitialAd.Fetch(tag);
-        }
-        
-        [Obsolete("Use the Show() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void show() {
-            HZInterstitialAd.Show();
-        }
-        [Obsolete("Use ShowWithOptions() to show ads instead of this deprecated method.")]
-        public static void show(string tag) {
-            HZIncentivizedShowOptions showOptions = new HZIncentivizedShowOptions();
-            showOptions.Tag = tag;
-            HZInterstitialAd.ShowWithOptions(showOptions);;
-        }
-        
-        [Obsolete("Use the IsAvailable() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static bool isAvailable() {
-            return HZInterstitialAd.IsAvailable();
-        }
-        [Obsolete("Use the IsAvailable(tag) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static bool isAvailable(string tag) {
-            return HZInterstitialAd.IsAvailable(tag);
-        }
-        
-        [Obsolete("Use the SetDisplayListener(AdDisplayListener) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void setDisplayListener(AdDisplayListener listener) {
-            HZInterstitialAd.SetDisplayListener(listener);
-        }
-
-        [Obsolete("Use the ChartboostFetchForLocation(string) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void chartboostFetchForLocation(string location) {
-            HZInterstitialAd.ChartboostFetchForLocation(location);
-        }
-        [Obsolete("Use the ChartboostIsAvailableForLocation(string) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static bool chartboostIsAvailableForLocation(string location) {
-            return HZInterstitialAd.ChartboostIsAvailableForLocation(location);
-        }
-        [Obsolete("Use the ChartboostShowForLocation(string) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void chartboostShowForLocation(string location) {
-            HZInterstitialAd.ChartboostShowForLocation(location);
-        }
         #endregion
     }
 
@@ -235,44 +107,22 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HZInterstitialAdIOS {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_interstitial(string tag);
+        private static extern void hz_ads_show_interstitial();
         [DllImport ("__Internal")]
-        private static extern void hz_ads_fetch_interstitial(string tag);
+        private static extern void hz_ads_fetch_interstitial();
         [DllImport ("__Internal")]
-        private static extern bool hz_ads_interstitial_is_available(string tag);
-        [DllImport ("__Internal")]
-        private static extern void hz_fetch_chartboost_for_location(string location);
-        [DllImport ("__Internal")]
-        private static extern bool hz_chartboost_is_available_for_location(string location);
-        [DllImport ("__Internal")]
-        private static extern void hz_show_chartboost_for_location(string location);
+        private static extern bool hz_ads_interstitial_is_available();
 
-
-        public static void ShowWithOptions(HZShowOptions showOptions) {
-            hz_ads_show_interstitial(showOptions.Tag);
+        public static void Show() {
+            hz_ads_show_interstitial();
         }
 
-        public static void Fetch(string tag) {
-            hz_ads_fetch_interstitial(tag);
+        public static void Fetch() {
+            hz_ads_fetch_interstitial();
         }
 
-        public static bool IsAvailable(string tag) {
-            return hz_ads_interstitial_is_available(tag);
-        }
-
-
-        // Chartboost functions
-
-        public static void chartboostFetchForLocation(string location) {
-            hz_fetch_chartboost_for_location(location);
-        }
-
-        public static bool chartboostIsAvailableForLocation(string location) {
-            return hz_chartboost_is_available_for_location(location);
-        }
-
-        public static void chartboostShowForLocation(string location) {
-            hz_show_chartboost_for_location(location);
+        public static bool IsAvailable() {
+            return hz_ads_interstitial_is_available();
         }
     }
     #endif
@@ -285,52 +135,35 @@ namespace Heyzap {
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showInterstitial", showOptions.Tag); 
+			jc.CallStatic("showInterstitial"); 
             }
         }
 
-        public static void Fetch(string tag="default") {
+		public static void Show() {
+		if(Application.platform != RuntimePlatform.Android) return;
+
+			AndroidJNIHelper.debug = false;
+			using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+				jc.CallStatic("showInterstitial"); 
+			}
+		}
+
+
+        public static void Fetch() {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("fetchInterstitial", tag); 
+                jc.CallStatic("fetchInterstitial"); 
             }
         }
 
-        public static Boolean IsAvailable(string tag="default") {
+        public static Boolean IsAvailable() {
             if(Application.platform != RuntimePlatform.Android) return false;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("isInterstitialAvailable", tag);
-            }
-        }
-
-        public static void chartboostShowForLocation(string location) {
-            if(Application.platform != RuntimePlatform.Android) return;
-
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("chartboostLocationShow", location);
-            }
-        }
-
-        public static Boolean chartboostIsAvailableForLocation(string location) {
-            if(Application.platform != RuntimePlatform.Android) return false;
-
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("chartboostLocationIsAvailable", location);
-            }
-        }
-
-        public static void chartboostFetchForLocation(string location) {
-            if(Application.platform != RuntimePlatform.Android) return;
-
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("chartboostLocationFetch", location);
+                return jc.CallStatic<Boolean>("isInterstitialAvailable");
             }
         }
     }

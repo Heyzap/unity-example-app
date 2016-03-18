@@ -49,17 +49,28 @@ public class AdManager : MonoBehaviour {
     void Awake() {
         this.console.MustNotBeNull();
         this.appIDInputField.MustNotBeNull();
+		this.tokenInputField.MustNotBeNull();
+		this.autofetchToggle.MustNotBeNull();
         this.console.MustNotBeNull();
+		string defaultAppId = null;
+		string defaultToken = null;
+
+		#if UNITY_ANDROID
+		defaultAppId = "40867";
+		defaultToken = "419bcd37e8454aab3d49fa4df09d4a39";
+		#endif
 
         // Restore UI state
-        string previousAppID = PlayerPrefs.GetString(appIDKey, null);
+		string previousAppID = PlayerPrefs.GetString(appIDKey, defaultAppId);
         if (previousAppID != null) {
             this.appIDInputField.text = previousAppID;
         }
-        string previousToken = PlayerPrefs.GetString(tokenKey, null);
+
+		string previousToken = PlayerPrefs.GetString(tokenKey, defaultToken);
         if (previousToken != null) {
             this.tokenInputField.text = previousToken;
         }
+
         int previousAutofetch = PlayerPrefs.GetInt(autofetchKey, 1);
         this.autofetchToggle.isOn = previousAutofetch == 1;
     }
@@ -69,8 +80,8 @@ public class AdManager : MonoBehaviour {
         string token = this.tokenInputField.text;
 
         if (appID.Equals("") || token.Equals("")) {
-            this.console.Append("A valid app ID and token must be provided");
-            return;
+			this.console.Append("A valid app ID and token must be provided");
+			return;
         }
 
         // Store UI state for future launches
@@ -83,27 +94,15 @@ public class AdManager : MonoBehaviour {
         int options = this.autofetchToggle.isOn ? HeyzapAds.FLAG_NO_OPTIONS : HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING;
         HeyzapAds.Start(appID, token, options); 
 
+		HZInterstitialAd.SetDisplayListener(delegate(string adState) {
+			this.console.Append("INTERSTITIAL: " + adState);
+		});
+
+		HZIncentivizedAd.SetDisplayListener(delegate(string adState) {
+			this.console.Append("INCENTIVIZED: " + adState);
+		});
+
         this.preStartControls.SetActive(false);
-    }
-
-    void Start () {
-        
-
-//        HeyzapAds.Start("22051", "token", HeyzapAds.FLAG_NO_OPTIONS);
-
-        HZInterstitialAd.SetDisplayListener(delegate(string adState, string adTag) {
-            this.console.Append("INTERSTITIAL: " + adState);
-        });
-
-        HZIncentivizedAd.SetDisplayListener(delegate(string adState, string adTag) {
-            this.console.Append("INCENTIVIZED: " + adState);
-        });
-
-//        this.bannerControls.SetActive(false);
-//        this.nonBannerControls.SetActive(true);
-
-        // UI defaults
-//        this.SelectedAdType = AdType.Interstitial;
     }
 
     public void InterstitialSelected(bool selected) {

@@ -35,7 +35,7 @@ namespace Heyzap {
     /// </summary>
     public class HZInterstitialAd : MonoBehaviour {
 
-        public delegate void AdDisplayListener(string state, string tag);
+        public delegate void AdDisplayListener(string state);
         private static AdDisplayListener adDisplayListener;
         private static HZInterstitialAd _instance = null;
 
@@ -45,7 +45,7 @@ namespace Heyzap {
         /// </summary>
         public static void Show() {
             #if UNITY_ANDROID
-            HZInterstitialAdAndroid.Show(null);
+            HZInterstitialAdAndroid.Show();
             #endif
 
             #if UNITY_IPHONE && !UNITY_EDITOR
@@ -58,7 +58,7 @@ namespace Heyzap {
         /// </summary>
         public static void Fetch() {
             #if UNITY_ANDROID
-            HZInterstitialAdAndroid.Fetch(null);
+            HZInterstitialAdAndroid.Fetch();
             #endif
 
             #if UNITY_IPHONE && !UNITY_EDITOR
@@ -72,7 +72,7 @@ namespace Heyzap {
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
         public static bool IsAvailable() {
             #if UNITY_ANDROID
-            return HZInterstitialAdAndroid.IsAvailable(null);
+            return HZInterstitialAdAndroid.IsAvailable();
             #elif UNITY_IPHONE && !UNITY_EDITOR
             return HZInterstitialAdIOS.IsAvailable();
             #else
@@ -97,15 +97,11 @@ namespace Heyzap {
         }
 
         public void SetCallback(string message) {
-            string[] displayStateParams = message.Split(',');
-            HZInterstitialAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]); 
+			if (HZInterstitialAd.adDisplayListener != null) {
+				HZInterstitialAd.adDisplayListener(message);
+			}
         }
 
-        protected static void SetCallbackStateAndTag(string state, string tag) {
-            if (HZInterstitialAd.adDisplayListener != null) {
-                HZInterstitialAd.adDisplayListener(state, tag);
-            }
-        }
         #endregion
     }
 
@@ -135,60 +131,34 @@ namespace Heyzap {
 
     #if UNITY_ANDROID
     public class HZInterstitialAdAndroid {
-      
-        public static void ShowWithOptions(HZShowOptions showOptions) {
+
+		public static void Show() {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showInterstitial", showOptions.Tag); 
+                jc.CallStatic("showInterstitial"); 
             }
         }
 
-        public static void Fetch(string tag="default") {
+        public static void Fetch() {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("fetchInterstitial", tag); 
+                jc.CallStatic("fetchInterstitial"); 
             }
         }
 
-        public static Boolean IsAvailable(string tag="default") {
+        public static Boolean IsAvailable() {
             if(Application.platform != RuntimePlatform.Android) return false;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("isInterstitialAvailable", tag);
+                return jc.CallStatic<Boolean>("isInterstitialAvailable");
             }
         }
 
-        public static void chartboostShowForLocation(string location) {
-            if(Application.platform != RuntimePlatform.Android) return;
-
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("chartboostLocationShow", location);
-            }
-        }
-
-        public static Boolean chartboostIsAvailableForLocation(string location) {
-            if(Application.platform != RuntimePlatform.Android) return false;
-
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("chartboostLocationIsAvailable", location);
-            }
-        }
-
-        public static void chartboostFetchForLocation(string location) {
-            if(Application.platform != RuntimePlatform.Android) return;
-
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("chartboostLocationFetch", location);
-            }
-        }
     }
     #endif
     #endregion

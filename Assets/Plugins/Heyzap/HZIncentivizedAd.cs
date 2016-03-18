@@ -36,7 +36,7 @@ namespace Heyzap {
     /// </summary>
     public class HZIncentivizedAd : MonoBehaviour {
         
-        public delegate void AdDisplayListener(string state, string tag);
+        public delegate void AdDisplayListener(string state);
         private static AdDisplayListener adDisplayListener;
         private static HZIncentivizedAd _instance = null;
 
@@ -46,7 +46,7 @@ namespace Heyzap {
         public static void Fetch() {
 
             #if UNITY_ANDROID
-            HZIncentivizedAdAndroid.Fetch(null);
+            HZIncentivizedAdAndroid.Fetch();
             #endif
             
             #if UNITY_IPHONE && !UNITY_EDITOR
@@ -73,7 +73,7 @@ namespace Heyzap {
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
         public static bool IsAvailable() {
             #if UNITY_ANDROID
-            return HZIncentivizedAdAndroid.IsAvailable(null);
+            return HZIncentivizedAdAndroid.IsAvailable();
             #elif UNITY_IPHONE && !UNITY_EDITOR
             return HZIncentivizedAdIOS.IsAvailable();
             #else
@@ -98,15 +98,11 @@ namespace Heyzap {
         }
 
         public void SetCallback(string message) {
-            string[] displayStateParams = message.Split(',');
-            HZIncentivizedAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]); 
+			if (HZIncentivizedAd.adDisplayListener != null) {
+				HZIncentivizedAd.adDisplayListener(message);
+			}
         }
         
-        protected static void SetCallbackStateAndTag(string state, string tag) {
-            if (HZIncentivizedAd.adDisplayListener != null) {
-                HZIncentivizedAd.adDisplayListener(state, tag);
-            }
-        }
         #endregion
     }
 
@@ -138,30 +134,30 @@ namespace Heyzap {
     #if UNITY_ANDROID
     public class HZIncentivizedAdAndroid : MonoBehaviour {
         
-        public static void ShowWithOptions(HZIncentivizedShowOptions showOptions) {
+        public static void Show() {
             if(Application.platform != RuntimePlatform.Android) return;
             
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showIncentivized", showOptions.Tag, showOptions.IncentivizedInfo); 
+                jc.CallStatic("showIncentivized"); 
             }
         }
         
-        public static void Fetch(string tag) {
+        public static void Fetch() {
             if(Application.platform != RuntimePlatform.Android) return;
             
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("fetchIncentivized", tag); 
+                jc.CallStatic("fetchIncentivized"); 
             }
         }
         
-        public static Boolean IsAvailable(string tag) {
+        public static Boolean IsAvailable() {
             if(Application.platform != RuntimePlatform.Android) return false;
             
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("isIncentivizedAvailable", tag);
+                return jc.CallStatic<Boolean>("isIncentivizedAvailable");
             }
         }
     }

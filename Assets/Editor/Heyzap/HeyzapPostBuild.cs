@@ -36,12 +36,14 @@ public class HeyzapPostBuild : MonoBehaviour
                         CreateNoWindow = true
                     }
                 };
-                
+
+                UnityEngine.Debug.Log(string.Format("Heyzap: starting HeyzapPostprocessBuildPlayer with args: {0}", args));
                 proc.Start();
                 proc.WaitForExit();
                 if (proc.ExitCode > 0) {
                     UnityEngine.Debug.LogError("Heyzap post-build script had an error(code=" + proc.ExitCode + "). See the editor log for more info & email a copy of it to support@heyzap.com for more help.");
                 }
+
                 UnityEngine.Debug.Log( "Heyzap: Finished post-build script." );
             }
         }

@@ -41,6 +41,8 @@ typedef enum {
     HZDebugLevelSilent = 0
 } HZDebugLevel;
 
+extern NSString *const kHZLogThirdPartyLoggingEnabledChangedNotification;
+
 /**
  *  A class Heyzap uses to log errors and information. You should only need to set the debugLevel 
  @see setDebugLevel
@@ -55,13 +57,31 @@ typedef enum {
 + (void) setDebugLevel: (HZDebugLevel) debugLevel;
 + (HZDebugLevel) debugLevel;
 
++ (void) debug: (NSString *) message;
 + (void) info: (NSString *) message;
 + (void) error: (NSString *) message;
-+ (void) debug: (NSString *) message;
++ (void) always: (NSString *) message;
++ (void) log: (NSString *) message atDebugLevel: (HZDebugLevel) debugLevel;
 
-#define HZILog(fmt, ...) [HZLog info:[NSString stringWithFormat:fmt,##__VA_ARGS__]];
-#define HZELog(fmt, ...) [HZLog error:[NSString stringWithFormat:fmt,##__VA_ARGS__]];
-#define HZDLog(fmt, ...) [HZLog debug:[NSString stringWithFormat:fmt,##__VA_ARGS__]];
+#define HZGenericLog(_debugLevel, fmt, ...) do { \
+if (_debugLevel <= [HZLog debugLevel]) { \
+[HZLog log:[NSString stringWithFormat:fmt,##__VA_ARGS__] atDebugLevel:_debugLevel]; \
+} \
+} while (0)
+
+
+#define HZDLog(fmt, ...) HZGenericLog(HZDebugLevelVerbose, fmt, ##__VA_ARGS__)
+#define HZILog(fmt, ...) HZGenericLog(HZDebugLevelInfo, fmt, ##__VA_ARGS__)
+#define HZELog(fmt, ...) HZGenericLog(HZDebugLevelError, fmt, ##__VA_ARGS__)
+#define HZAlwaysLog(fmt, ...) HZGenericLog(HZDebugLevelSilent, fmt, ##__VA_ARGS__)
+
+/**
+ *  If this is set to YES, Heyzap will attempt to enable logging on all mediated networks' SDKs, if possible.
+ *  Note that, depending on the implementation of each mediated SDK, this may or may not be effective after an SDK is initialized, so it is best to set this property before starting the Heyzap SDK.
+ *  Defaults to NO.
+ */
++ (BOOL) isThirdPartyLoggingEnabled;
++ (void) setThirdPartyLoggingEnabled:(BOOL)enabled;
 
 
 @end

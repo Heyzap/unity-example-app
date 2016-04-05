@@ -41,70 +41,105 @@ namespace Heyzap {
         private static HeyzapAds _instance = null;
         
         #region Flags for the call to HeyzapAds.StartWithOptions()
-        public static int FLAG_NO_OPTIONS = 0 << 0;
-        public static int FLAG_DISABLE_AUTOMATIC_FETCHING = 1 << 0;
-        public static int FLAG_INSTALL_TRACKING_ONLY = 1 << 1;
-        public static int AMAZON = 1 << 2;
-        public static int DISABLE_FIRST_AUTOMATIC_FETCH = 1 << 3;
-        public static int DISABLE_MEDIATION = 1 << 4;
+        /// <summary>
+        /// Use this flag to start the Heyzap SDK with no extra configuration options. This is the default behavior if no options are passed when the SDK is started.
+        /// </summary>
+        public const int FLAG_NO_OPTIONS = 0 << 0; // 0
+        /// <summary>
+        /// Use this flag to disable automatic prefetching of ads. You must call a `Fetch` method for every ad unit before a matching call to a `Show` method.
+        /// </summary>
+        public const int FLAG_DISABLE_AUTOMATIC_FETCHING = 1 << 0; // 1
+        /// <summary>
+        /// Use this flag to disable all advertising functionality of the Heyzap SDK. This should only be used if you're integrating the SDK solely as an install tracker.
+        /// </summary>
+        public const int FLAG_INSTALL_TRACKING_ONLY = 1 << 1; // 2
+        /// <summary>
+        /// (Android only) Use this flag to tell the Heyzap SDK that this app is being distributed on the Amazon App Store.
+        /// </summary>
+        public const int FLAG_AMAZON = 1 << 2; // 4
+        /// <summary>
+        /// Use this flag to disable the mediation features of the Heyzap SDK. Only Heyzap ads will be available.
+        /// You should set this flag if you are using Heyzap through another mediation tool to avoid potential conflicts.
+        /// </summary>
+        public const int FLAG_DISABLE_MEDIATION = 1 << 3; // 8
+        /// <summary>
+        /// (iOS only) Use this flag to stop the Heyzap SDK from automatically recording in-app purchases.
+        /// </summary>
+        public const int FLAG_DISABLE_AUTOMATIC_IAP_RECORDING = 1 << 4; // 16
+        /// <summary>
+        /// (Android only) Use this flag to disable all non-native ads & ad networks that don't support native ads.
+        /// </summary>
+        public const int FLAG_NATIVE_ADS_ONLY = 1 << 5; // 32
+        /// <summary>
+        /// Use this flag to to mark mediated ads as "child-directed". This value will be passed on to networks that support sending such an option (for purposes of the Children's Online Privacy Protection Act (COPPA)).
+        /// Currently, only AdMob uses this option's value. The AdMob setting will be left alone if this flag is not passed when the Heyzap SDK is started.
+        /// </summary>
+        public const int FLAG_CHILD_DIRECTED_ADS = 1 << 6; // 64
+
+        [Obsolete("Use FLAG_AMAZON instead - we refactored the flags to be consistently named.")]
+        public const int AMAZON = FLAG_AMAZON;
+        [Obsolete("Use FLAG_DISABLE_MEDIATION instead - we refactored the flags to be consistently named.")]
+        public const int DISABLE_MEDIATION = FLAG_DISABLE_MEDIATION;
         #endregion
 
-        #region String constants for internal use
         public const string DEFAULT_TAG = "default";
-
-        public class NetworkCallback {
-            public static string INITIALIZED = "initialized";
-            public static string SHOW = "show";
-            public static string AVAILABLE = "available";
-            public static string HIDE = "hide";
-            public static string FETCH_FAILED = "fetch_failed";
-            public static string CLICK = "click";
-            public static string DISMISS = "dismiss";
-            public static string INCENTIVIZED_RESULT_COMPLETE = "incentivized_result_complete";
-            public static string INCENTIVIZED_RESULT_INCOMPLETE = "incentivized_result_incomplete";
-            public static string AUDIO_STARTING = "audio_starting";
-            public static string AUDIO_FINISHED = "audio_finished";
+        
+        #region String constants to expect in network callbacks
+        public static class NetworkCallback {
+            public const string INITIALIZED = "initialized";
+            public const string SHOW = "show";
+            public const string AVAILABLE = "available";
+            public const string HIDE = "hide";
+            public const string FETCH_FAILED = "fetch_failed";
+            public const string CLICK = "click";
+            public const string DISMISS = "dismiss";
+            public const string INCENTIVIZED_RESULT_COMPLETE = "incentivized_result_complete";
+            public const string INCENTIVIZED_RESULT_INCOMPLETE = "incentivized_result_incomplete";
+            public const string AUDIO_STARTING = "audio_starting";
+            public const string AUDIO_FINISHED = "audio_finished";
 
             // currently sent in Android, but they were removed for iOS
-            public static string BANNER_LOADED = "banner-loaded";
-            public static string BANNER_CLICK = "banner-click";
-            public static string BANNER_HIDE = "banner-hide";
-            public static string BANNER_DISMISS = "banner-dismiss";
-            public static string BANNER_FETCH_FAILED = "banner-fetch_failed";
+            public const string BANNER_LOADED = "banner-loaded";
+            public const string BANNER_CLICK = "banner-click";
+            public const string BANNER_HIDE = "banner-hide";
+            public const string BANNER_DISMISS = "banner-dismiss";
+            public const string BANNER_FETCH_FAILED = "banner-fetch_failed";
 
-            public static string LEAVE_APPLICATION = "leave_application";
+            public const string LEAVE_APPLICATION = "leave_application";
 
             // Facebook Specific
-            public static string FACEBOOK_LOGGING_IMPRESSION = "logging_impression";
+            public const string FACEBOOK_LOGGING_IMPRESSION = "logging_impression";
 
             // Chartboost Specific
-            public static string CHARTBOOST_MOREAPPS_FETCH_FAILED = "moreapps-fetch_failed";
-            public static string CHARTBOOST_MOREAPPS_HIDE = "moreapps-hide";
-            public static string CHARTBOOST_MOREAPPS_DISMISS = "moreapps-dismiss";
-            public static string CHARTBOOST_MOREAPPS_CLICK = "moreapps-click";
-            public static string CHARTBOOST_MOREAPPS_SHOW = "moreapps-show";
-            public static string CHARTBOOST_MOREAPPS_AVAILABLE = "moreapps-available";
-            public static string CHARTBOOST_MOREAPPS_CLICK_FAILED = "moreapps-click_failed";
+            public const string CHARTBOOST_MOREAPPS_FETCH_FAILED = "moreapps-fetch_failed";
+            public const string CHARTBOOST_MOREAPPS_HIDE = "moreapps-hide";
+            public const string CHARTBOOST_MOREAPPS_DISMISS = "moreapps-dismiss";
+            public const string CHARTBOOST_MOREAPPS_CLICK = "moreapps-click";
+            public const string CHARTBOOST_MOREAPPS_SHOW = "moreapps-show";
+            public const string CHARTBOOST_MOREAPPS_AVAILABLE = "moreapps-available";
+            public const string CHARTBOOST_MOREAPPS_CLICK_FAILED = "moreapps-click_failed";
         }
         #endregion
 
         #region Network names
-        public class Network {
-            public static string HEYZAP = "heyzap";
-            public static string HEYZAP_CROSS_PROMO = "heyzap_cross_promo";
-            public static string HEYZAP_EXCHANGE = "heyzap_exchange";
-            public static string FACEBOOK = "facebook";
-            public static string UNITYADS = "unityads";
-            public static string APPLOVIN = "applovin";
-            public static string VUNGLE = "vungle";
-            public static string CHARTBOOST = "chartboost";
-            public static string ADCOLONY = "adcolony";
-            public static string ADMOB = "admob";
-            public static string IAD = "iad";
-            public static string LEADBOLT = "leadbolt";
+        public static class Network {
+            public const string HEYZAP = "heyzap";
+            public const string HEYZAP_CROSS_PROMO = "heyzap_cross_promo";
+            public const string HEYZAP_EXCHANGE = "heyzap_exchange";
+            public const string FACEBOOK = "facebook";
+            public const string UNITYADS = "unityads";
+            public const string APPLOVIN = "applovin";
+            public const string VUNGLE = "vungle";
+            public const string CHARTBOOST = "chartboost";
+            public const string ADCOLONY = "adcolony";
+            public const string ADMOB = "admob";
+            public const string IAD = "iad";
+            public const string LEADBOLT = "leadbolt";
+            public const string INMOBI = "inmobi";
         }
         #endregion
 
+        #region Public API
         /// <summary>
         /// Starts the Heyzap SDK. Call this method as soon as possible in your app to ensure Heyzap has time to initialize before you want to show an ad.
         /// </summary>
@@ -240,6 +275,33 @@ namespace Heyzap {
             #endif
         }
 
+        /// <summary>
+        /// (iOS only currently) Enables verbose debug logging for all the mediated SDKs we can.
+        /// You should call this method before starting the Heyzap SDK if you wish to enable these logs, since some SDK implementations only consider this parameter when initialized.
+        /// </summary>
+        public static void ShowThirdPartyDebugLogs() {
+            #if UNITY_ANDROID
+            #endif
+            
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HeyzapAdsIOS.ShowThirdPartyDebugLogs();
+            #endif
+        }
+
+        /// <summary>
+        /// (iOS only currently) Disables verbose debug logging for all the mediated SDKs we can.
+        /// Only some networks' logs will be turned off, since some SDK implementations only consider this parameter when initialized.
+        /// </summary>
+        public static void HideThirdPartyDebugLogs() {
+            #if UNITY_ANDROID
+            #endif
+            
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HeyzapAdsIOS.HideThirdPartyDebugLogs();
+            #endif
+        }
+        #endregion
+
         #region Internal methods
         public void SetNetworkCallbackMessage(string message) {
             string[] networkStateParams = message.Split(',');
@@ -352,6 +414,12 @@ namespace Heyzap {
         [DllImport ("__Internal")]
         private static extern void hz_ads_show_debug_logs();
 
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_hide_third_party_debug_logs();
+
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_show_third_party_debug_logs();
+
 
         public static void Start(string publisher_id, int options=0) {
             hz_ads_start_app(publisher_id, options);
@@ -387,6 +455,14 @@ namespace Heyzap {
         
         public static void HideDebugLogs() {
             hz_ads_hide_debug_logs();
+        }
+
+        public static void ShowThirdPartyDebugLogs() {
+            hz_ads_show_third_party_debug_logs();
+        }
+        
+        public static void HideThirdPartyDebugLogs() {
+            hz_ads_hide_third_party_debug_logs();
         }
     }
     #endif

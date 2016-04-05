@@ -543,6 +543,21 @@ class XCBuildConfiguration(PBXType):
     def remove_other_ldflags(self, flags):
         return self.remove_flag('OTHER_LD_FLAGS', flags)
 
+    # Set one option under buildSettings root, like CLANG_ENABLE_MODULES = YES; - added by monroe from https://github.com/kronenthaler/mod-pbxproj/pull/78
+    def add_other_buildsetting(self, flag, value):
+        modified = False
+        base = 'buildSettings'
+        key = flag
+
+        if not self.has_key(base):
+            self[base] = PBXDict()
+        if self[base].has_key(key):
+            if self[base][key] == value:
+                return False
+        self[base][key] = value
+        modified = True
+        return modified
+
 class XCConfigurationList(PBXType):
     pass
 
@@ -631,6 +646,14 @@ class XcodeProject(PBXDict):
             for k in pairs:
                 if b.add_flag(k, pairs[k]):
                     self.modified = True
+
+    # Set one option under buildSettings root, like CLANG_ENABLE_MODULES = YES; - added by monroe from https://github.com/kronenthaler/mod-pbxproj/pull/78
+    def add_other_buildsetting(self, flag, value):
+        build_configs = [b for b in self.objects.values() if b.get('isa') == 'XCBuildConfiguration']
+
+        for b in build_configs:
+            if b.add_other_buildsetting(flag, value):
+                self.modified = True
 
     def remove_flags(self, pairs, configuration='All'):
         build_configs = [b for b in self.objects.values() if b.get('isa') == 'XCBuildConfiguration']

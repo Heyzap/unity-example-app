@@ -91,7 +91,7 @@ namespace Heyzap {
             #if !UNITY_EDITOR
 
             #if UNITY_ANDROID
-            HeyzapAdsAndroid.Start(appID, securityToken, options);
+			HeyzapAdsAndroid.Start(appID, options);
             #endif
 
             #if UNITY_IPHONE
@@ -101,6 +101,7 @@ namespace Heyzap {
             HeyzapAds.InitReceiver();
             HZInterstitialAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
+            HZBannerAd.InitReceiver();
 
             #endif
         }
@@ -139,12 +140,12 @@ namespace Heyzap {
 
     #if UNITY_ANDROID
     public class HeyzapAdsAndroid : MonoBehaviour {
-        public static void Start(string appId, string securityToken, int options=0) {
+        public static void Start(string publisher_id, int options=0) {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("start", appId, securityToken, options);
+                jc.CallStatic("start", publisher_id, options);
             }
         }
 

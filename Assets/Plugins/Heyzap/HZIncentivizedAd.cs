@@ -98,11 +98,14 @@ namespace Heyzap {
         }
 
         public void SetCallback(string message) {
-			if (HZIncentivizedAd.adDisplayListener != null) {
-				HZIncentivizedAd.adDisplayListener(message);
-			}
+			HZIncentivizedAd.SetCallbackState(message); 
         }
         
+        protected static void SetCallbackState(string state) {
+            if (HZIncentivizedAd.adDisplayListener != null) {
+                HZIncentivizedAd.adDisplayListener(state);
+            }
+        }
         #endregion
     }
 
@@ -134,14 +137,15 @@ namespace Heyzap {
     #if UNITY_ANDROID
     public class HZIncentivizedAdAndroid : MonoBehaviour {
         
-        public static void Show() {
-            if(Application.platform != RuntimePlatform.Android) return;
-            
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showIncentivized"); 
-            }
-        }
+		public static void Show() {
+			if(Application.platform != RuntimePlatform.Android) return;
+
+			AndroidJNIHelper.debug = false;
+			using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+				jc.CallStatic("showIncentivized"); 
+			}
+		}
+
         
         public static void Fetch() {
             if(Application.platform != RuntimePlatform.Android) return;

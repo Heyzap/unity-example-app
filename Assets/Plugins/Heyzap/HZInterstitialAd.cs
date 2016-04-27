@@ -97,9 +97,7 @@ namespace Heyzap {
         }
 
         public void SetCallback(string message) {
-			if (HZInterstitialAd.adDisplayListener != null) {
-				HZInterstitialAd.adDisplayListener(message);
-			}
+			HZInterstitialAd.adDisplayListener(message);
         }
 
         #endregion
@@ -131,15 +129,16 @@ namespace Heyzap {
 
     #if UNITY_ANDROID
     public class HZInterstitialAdAndroid {
-
+     
 		public static void Show() {
-            if(Application.platform != RuntimePlatform.Android) return;
+		if(Application.platform != RuntimePlatform.Android) return;
 
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showInterstitial"); 
-            }
-        }
+			AndroidJNIHelper.debug = false;
+			using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+				jc.CallStatic("showInterstitial"); 
+			}
+		}
+
 
         public static void Fetch() {
             if(Application.platform != RuntimePlatform.Android) return;
@@ -158,7 +157,6 @@ namespace Heyzap {
                 return jc.CallStatic<Boolean>("isInterstitialAvailable");
             }
         }
-
     }
     #endif
     #endregion

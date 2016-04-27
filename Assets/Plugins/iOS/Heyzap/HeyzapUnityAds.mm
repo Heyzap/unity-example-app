@@ -28,6 +28,7 @@
 #import "HeyzapAds.h"
 #import "HZInterstitialAd.h"
 #import "HZIncentivizedAd.h"
+#import "HZBannerAdController.h"
 
 extern void UnitySendMessage(const char *, const char *, const char *);
 
@@ -35,13 +36,30 @@ extern void UnitySendMessage(const char *, const char *, const char *);
 
 #define HZ_INTERSTITIAL_KLASS @"HZInterstitialAd"
 #define HZ_INCENTIVIZED_KLASS @"HZIncentivizedAd"
+#define HZ_BANNER_KLASS @"HZBannerAd" // No longer the class name, unsure if it needs to stay the same for backwards compat?
 
-@interface HeyzapUnityAdDelegate : NSObject<HZAdsDelegate,HZIncentivizedAdDelegate>
+@interface HeyzapUnityAdDelegate : NSObject<HZAdsDelegate, HZIncentivizedAdDelegate, HZBannerAdDelegate>
 
 @property (nonatomic, strong) NSString *klassName;
 
 - (id) initWithKlassName: (NSString *) klassName;
 - (void) sendMessageForKlass: (NSString *) klass withMessage: (NSString *) message andTag: (NSString *) tag;
+
+extern "C" {
+    void hz_ads_start_app(const char *appID, const char *securityToken, HZAdOptions flags);
+    
+    void hz_ads_show_interstitial(void);
+    void hz_ads_fetch_interstitial(void);
+    bool hz_ads_interstitial_is_available(void);
+    
+    void hz_ads_show_incentivized(void);
+    void hz_ads_fetch_incentivized(void);
+    bool hz_ads_incentivized_is_available(void);
+    
+    void hz_ads_show_banner(const char *position);
+    void hz_ads_hide_banner(void);
+    void hz_ads_destroy_banner(void);
+}
 
 @end
 
@@ -74,9 +92,20 @@ extern void UnitySendMessage(const char *, const char *, const char *);
 
 - (void) didFinishAudio { [self sendMessageForKlass: self.klassName withMessage:  @"audio_finished" andTag:  @""]; }
 
+- (void)bannerDidReceiveAd:(HZBannerAdController *)banner {
+    [self sendMessageForKlass:self.klassName withMessage:@"loaded" andTag:@""];
+}
+
+- (void)bannerDidFailToReceiveAd:(HZBannerAdController *)banner error:(NSError *)error {
+    [self sendMessageForKlass:self.klassName withMessage:@"error" andTag:@""];
+}
+
+- (void)bannerWasClicked:(HZBannerAdController *)banner {
+    [self sendMessageForKlass:self.klassName withMessage:@"click" andTag:@""];
+}
+
 - (void) sendMessageForKlass: (NSString *) klass withMessage: (NSString *) message andTag: (NSString *) tag {
-    NSString *unityMessage = [NSString stringWithFormat: @"%@,%@", message, tag];
-    UnitySendMessage([klass UTF8String], "SetCallback", [unityMessage UTF8String]);
+    UnitySendMessage([klass UTF8String], "SetCallback", [message UTF8String]);
 }
 
 @end
@@ -100,6 +129,8 @@ extern "C" {
             HZInterstitialDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName: HZ_INTERSTITIAL_KLASS];
             [HZInterstitialAd setDelegate: HZInterstitialDelegate];
             
+            HZBannerDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName: HZ_BANNER_KLASS];
+            [[HZBannerAdController sharedInstance] setDelegate:HZBannerDelegate];
         });
     }
     
@@ -125,6 +156,33 @@ extern "C" {
     
     bool hz_ads_incentivized_is_available(void) {
         return [HZIncentivizedAd isAvailable];
+    }
+    
+    void hz_ads_show_banner(const char *position) {
+        // After the banner is loaded initially, this function doubles as a way to un-hide the banner.
+        if ([HZBannerAdController sharedInstance].bannerView) {
+            [HZBannerAdController sharedInstance].bannerView.hidden = NO;
+            return;
+        }
+        
+        
+        HZBannerPosition pos = HZBannerPositionBottom;
+        NSString *positionStr = [NSString stringWithUTF8String: position];
+        if ([positionStr isEqualToString: @"top"]) {
+            pos = HZBannerPositionTop;
+        }
+        
+        [[HZBannerAdController sharedInstance] placeBannerAtPosition:pos
+                                                             options:nil
+                                                             success:nil
+                                                             failure:nil];
+    }
+    void hz_ads_hide_banner(void) {
+        [HZBannerAdController sharedInstance].bannerView.hidden = YES;
+    }
+    
+    void hz_ads_destroy_banner(void) {
+        [[HZBannerAdController sharedInstance] destroyBanner];
     }
     
 }

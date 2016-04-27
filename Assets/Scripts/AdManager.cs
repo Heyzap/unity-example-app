@@ -25,9 +25,13 @@ public class AdManager : MonoBehaviour {
     [SerializeField]
     private ScrollingTextArea console;
 
+    [SerializeField]
+    private Dropdown bannerPositionDropdown;
+
     private enum AdType {
         Interstitial,
-        Incentivized
+        Incentivized,
+        Banner
     }
 
     private AdType _selectedAdType;
@@ -94,15 +98,27 @@ public class AdManager : MonoBehaviour {
         int options = this.autofetchToggle.isOn ? HeyzapAds.FLAG_NO_OPTIONS : HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING;
         HeyzapAds.Start(appID, token, options); 
 
-		HZInterstitialAd.SetDisplayListener(delegate(string adState) {
-			this.console.Append("INTERSTITIAL: " + adState);
-		});
-
-		HZIncentivizedAd.SetDisplayListener(delegate(string adState) {
-			this.console.Append("INCENTIVIZED: " + adState);
-		});
-
         this.preStartControls.SetActive(false);
+
+//        HeyzapAds.Start("22051", "token", HeyzapAds.FLAG_NO_OPTIONS);
+
+        HZInterstitialAd.SetDisplayListener(delegate(string adState) {
+            this.console.Append("INTERSTITIAL: " + adState);
+        });
+
+        HZIncentivizedAd.SetDisplayListener(delegate(string adState) {
+            this.console.Append("INCENTIVIZED: " + adState);
+        });
+
+        HZBannerAd.SetDisplayListener(delegate(string adState) {
+            this.console.Append("BANNER: " + adState);
+        });
+
+//        this.bannerControls.SetActive(false);
+//        this.nonBannerControls.SetActive(true);
+
+        // UI defaults
+        this.SelectedAdType = AdType.Interstitial;
     }
 
     public void InterstitialSelected(bool selected) {
@@ -125,8 +141,31 @@ public class AdManager : MonoBehaviour {
 
     public void BannerSelected(bool selected) {
         if (selected) {
-            
+            this.SelectedAdType = AdType.Banner;
         }
+    }
+
+    public void DestroyBanner() {
+        this.console.Append("Destroying Banner");
+        HZBannerAd.Destroy();
+
+    }
+
+    public void HideBanner() {
+        this.console.Append("Destroying Banner");
+        HZBannerAd.Hide();
+    }
+
+    public void ShowBanner() {
+        this.console.Append("Showing Banner");
+        HZBannerShowOptions showOptions = new HZBannerShowOptions();
+        if (this.bannerPositionDropdown.value == 0) {
+            showOptions.Position = HZBannerShowOptions.POSITION_TOP;
+        } else {
+            showOptions.Position = HZBannerShowOptions.POSITION_BOTTOM;
+        }
+
+        HZBannerAd.ShowWithOptions(showOptions);
     }
 
     public void IsAvailableButton() {
@@ -139,6 +178,9 @@ public class AdManager : MonoBehaviour {
         case AdType.Incentivized:
             available = HZIncentivizedAd.IsAvailable();
             break;
+        case AdType.Banner:
+            // Should never happen b/c "Available?" should be hidden when banners is selected
+            return;
         }
 
         string availabilityMessage = available ? "available" : "not available";
@@ -155,6 +197,9 @@ public class AdManager : MonoBehaviour {
             case AdType.Incentivized:
                 HZIncentivizedAd.Show();
                 break;
+            case AdType.Banner:
+                // Should never happen b/c "Show?" should be hidden when banners is selected
+                return;
         }
     }
 
@@ -167,6 +212,10 @@ public class AdManager : MonoBehaviour {
             case AdType.Incentivized:
                 HZIncentivizedAd.Fetch();
                 break;
+            case AdType.Banner:
+                // Should never happen b/c "Available?" should be hidden when banners is selected
+                return;
+    
         }
     }
 
@@ -200,7 +249,13 @@ public class AdManager : MonoBehaviour {
     }
 
     private void ShowAdTypeControls() {
-        
+        if (this.SelectedAdType == AdType.Banner) {
+            this.bannerControls.SetActive(true);
+            this.nonBannerControls.SetActive(false);
+        } else {
+            this.bannerControls.SetActive(false);
+            this.nonBannerControls.SetActive(true);
+        }
     }
 
     private string adTag() {

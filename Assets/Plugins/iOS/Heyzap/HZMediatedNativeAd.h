@@ -17,6 +17,8 @@ typedef NS_ENUM(NSUInteger, HZMediatedNativeAdType) {
     HZMediatedNativeAdTypeAdMobAppInstall,
     HZMediatedNativeAdTypeHeyzap,
     HZMediatedNativeAdTypeHeyzapCrossPromo,
+    HZMediatedNativeAdTypeInMobi,
+    HZMediatedNativeAdTypeAppLovin,
 };
 
 /**

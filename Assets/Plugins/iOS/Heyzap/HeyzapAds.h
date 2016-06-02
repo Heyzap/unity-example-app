@@ -43,6 +43,11 @@
 #import "HZNativeAd.h"
 #import "HZNativeAdImage.h"
 
+#import "HZMediatedNativeAd.h"
+#import "HZMediatedNativeAdManager.h"
+#import "HZMediatedNativeAdViewRegisterer.h"
+
+#import "HZFetchOptions.h"
 #import "HZShowOptions.h"
 #import "HZBannerAd.h"
 #import "HZBannerAdOptions.h"
@@ -52,7 +57,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.4.4"
+#define SDK_VERSION @"9.5.7"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -122,6 +127,7 @@ extern NSString * const HZNetworkIAd;
 extern NSString * const HZNetworkHyprMX;
 extern NSString * const HZNetworkHeyzapExchange;
 extern NSString * const HZNetworkLeadbolt;
+extern NSString * const HZNetworkInMobi;
 
 // General Network Callbacks
 extern NSString * const HZNetworkCallbackInitialized;

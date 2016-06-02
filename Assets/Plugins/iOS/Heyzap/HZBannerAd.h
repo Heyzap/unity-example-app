@@ -39,12 +39,6 @@ extern NSString * const kHZBannerAdDidDismissModalViewNotification;
 extern NSString * const kHZBannerAdWillLeaveApplicationNotification;
 
 
-/**
- *  The error causing the banner to not load an ad. This key is only available for the `kHZBannerAdDidFailToReceiveAdNotification` notification.
- *  @deprecated Use `NSUnderlyingErrorKey` instead.
- */
-extern NSString * const kHZBannerAdNotificationErrorKey DEPRECATED_ATTRIBUTE;
-
 @class HZBannerAd;
 
 @protocol HZBannerAdDelegate <NSObject>
@@ -55,7 +49,7 @@ extern NSString * const kHZBannerAdNotificationErrorKey DEPRECATED_ATTRIBUTE;
 #pragma mark - Ad Request Notifications
 
 /**
- *  Called when the banner ad is loaded.
+ *  Called when the banner ad loads or refreshes itself.
  */
 - (void)bannerDidReceiveAd:(HZBannerAd *)banner;
 

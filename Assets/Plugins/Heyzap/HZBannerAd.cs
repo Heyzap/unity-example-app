@@ -36,7 +36,7 @@ namespace Heyzap {
     /// Use this class to show banner ads.
     /// </summary>
     public class HZBannerAd : MonoBehaviour {
-        public delegate void AdDisplayListener(string state);
+		public delegate void AdDisplayListener(string state, string tag);
         
         private static AdDisplayListener adDisplayListener;
         private static HZBannerAd _instance = null;
@@ -115,7 +115,7 @@ namespace Heyzap {
         
         public void SetCallback(string message) {
             if (HZBannerAd.adDisplayListener != null) {
-				HZBannerAd.adDisplayListener(message);
+				HZBannerAd.adDisplayListener(message, HeyzapAds.DEFAULT_TAG);
 			}
         }
         

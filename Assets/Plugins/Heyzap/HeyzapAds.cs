@@ -74,6 +74,8 @@ namespace Heyzap {
         /// </summary>
         public const int FLAG_CHILD_DIRECTED_ADS = 1 << 6; // 64
 
+		public const string DEFAULT_TAG = "default";
+
         [Obsolete("Use FLAG_AMAZON instead - we refactored the flags to be consistently named.")]
         public const int AMAZON = FLAG_AMAZON;
         [Obsolete("Use FLAG_DISABLE_MEDIATION instead - we refactored the flags to be consistently named.")]
@@ -87,19 +89,20 @@ namespace Heyzap {
         /// <param name="appID"> Your Fyber App ID. See the transition docs or the Fyber Dashboard for this value.</param>
         /// <param name="securityToken"> Your Fyber Security Token. See the transition docs or the Fyber Dashboard for this value.</param>
         /// <param name="options">A bitmask of options you can pass to this call to change the way Heyzap will work.</param>
-        public static void Start(string appID, string securityToken, int options) {
+        public static void Start(string publisherId, int options) {
             #if !UNITY_EDITOR
 
             #if UNITY_ANDROID
-			HeyzapAdsAndroid.Start(appID, options);
+            HeyzapAdsAndroid.Start(publisherId, options);
             #endif
 
             #if UNITY_IPHONE
-            HeyzapAdsIOS.Start(appID, securityToken, options);
+            HeyzapAdsIOS.Start(publisherId, options);
             #endif
 
             HeyzapAds.InitReceiver();
             HZInterstitialAd.InitReceiver();
+            HZVideoAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
             HZBannerAd.InitReceiver();
 
@@ -128,10 +131,10 @@ namespace Heyzap {
     public class HeyzapAdsIOS : MonoBehaviour {
 
         [DllImport ("__Internal")]
-        private static extern void hz_ads_start_app(string appID, string securityToken, int flags);
+        private static extern void hz_ads_start_app(string publisherId, int flags);
 
-        public static void Start(string appID, string securityToken, int options=0) {
-            hz_ads_start_app(appID, securityToken, options);
+        public static void Start(string publisherId, int options=0) {
+            hz_ads_start_app(publisherId, options);
         }
 
 

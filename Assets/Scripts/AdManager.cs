@@ -83,8 +83,8 @@ public class AdManager : MonoBehaviour {
         string appID = this.appIDInputField.text;
         string token = this.tokenInputField.text;
 
-        if (appID.Equals("") || token.Equals("")) {
-			this.console.Append("A valid app ID and token must be provided");
+        if (appID.Equals("")) {
+			this.console.Append("A valid publisher id must be provided");
 			return;
         }
 
@@ -96,21 +96,21 @@ public class AdManager : MonoBehaviour {
         this.console.Append("Starting SDK");
 
         int options = this.autofetchToggle.isOn ? HeyzapAds.FLAG_NO_OPTIONS : HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING;
-        HeyzapAds.Start(appID, token, options); 
+		HeyzapAds.Start(appID, options); 
 
         this.preStartControls.SetActive(false);
 
 //        HeyzapAds.Start("22051", "token", HeyzapAds.FLAG_NO_OPTIONS);
 
-        HZInterstitialAd.SetDisplayListener(delegate(string adState) {
+		HZInterstitialAd.SetDisplayListener(delegate(string adState, string tag) {
             this.console.Append("INTERSTITIAL: " + adState);
         });
 
-        HZIncentivizedAd.SetDisplayListener(delegate(string adState) {
+		HZIncentivizedAd.SetDisplayListener(delegate(string adState, string tag) {
             this.console.Append("INCENTIVIZED: " + adState);
         });
 
-        HZBannerAd.SetDisplayListener(delegate(string adState) {
+		HZBannerAd.SetDisplayListener(delegate(string adState, string tag) {
             this.console.Append("BANNER: " + adState);
         });
 

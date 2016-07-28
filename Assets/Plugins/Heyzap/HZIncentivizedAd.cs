@@ -36,9 +36,16 @@ namespace Heyzap {
     /// </summary>
     public class HZIncentivizedAd : MonoBehaviour {
         
-        public delegate void AdDisplayListener(string state);
+        public delegate void AdDisplayListener(string state, string tag);
         private static AdDisplayListener adDisplayListener;
         private static HZIncentivizedAd _instance = null;
+
+        /// <summary>
+        /// Fetches an ad
+        /// </summary>
+        public static void Fetch(string tag) {
+          Fetch();
+        }
 
         /// <summary>
         /// Fetches an ad
@@ -52,6 +59,12 @@ namespace Heyzap {
             #if UNITY_IPHONE && !UNITY_EDITOR
             HZIncentivizedAdIOS.Fetch();
             #endif
+        }
+        /// <summary>
+        /// Shows an ad
+        /// </summary>
+        public static void Show(string tag){
+            Show();
         }
             
         /// <summary>
@@ -67,6 +80,14 @@ namespace Heyzap {
             #endif
         }
             
+        /// <summary>
+        /// Returns whether or not an ad is available
+        /// </summary>
+        /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
+        public static bool IsAvailable(string tag) {
+            return IsAvailable();
+        }
+
         /// <summary>
         /// Returns whether or not an ad is available
         /// </summary>
@@ -103,7 +124,7 @@ namespace Heyzap {
         
         protected static void SetCallbackState(string state) {
             if (HZIncentivizedAd.adDisplayListener != null) {
-                HZIncentivizedAd.adDisplayListener(state);
+			HZIncentivizedAd.adDisplayListener(state, HeyzapAds.DEFAULT_TAG);
             }
         }
         #endregion

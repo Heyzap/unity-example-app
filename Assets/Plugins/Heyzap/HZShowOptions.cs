@@ -7,8 +7,26 @@ namespace Heyzap {
     /// </summary>
     public class HZShowOptions {
 
+        /// <summary>
+        /// An identifier for the location of the ad, which you can use to disable the ad from your dashboard. If not specified the tag
+        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
+        /// </summary>
+        /// <value>The tag.</value>
+        public string Tag {
+            get {
+                return tag;
+            }
+            set {
+                if (value != null) {
+                    tag = value;
+                } else {
+                    tag = HeyzapAds.DEFAULT_TAG;
+                }
+            }
+        }
+        private string tag = HeyzapAds.DEFAULT_TAG;     
     }
-    
+
     /// <summary>
     /// A set of options that describes how to show a banner ad.
     /// </summary>

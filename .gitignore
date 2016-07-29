@@ -12,3 +12,5 @@
 *.pyc*
 Builds/
 *.userprefs
+
+stars.apk*

@@ -17,7 +17,7 @@ public class AdManager : MonoBehaviour {
 
     private enum AdType {
         Interstitial,
-        Video,
+        // Video,
         Incentivized,
         Banner
     }
@@ -42,11 +42,11 @@ public class AdManager : MonoBehaviour {
     }
 
     void Start () {
-        HeyzapAds.NetworkCallbackListener networkCallbackListner = delegate(string network, string callback) {
-            this.console.Append("[" + network + "]: " + callback);
-        };
+        // HeyzapAds.NetworkCallbackListener networkCallbackListner = delegate(string network, string callback) {
+        //     this.console.Append("[" + network + "]: " + callback);
+        // };
 
-        HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
+        // HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
         HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {
@@ -66,9 +66,9 @@ public class AdManager : MonoBehaviour {
             this.console.Append("INCENTIVIZED: " + adState + " Tag : " + adTag);
         });
 
-        HZVideoAd.SetDisplayListener(delegate(string adState, string adTag) {
-            this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
-        });
+        // HZVideoAd.SetDisplayListener(delegate(string adState, string adTag) {
+        //     this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
+        // });
 
         this.bannerControls.SetActive(false);
         this.nonBannerControls.SetActive(true);
@@ -76,7 +76,7 @@ public class AdManager : MonoBehaviour {
         // UI defaults
         this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
         this.SelectedAdType = AdType.Interstitial;
-        HeyzapAds.HideDebugLogs();
+        HeyzapAds.HideDebugLogs(); // no-op
     }
 
     public void InterstitialSelected(bool selected) {
@@ -85,11 +85,11 @@ public class AdManager : MonoBehaviour {
         }
     }
 
-    public void VideoSelected(bool selected) {
-        if (selected) {
-            this.SelectedAdType = AdType.Video;
-        }
-    }
+    // public void VideoSelected(bool selected) {
+    //     if (selected) {
+    //         this.SelectedAdType = AdType.Video;
+    //     }
+    // }
 
     public void IncentivizedSelected(bool selected) {
         if (selected) {
@@ -111,11 +111,11 @@ public class AdManager : MonoBehaviour {
         case AdType.Interstitial:
             available = HZInterstitialAd.IsAvailable(tag);
             break;
-        case AdType.Video:
-            available = HZVideoAd.IsAvailable(tag);
-            break;
+        // case AdType.Video:
+        //     available = HZVideoAd.IsAvailable(tag);
+        //     break;
         case AdType.Incentivized:
-            available = HZVideoAd.IsAvailable(tag);
+            available = HZIncentivizedAd.IsAvailable(tag);
             break;
         case AdType.Banner:
             // Not applicable
@@ -134,7 +134,7 @@ public class AdManager : MonoBehaviour {
 
         HZIncentivizedShowOptions incentivizedOptions = new HZIncentivizedShowOptions();
         incentivizedOptions.Tag = tag;
-        incentivizedOptions.IncentivizedInfo = "test app incentivized info!";
+        // incentivizedOptions.IncentivizedInfo = "test app incentivized info!";
 
         HZBannerShowOptions bannerOptions = new HZBannerShowOptions();
         bannerOptions.Tag = tag;
@@ -145,9 +145,9 @@ public class AdManager : MonoBehaviour {
             case AdType.Interstitial:
                 HZInterstitialAd.ShowWithOptions(showOptions);
                 break;
-            case AdType.Video:
-                HZVideoAd.ShowWithOptions(showOptions);
-                break;
+            // case AdType.Video:
+            //     HZVideoAd.ShowWithOptions(showOptions);
+            //     break;
             case AdType.Incentivized:
                 HZIncentivizedAd.ShowWithOptions(incentivizedOptions);
                 break;
@@ -164,9 +164,9 @@ public class AdManager : MonoBehaviour {
             case AdType.Interstitial:
                 HZInterstitialAd.Fetch(tag);
                 break;
-            case AdType.Video:
-                HZVideoAd.Fetch(tag);
-                break;
+            // case AdType.Video:
+            //     HZVideoAd.Fetch(tag);
+            //     break;
             case AdType.Incentivized:
                 HZIncentivizedAd.Fetch(tag);
                 break;
@@ -187,9 +187,9 @@ public class AdManager : MonoBehaviour {
         }
     }
 
-    public void RemoteDataButton() {
-        this.console.Append("Remote data: " + HeyzapAds.GetRemoteData());
-    }
+    // public void RemoteDataButton() {
+    //     this.console.Append("Remote data: " + HeyzapAds.GetRemoteData());
+    // }
 
     public void DebugLogSwitch(bool on) {
         if (on) {

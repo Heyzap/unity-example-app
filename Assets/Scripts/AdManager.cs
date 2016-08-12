@@ -47,6 +47,16 @@ public class AdManager : MonoBehaviour {
         // };
 
         // HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
+
+        #if UNITY_ANDROID
+        if(Application.platform == RuntimePlatform.Android){
+            AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("forceTestDevice");
+            }
+        }
+        #endif
+
         HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {

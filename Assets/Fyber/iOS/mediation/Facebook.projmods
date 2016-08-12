@@ -1,0 +1,44 @@
+{
+ "version": "4.10.1-r4",
+  "group": "Mediation/Facebook",
+  "patches": [],
+    "libs": [
+    "Fyber/iOS/mediation/Facebook/Fyber_FacebookAudienceNetwork_4.10.1-r4.embeddedframework/Fyber_FacebookAudienceNetwork_4.10.1-r4.framework:<group>",
+    ],
+  "librarysearchpaths": [],
+  "frameworks": [
+    "AdSupport.framework",
+    "CoreMotion.framework",
+    "StoreKit.framework",
+    "Foundation.framework",
+    "UIKit.framework"
+  ],
+    "frameworksearchpaths": [
+    "Fyber/iOS/mediation/Facebook/Fyber_FacebookAudienceNetwork_4.10.1-r4.embeddedframework/"
+    ],
+  "headerpaths": [
+  ],
+  "files": [
+  ],
+  "folders": [],
+  "excludes": [],
+  "linkers": [],
+  "plist": [
+    "<plist>
+      <key>name</key>
+      <string>FacebookAudienceNetwork</string>
+      <key>settings</key>
+      <dict>
+        <!-- Uncomment this section if you want to override the server side configuration properties
+        <key>SPFacebookInterstitialPlacementId</key>
+        <string></string>
+        <key>SPFacebookBannerPlacementId</key>
+        <string></string>
+        <key>SPFacebookTestDevices</key>
+        <array>
+          <string></string>
+        </array>
+        -->
+      </dict>
+    </plist>"]
+}

@@ -1,0 +1,43 @@
+{
+  "version": "1.5.5-r2",
+  "group": "Mediation/UnityAds",
+  "patches": [],
+  "libs": [
+    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_1.5.5-r2.embeddedframework/Fyber_UnityAds_1.5.5-r2.framework:<group>",
+  ],
+  "librarysearchpaths": [],
+  "frameworks": [
+    "AdSupport.framework:weak",
+    "AVFoundation.framework",
+    "CoreMedia.framework",
+    "CoreTelephony.framework",
+    "StoreKit.framework:weak",
+    "SystemConfiguration.framework"
+  ],
+  "frameworksearchpaths": [
+    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_1.5.5-r2.embeddedframework/"
+  ],
+  "headerpaths": [],
+  "files": [],
+  "folders": [
+    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_1.5.5-r2.embeddedframework/Resources"
+  ],	
+  "excludes": [],
+  "linkers": [],
+  "plist": [
+    "<plist>
+      <key>name</key>
+			<string>Applifier</string>
+			<key>settings</key>
+			<dict>
+        <!-- Uncomment this section if you want to override the server side configuration properties
+				<key>SPUnityAdsGameId</key>
+				<string></string>
+				<key>SPUnityAdsRewardedVideoZoneId</key>
+				<string></string>
+        <key>SPUnityAdsInterstitialZoneId</key>
+        <string></string>
+        -->
+			</dict>
+    </plist>"]
+}

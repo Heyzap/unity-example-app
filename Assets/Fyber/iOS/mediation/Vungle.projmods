@@ -1,0 +1,63 @@
+{
+  "version": "3.2.1-r1",
+  "group": "Mediation/Vungle",
+  "patches": [],
+  "libs": [
+    "libz.dylib",
+    "libsqlite3.dylib"
+    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_3.2.1-r1.embeddedframework/Fyber_Vungle_3.2.1-r1.framework:<group>"
+  ],
+  "librarysearchpaths":[],
+  "frameworks": [
+    "AdSupport.framework:weak",
+    "AudioToolbox.framework",
+    "AVFoundation.framework",
+    "CFNetwork.framework",
+    "CoreGraphics.framework",
+    "CoreMedia.framework",
+    "Foundation.framework",
+    "MediaPlayer.framework",
+    "QuartzCore.framework",
+    "StoreKit.framework:weak",
+    "SystemConfiguration.framework",
+    "UIKit.framework",
+    "CoreLocation.framework",
+    "WebKit.framework"
+  ],
+  "frameworksearchpaths": [
+    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_3.2.1-r1.embeddedframework/"
+  ],
+  "headerpaths": [],
+  "files": [],
+  "folders": [
+    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_3.2.1-r1.embeddedframework/Resources"
+  ],	
+  "excludes": [],
+  "linkers": [
+    "-all_load",
+    "-ObjC"],
+  "plist": [
+    "<plist>
+      <key>name</key>
+      <string>Vungle</string>
+      <key>settings</key>
+      <dict>
+        <!-- Uncomment this section if you want to override the server side configuration properties
+        <key>SPVungleAppId</key>
+        <string></string>
+        <key>SPVungleOrientation</key>
+        <string>all</string>
+        <key>SPVungleIncentivized</key>
+        <string>NO</string>
+        <key>SPVungleIncentivizedAlertTitleText</key>
+        <string>Are you sure you want to skip this ad?</string>
+        <key>SPVungleIncentivizedAlertBodyText</key>
+        <string>If you do, you might not get your reward!</string>
+        <key>SPVungleIncentivizedAlertCloseButtonText</key>
+        <string>Close</string>
+        <key>SPVungleIncentivizedAlertContinueButtonText</key>
+        <string>Continue</string>
+        -->
+      </dict>
+    </plist>"]
+}

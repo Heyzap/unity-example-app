@@ -1,0 +1,51 @@
+{
+  "version": "4.1.0.68-r1",
+  "group": "Mediation/HyprMX",
+  "patches": [],
+  "libs": [
+    "Fyber/iOS/mediation/HyprMX/Fyber_HyprMX_4.1.0.68-r1.embeddedframework/Fyber_HyprMX_4.1.0.68-r1.framework:<group>",
+  ],
+  "librarysearchpaths": [],
+  "frameworks": [
+    "Accelerate.framework",
+    "AdSupport.framework",
+    "AVFoundation.framework",
+    "CoreGraphics.framework",
+    "CoreLocation.framework",
+    "CoreMedia.framework",
+    "Foundation.framework",
+    "MessageUI.framework",
+    "MobileCoreServices.framework",
+    "QuartzCore.framework",
+    "SystemConfiguration.framework",
+    "UIKit.framework",
+    "StoreKit.framework",
+    "MediaPlayer.framework"
+  ],
+  "frameworksearchpaths": [
+    "Fyber/iOS/mediation/HyprMX/Fyber_HyprMX_4.1.0.68-r1.embeddedframework/"
+  ],
+  "headerpaths": [],
+  "files": [],
+  "folders": [
+    "Fyber/iOS/mediation/HyprMX/Fyber_HyprMX_4.1.0.68-r1.embeddedframework/Resources"
+  ],	
+  "excludes": [],
+  "linkers": [
+    "-ObjC"
+  ],
+  "plist": [
+    "<plist>
+      <key>name</key>
+      <string>HyprMx</string>
+      <key>settings</key>
+      <dict>
+        <!-- Uncomment this section if you want to override the server side configuration properties
+        <key>SPHyprMXDistributorID</key>
+        <string></string>
+        <key>SPHyprMXPropertyID</key>
+        <string></string>
+        -->
+      </dict>
+    </plist>"]
+}

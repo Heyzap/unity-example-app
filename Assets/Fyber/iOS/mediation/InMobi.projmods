@@ -1,0 +1,54 @@
+{
+  "version": "5.2.0-r3",
+  "group": "Mediation/InMobi",
+  "patches": [],
+  "libs": [    
+    "libsqlite3.0.dylib",
+    "libz.dylib",
+    "Fyber/iOS/mediation/InMobi/Fyber_InMobi_5.2.0-r3.embeddedframework/Fyber_InMobi_5.2.0-r3.framework:<group>"
+  ],
+  "librarysearchpaths": [],
+  "frameworks": [
+    "AdSupport.framework:weak",
+    "AudioToolbox.framework",
+    "AVFoundation.framework",
+    "CoreLocation.framework",
+    "CoreTelephony.framework",
+    "EventKit.framework",
+    "EventKitUI.framework",
+    "MediaPlayer.framework",
+    "MessageUI.framework",
+    "Security.framework",
+    "Social.framework:weak",
+    "StoreKit.framework:weak",
+    "SystemConfiguration.framework"
+  ],
+"frameworksearchpaths": [
+ "Fyber/iOS/mediation/InMobi/Fyber_InMobi_5.2.0-r3.embeddedframework/"
+],
+  "headerpaths": [],
+  "files": [],
+  "folders": [],	
+  "excludes": [],
+  "linkers": [
+    "-ObjC"
+  ],
+  "plist":[
+    "<plist>
+      <key>name</key>
+      <string>Inmobi</string>
+      <key>settings</key>
+      <dict>
+        <!-- Uncomment this section if you want to override the server side configuration properties
+        <key>SPInMobiAccountId</key>
+        <string></string>
+        <key>SPInMobiLogLevel</key>
+        <string></string>
+        <key>SPInMobiInterstitialPlacementId</key>
+        <integer></integer>
+        <key>SPInMobiRewardedVideoPlacementId</key>
+        <integer></integer>
+        -->
+      </dict>
+    </plist>"]
+}

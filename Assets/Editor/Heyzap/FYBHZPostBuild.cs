@@ -13,7 +13,12 @@ public class FYBHZPostBuild : MonoBehaviour
     [PostProcessBuild(102)]
     private static void onPostProcessBuildPlayer( BuildTarget target, string pathToBuiltProject )
     {
-        if (target == BuildTarget.iOS) {
+#if UNITY_5 || UNITY_5_3_OR_NEWER
+        if (target == BuildTarget.iOS)
+#else
+        if (target == BuildTarget.iPhone)
+#endif
+        {
             UnityEngine.Debug.Log ("FYBHZ: started post-build script");
 
             // grab the path to the postProcessor.py file

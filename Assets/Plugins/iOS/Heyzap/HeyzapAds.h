@@ -41,12 +41,14 @@
 #import "HZShowOptions.h"
 #import "HZDemographics.h"
 #import "HZVideoAd.h"
+#import "FYBOfferWallViewController.h"
+#import "FYBRequestParameters.h"
 
 #ifndef NS_ENUM
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"10.0.0"
+#define SDK_VERSION @"10.0.1"
 
 #if __has_feature(objc_modules)
 @import AdSupport;

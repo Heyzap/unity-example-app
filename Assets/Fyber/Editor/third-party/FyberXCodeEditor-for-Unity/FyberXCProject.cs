@@ -485,7 +485,7 @@ namespace UnityEditor.XCodeEditor.FyberPlugin
 			
 			foreach( string directory in Directory.GetDirectories( folderPath ) )
 			{
-				if( directory.EndsWith( ".bundle" ) ) {
+				if( directory.EndsWith( ".bundle" ) || directory.EndsWith( ".storyboardc" ) ) {
 					// Treath it like a file and copy even if not recursive
 					Debug.LogWarning( "This is a special folder: " + directory );
 					AddFile( directory, newGroup, "SOURCE_ROOT", createBuildFile );

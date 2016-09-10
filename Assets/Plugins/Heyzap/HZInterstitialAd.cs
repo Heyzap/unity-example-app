@@ -120,7 +120,9 @@ namespace Heyzap {
         }
 
         public void SetCallback(string message) {
-            HZInterstitialAd.adDisplayListener(message, HeyzapAds.DEFAULT_TAG);
+            if (HZInterstitialAd.adDisplayListener != null) {
+                HZInterstitialAd.adDisplayListener(message, HeyzapAds.DEFAULT_TAG);
+            }
         }
 
         #endregion

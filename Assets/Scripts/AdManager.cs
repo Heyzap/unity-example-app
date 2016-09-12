@@ -115,7 +115,7 @@ public class AdManager : MonoBehaviour {
             available = HZVideoAd.IsAvailable(tag);
             break;
         case AdType.Incentivized:
-            available = HZVideoAd.IsAvailable(tag);
+            available = HZIncentivizedAd.IsAvailable(tag);
             break;
         case AdType.Banner:
             // Not applicable

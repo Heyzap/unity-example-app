@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, HZAdMobNativeAdImageOrientation) {
 /**
  *  The view controller to fetch native ads for. Currently only AdMob uses this property. This property is required for AdMob.
  */
-@property (nonatomic, weak) UIViewController *presentingViewController;
+@property (nonatomic, weak, nullable) UIViewController *presentingViewController;
 
 /**
  *  The number of unique native ads to fetch from each network. The default value is `@20`.

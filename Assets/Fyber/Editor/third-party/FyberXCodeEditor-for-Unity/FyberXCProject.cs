@@ -62,6 +62,10 @@ namespace UnityEditor.XCodeEditor.FyberPlugin
 				Debug.LogWarning( "Path does not exists." );
 				return;
 			}
+
+			if (!Path.IsPathRooted(filePath)) {
+				filePath = Path.GetFullPath(filePath);
+			}
 			
 			if( filePath.EndsWith( ".xcodeproj" ) ) {
 				this.projectRootPath = Path.GetDirectoryName( filePath );

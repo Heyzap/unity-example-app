@@ -31,5 +31,5 @@
   <uses-feature android:name="android.hardware.touchscreen" />
   <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
   <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" />
-  <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="23" />
+  <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="24" />
 </manifest>

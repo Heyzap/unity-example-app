@@ -31,7 +31,7 @@
  *  A dictionary of custom parameters are added to the request when requesting Interstitials or Rewardeed Video or when showing the Offer Wall
  *
  *  @discussion This property is readonly
- *              Use -[FYBRequestParameters addCustomParameterWithKey:] and -[FYBRequestParameters addCustomParameters:] to add custom parameters
+ *              Use -[FYBRequestParameters addCustomParameterWithKey:value:] and -[FYBRequestParameters addCustomParameters:] to add custom parameters
  */
 @property (nonatomic, strong, readonly) NSDictionary *customParameters;
 

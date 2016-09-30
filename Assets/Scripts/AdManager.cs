@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Assertions.Must;
 using System.Collections;
 using Heyzap;
+using FyberPlugin;
 
 public class AdManager : MonoBehaviour {
     
@@ -11,7 +12,7 @@ public class AdManager : MonoBehaviour {
     [SerializeField]
     private GameObject bannerControls;
     [SerializeField]
-    private GameObject nonBannerControls;
+    private GameObject fullscreenControls;
     [SerializeField]
     private ScrollingTextArea console;
 
@@ -19,7 +20,8 @@ public class AdManager : MonoBehaviour {
         Interstitial,
         // Video,
         Incentivized,
-        Banner
+        Banner,
+        OfferWall
     }
 
     private AdType _selectedAdType;
@@ -34,10 +36,12 @@ public class AdManager : MonoBehaviour {
 
     private string bannerPosition;
 
+    private FyberPlugin.Ad offerWall;
+
     void Awake() {
         this.adTagTextField.MustNotBeNull();
         this.bannerControls.MustNotBeNull();
-        this.nonBannerControls.MustNotBeNull();
+        this.fullscreenControls.MustNotBeNull();
         this.console.MustNotBeNull();
     }
 
@@ -80,14 +84,50 @@ public class AdManager : MonoBehaviour {
         //     this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
         // });
 
-        this.bannerControls.SetActive(false);
-        this.nonBannerControls.SetActive(true);
-
         // UI defaults
         this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
         this.SelectedAdType = AdType.Interstitial;
         HeyzapAds.HideDebugLogs(); // no-op
     }
+
+    void OnEnable() {
+        this.console.Append("OFFERWALL: registering for notifications");
+
+        FyberCallback.AdAvailable += OnAdAvailable;
+        FyberCallback.AdNotAvailable += OnAdNotAvailable;   
+        FyberCallback.RequestFail += OnRequestFail; 
+    }
+
+    void OnDisable() {
+        this.console.Append("OFFERWALL: UNregistering for notifications");
+
+        FyberCallback.AdAvailable -= OnAdAvailable;
+        FyberCallback.AdNotAvailable -= OnAdNotAvailable;   
+        FyberCallback.RequestFail -= OnRequestFail; 
+    }
+
+    private void OnAdAvailable(FyberPlugin.Ad ad) {
+        switch(ad.AdFormat) {
+            case AdFormat.OFFER_WALL:
+                this.console.Append("OFFERWALL: available");
+                this.offerWall = ad;
+                break;
+        }
+    }
+
+    private void OnAdNotAvailable(FyberPlugin.AdFormat adFormat) {
+        switch(adFormat) {
+            case AdFormat.OFFER_WALL:
+                this.console.Append("OFFERWALL: not available");
+                this.offerWall = null;
+                break;
+        }
+    }
+
+    private void OnRequestFail(FyberPlugin.RequestError error) {
+        this.console.Append("OFFERWALL: request failed: " + error.Description);
+    }
+
 
     public void InterstitialSelected(bool selected) {
         if (selected) {
@@ -113,6 +153,12 @@ public class AdManager : MonoBehaviour {
         }
     }
 
+    public void OfferWallSelected(bool selected) {
+        if (selected) {
+            this.SelectedAdType = AdType.OfferWall;
+        }
+    }
+
     public void IsAvailableButton() {
         string tag = this.adTag();
         bool available = false;
@@ -129,6 +175,9 @@ public class AdManager : MonoBehaviour {
             break;
         case AdType.Banner:
             // Not applicable
+            break;
+        case AdType.OfferWall:
+            available = (this.offerWall != null);
             break;
         }
 
@@ -164,7 +213,29 @@ public class AdManager : MonoBehaviour {
             case AdType.Banner:
                 HZBannerAd.ShowWithOptions(bannerOptions);
                 break;
+            case AdType.OfferWall:
+                if (this.offerWall != null) {
+                    this.offerWall.Start();
+                    this.offerWall = null;
+                } else {
+                    this.console.Append("OfferWall needs to be fetched still.");
+                }
+                break;
         }
+    }
+
+    public void RequestOfferWall() {
+        OfferWallRequester.Create()
+            // optional method chaining
+            //.AddParameter("key", "value")
+            //.AddParameters(dictionary)
+            //.WithPlacementId(placementId)
+            // configure ofw behaviour:
+            //.CloseOnRedirect(true)
+            // you don't need to add a callback if you are using delegates
+            //.WithCallback(requestCallback)
+            //requesting the ad
+            .Request();
     }
 
     public void FetchButton() {
@@ -179,6 +250,9 @@ public class AdManager : MonoBehaviour {
             //     break;
             case AdType.Incentivized:
                 HZIncentivizedAd.Fetch(tag);
+                break;
+            case AdType.OfferWall:
+                RequestOfferWall();
                 break;
         }
     }
@@ -231,10 +305,13 @@ public class AdManager : MonoBehaviour {
     private void ShowAdTypeControls() {
         if (this.SelectedAdType == AdType.Banner) {
             this.bannerControls.SetActive(true);
-            this.nonBannerControls.SetActive(false);
-        } else {
+            this.fullscreenControls.SetActive(false);
+        } else if (this.SelectedAdType == AdType.OfferWall) {
+            this.fullscreenControls.SetActive(true);
             this.bannerControls.SetActive(false);
-            this.nonBannerControls.SetActive(true);
+        } else {
+            this.fullscreenControls.SetActive(true);
+            this.bannerControls.SetActive(false);
         }
     }
 

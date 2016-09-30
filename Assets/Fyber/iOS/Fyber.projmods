@@ -1,0 +1,28 @@
+{
+  "group": "Fyber",
+  "patches": [],
+  "libs": [
+    "Fyber/iOS/fyber-unity-bridge/unitybridge.a:<group>"
+  ],
+  "librarysearchpaths": [
+    "Fyber/iOS/fyber-unity-bridge/"
+  ],
+  "frameworks": [
+    "AdSupport.framework:weak",
+    "CoreGraphics.framework",
+    "QuartzCore.framework",
+    "MediaPlayer.framework",
+    "SystemConfiguration.framework",
+    "StoreKit.framework:weak",
+    "CoreTelephony.framework",
+    "Security.framework"
+  ],
+  "headerpaths": [],
+  "files": [],
+  "folders": [],
+  "plist": [],
+  "excludes": [],
+  "linkers": [
+  "-ObjC"
+  ]
+}

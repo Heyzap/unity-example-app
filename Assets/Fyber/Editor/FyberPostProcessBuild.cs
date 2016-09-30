@@ -28,7 +28,6 @@ public class FyberPostProcessBuild
                 Directory.Delete (folderPath, true);
             }
 
-            UnityEngine.Debug.LogError( "Fyber OnPostProcessBuild given path: " + path );
             XCProject project = new XCProject(path);
 
             string libPath = Path.Combine (project.projectRootPath, "Libraries/Fyber/iOS/fyber-sdk-compat-lib");

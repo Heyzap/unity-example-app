@@ -195,4 +195,12 @@ extern "C" {
         [HeyzapAds presentMediationDebugViewController];
     }
     
+    void hz_ads_show_debug_logs(void) {
+        [HZLog setDebugLevel:HZDebugLevelVerbose];
+    }
+    
+    void hz_ads_hide_debug_logs(void) {
+        [HZLog setDebugLevel:HZDebugLevelSilent];
+    }
+    
 }

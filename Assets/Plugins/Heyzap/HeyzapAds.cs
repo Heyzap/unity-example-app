@@ -137,11 +137,38 @@ namespace Heyzap {
             #endif
         }
 
+        /// Enables verbose debug logging for the Heyzap SDK. For third party logging, <see cref="ShowThirdPartyDebugLogs()"/>.
+        /// </summary>
+        public static void ShowDebugLogs() {
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HeyzapAdsIOS.ShowDebugLogs();
+            #endif
+        }
+        
+        /// <summary>
+        /// Hides all debug logs coming from the Heyzap SDK. For third party logging, <see cref="HideThirdPartyDebugLogs()"/>.
+        /// </summary>
+        public static void HideDebugLogs() {
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HeyzapAdsIOS.HideDebugLogs();
+            #endif
+        }
+
+        /// <summary>
+        /// This method is not yet available in SDK 10.
+        /// </summary>
         public static void PauseExpensiveWork() {}
+        /// <summary>
+        /// This method is not yet available in SDK 10.
+        /// </summary>
         public static void ResumeExpensiveWork() {}
-        public static void ShowDebugLogs() {}
-        public static void HideDebugLogs() {}
+        /// <summary>
+        /// This method is not yet available in SDK 10.
+        /// </summary>
         public static void ShowThirdPartyDebugLogs() {}
+        /// <summary>
+        /// This method is not yet available in SDK 10.
+        /// </summary>
         public static void HideThirdPartyDebugLogs() {}
         #endregion
 
@@ -171,6 +198,19 @@ namespace Heyzap {
             hz_ads_start_app(publisher_id, options);
         }
 
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_show_debug_logs();
+
+        public static void ShowDebugLogs() {
+            hz_ads_show_debug_logs();
+        }
+
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_hide_debug_logs();
+
+        public static void HideDebugLogs() {
+            hz_ads_hide_debug_logs();
+        }
 
         [DllImport ("__Internal")]
         private static extern void hz_ads_show_mediation_debug_view_controller();

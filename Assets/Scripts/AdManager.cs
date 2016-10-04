@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.Assertions.Must;
 using System.Collections;
+using System;
 using Heyzap;
 using FyberPlugin;
 
@@ -96,6 +97,9 @@ public class AdManager : MonoBehaviour {
         FyberCallback.AdAvailable += OnAdAvailable;
         FyberCallback.AdNotAvailable += OnAdNotAvailable;   
         FyberCallback.RequestFail += OnRequestFail; 
+
+        FyberCallback.VirtualCurrencySuccess += OnCurrencyResponse;
+        FyberCallback.VirtualCurrencyError += OnCurrencyErrorResponse;
     }
 
     void OnDisable() {
@@ -104,6 +108,9 @@ public class AdManager : MonoBehaviour {
         FyberCallback.AdAvailable -= OnAdAvailable;
         FyberCallback.AdNotAvailable -= OnAdNotAvailable;   
         FyberCallback.RequestFail -= OnRequestFail; 
+    
+        FyberCallback.VirtualCurrencySuccess -= OnCurrencyResponse;
+        FyberCallback.VirtualCurrencyError -= OnCurrencyErrorResponse;
     }
 
     private void OnAdAvailable(FyberPlugin.Ad ad) {
@@ -127,6 +134,20 @@ public class AdManager : MonoBehaviour {
     private void OnRequestFail(FyberPlugin.RequestError error) {
         this.console.Append("OFFERWALL: request failed: " + error.Description);
     }
+
+    private void OnCurrencyResponse(VirtualCurrencyResponse response) {
+        this.console.Append("Delta of coins: " + response.DeltaOfCoins.ToString() +
+                                ". Transaction ID: " + response.LatestTransactionId +
+                                ".\nCurreny ID: " + response.CurrencyId +
+                                ". Currency Name: " + response.CurrencyName);
+    }
+
+    private void OnCurrencyErrorResponse(VirtualCurrencyErrorResponse vcsError) {
+        this.console.Append(String.Format("Delta of coins request failed.\n" +
+                            "Error Type: {0}\nError Code: {1}\nError Message: {2}",
+                            vcsError.Type, vcsError.Code, vcsError.Message));
+    }
+
 
 
     public void InterstitialSelected(bool selected) {
@@ -271,9 +292,14 @@ public class AdManager : MonoBehaviour {
         }
     }
 
-    // public void RemoteDataButton() {
-    //     this.console.Append("Remote data: " + HeyzapAds.GetRemoteData());
-    // }
+    public void VCSButton() {
+        VirtualCurrencyRequester.Create()
+        // Overrideing currency Id (when you have more than one currency)
+        //.ForCurrencyId(currencyId)
+        // Changing the GUI notification behaviour for when the user is rewarded
+        //.NotifyUserOnReward(true)
+        .Request();
+    }
 
     public void DebugLogSwitch(bool on) {
         if (on) {

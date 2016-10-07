@@ -1,0 +1,28 @@
+
+# Fyber Mediation
+-dontwarn com.fyber.mediation.annotations.MediationAPI
+-keepattributes JavascriptInterface
+-keep class android.webkit.JavascriptInterface
+-keep class com.fyber.mediation.MediationConfigProvider {
+    public static *;
+}
+-keep class com.fyber.mediation.MediationAdapterStarter {
+    public static *;
+}
+-keepclassmembers class com.fyber.ads.videos.mediation.RewardedVideoMediationJSInterface {
+    void setValue(java.lang.String);
+}
+
+# Google Advertising Id
+-keep class com.google.android.gms.** { *; }
+
+# Vungle
+-dontwarn com.vungle.publisher.**
+-keep class com.vungle.** { public *; }
+-keep class javax.inject.*
+-keepattributes *Annotation*
+-keepattributes Signature
+-keep class dagger.*
+
+
+

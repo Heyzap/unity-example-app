@@ -62,6 +62,12 @@ public class AdManager : MonoBehaviour {
 		#if UNITY_ANDROID
 		defaultAppId = "40867";
 		defaultToken = "419bcd37e8454aab3d49fa4df09d4a39";
+		if(Application.platform == RuntimePlatform.Android){
+			AndroidJNIHelper.debug = false;
+			using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+				jc.CallStatic("forceTestDevice");
+			}
+		}
 		#endif
 
         // Restore UI state
@@ -96,23 +102,28 @@ public class AdManager : MonoBehaviour {
         this.console.Append("Starting SDK");
 
         int options = this.autofetchToggle.isOn ? HeyzapAds.FLAG_NO_OPTIONS : HeyzapAds.FLAG_DISABLE_AUTOMATIC_FETCHING;
-        HeyzapAds.Start(appID, token, options); 
+        HeyzapAds.Start(appID, options); 
 
         this.preStartControls.SetActive(false);
 
 //        HeyzapAds.Start("22051", "token", HeyzapAds.FLAG_NO_OPTIONS);
 
-        HZInterstitialAd.SetDisplayListener(delegate(string adState) {
+		HZInterstitialAd.SetDisplayListener(delegate(string adState, string tag) {
             this.console.Append("INTERSTITIAL: " + adState);
         });
 
-        HZIncentivizedAd.SetDisplayListener(delegate(string adState) {
+		HZIncentivizedAd.SetDisplayListener(delegate(string adState, string tag) {
             this.console.Append("INCENTIVIZED: " + adState);
         });
 
-        HZBannerAd.SetDisplayListener(delegate(string adState) {
+		HZBannerAd.SetDisplayListener(delegate(string adState, string tag) {
             this.console.Append("BANNER: " + adState);
         });
+
+
+		HZOfferWall.SetDisplayListener(delegate(string adState) {
+			this.console.Append("OFFER WALL: " + adState);
+		});
 
 //        this.bannerControls.SetActive(false);
 //        this.nonBannerControls.SetActive(true);
@@ -147,17 +158,23 @@ public class AdManager : MonoBehaviour {
 
     public void DestroyBanner() {
         this.console.Append("Destroying Banner");
+		FyberPlugin.OfferWallRequester.Create().Request();
         HZBannerAd.Destroy();
 
     }
 
     public void HideBanner() {
         this.console.Append("Destroying Banner");
+		Rect dimensions = new Rect (0,0,0,0);
+		//HZBannerAd.GetCurrentBannerDimensions(out dimensions);
+		HeyzapAds.ShowMediationTestSuite();
+		this.console.Append ("Dimensions: " + dimensions.height);
         HZBannerAd.Hide();
     }
 
     public void ShowBanner() {
         this.console.Append("Showing Banner");
+
         HZBannerShowOptions showOptions = new HZBannerShowOptions();
         if (this.bannerPositionDropdown.value == 0) {
             showOptions.Position = HZBannerShowOptions.POSITION_TOP;
@@ -261,4 +278,22 @@ public class AdManager : MonoBehaviour {
     private string adTag() {
         return null;
     }
+
+	private void OnAdAvailable(FyberPlugin.Ad ad)
+	{
+		switch(ad.AdFormat)
+		{
+		case FyberPlugin.AdFormat.OFFER_WALL:
+			ad.Start ();
+			break;
+			//handle other ad formats if needed
+		}
+	}
+
+	void OnEnable()
+	{
+		// Ad availability
+		FyberPlugin.FyberCallback.AdAvailable += OnAdAvailable;
+	}
+
 }

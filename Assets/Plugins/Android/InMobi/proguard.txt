@@ -1,0 +1,27 @@
+
+# Fyber Mediation
+-keepattributes JavascriptInterface
+-keep class android.webkit.JavascriptInterface
+-dontwarn com.fyber.mediation.annotations.MediationAPI
+
+# Google Advertising Id
+-keep class com.google.android.gms.** { *; }
+
+# InMobi
+-keepattributes SourceFile,LineNumberTable,InnerClasses
+-keep class com.inmobi.** { *; }
+-dontwarn com.inmobi.**
+-dontwarn com.google.android.gms**
+
+# Google Play Services
+-keep class com.google.android.gms.common.api.GoogleApiClient { public *; }
+-keep class com.google.android.gms.common.api.GoogleApiClient$* {public *;}
+-keep class com.google.android.gms.location.LocationServices {public *;}
+-keep class com.google.android.gms.location.FusedLocationProviderApi {public *;}
+-keep class com.google.android.gms.location.ActivityRecognition {public *;}
+-keep class com.google.android.gms.location.ActivityRecognitionApi {public *;}
+-keep class com.google.android.gms.location.ActivityRecognitionResult {public *;}
+-keep class com.google.android.gms.location.DetectedActivity {public *;}
+-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient{public *;}
+-keep class com.google.android.gms.ads.identifier.AdvertisingIdClient$Info{public *;}
+

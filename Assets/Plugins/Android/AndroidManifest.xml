@@ -24,6 +24,9 @@
       </intent-filter>
       <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
     </activity>
+    
+    <meta-data android:name="applovin.sdk.key" android:value="TvPRfJ0dxmTLiGoZQi9o3_5zG0d0FVQoOqD38Eh4-9QhQCFrvPdyOkwfkXfz24mRuzU1CB5BLVtmh7aaXDXwxS"  />
+    
   </application>
   <uses-feature android:glEsVersion="0x00020000" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

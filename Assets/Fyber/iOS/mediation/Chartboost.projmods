@@ -1,0 +1,39 @@
+{
+  "version": "6.5.2-r1",
+  "group": "Mediation/Chartboost",
+  "patches": [],
+  "libs": [
+    "Fyber/iOS/mediation/Chartboost/Fyber_Chartboost_6.5.2-r1.embeddedframework/Fyber_Chartboost_6.5.2-r1.framework:<group>"
+  ],
+  "librarysearchpaths": [],
+  "frameworks": [
+    "CoreGraphics.framework",
+    "Foundation.framework",
+    "StoreKit.framework",
+    "UIKit.framework"
+  ],
+  "frameworksearchpaths": [
+    "Fyber/iOS/mediation/Chartboost/Fyber_Chartboost_6.5.2-r1.embeddedframework/"
+  ],
+  "headerpaths": [],
+  "files": [],
+  "folders": [],	
+  "excludes": [],
+  "linkers": [],
+  "plist": [
+    "<plist>
+      <key>name</key>
+      <string>Chartboost</string>
+      <key>settings</key>
+      <dict>
+        <!-- Uncomment this section if you want to override the server side configuration properties
+        <key>SPChartboostAppId</key>
+        <string></string>
+        <key>SPChartboostAppSignature</key>
+        <string></string>
+        <key>SPChartboostAutoCacheAds</key>
+        <false/>
+        -->
+      </dict>
+    </plist>"]
+}

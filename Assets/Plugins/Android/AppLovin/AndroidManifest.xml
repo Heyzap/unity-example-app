@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fyber.mediation.applovin"
     android:versionCode="1"
-    android:versionName="6.1.5-r3" >
+    android:versionName="6.3.0-r1" >
 
     <uses-sdk
         android:minSdkVersion="10"

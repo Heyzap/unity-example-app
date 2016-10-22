@@ -216,10 +216,10 @@ namespace Heyzap {
             
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showBanner", showOptions.Position);
+                jc.CallStatic("showBanner", showOptions.Position, showOptions.SelectedAdMobSize.ToString(), showOptions.SelectedFacebookSize.ToString());
             }
         }
-        
+
         public static void Hide() {
             if(Application.platform != RuntimePlatform.Android) return;
             

@@ -37,6 +37,9 @@ public class AdManager : MonoBehaviour {
 
     private string bannerPosition;
 
+	private HZBannerShowOptions.AdMobSize admobSize;
+	private HZBannerShowOptions.FacebookSize fbSize;
+
     private FyberPlugin.Ad offerWall;
 
     void Awake() {
@@ -219,6 +222,8 @@ public class AdManager : MonoBehaviour {
         HZBannerShowOptions bannerOptions = new HZBannerShowOptions();
         bannerOptions.Tag = tag;
         bannerOptions.Position = this.bannerPosition;
+		bannerOptions.SelectedAdMobSize = this.admobSize;
+		bannerOptions.SelectedFacebookSize = this.fbSize;
 
         this.console.Append("Showing " + this.SelectedAdType.ToString() + " with tag: " + tag);
         switch (this.SelectedAdType) {
@@ -322,6 +327,14 @@ public class AdManager : MonoBehaviour {
             this.bannerPosition = HZBannerShowOptions.POSITION_BOTTOM;
         }
     }
+
+    public void AdMobBannerSize(int size) {
+		admobSize = (HZBannerShowOptions.AdMobSize)size;
+    }
+
+	public void FacebookBannerSize(int size) {
+		fbSize = (HZBannerShowOptions.FacebookSize)size;
+	}
 
     public void ShowMediationTest() {
         this.console.Append("Showing mediation test suite");

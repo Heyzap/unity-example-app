@@ -66,5 +66,48 @@ namespace Heyzap {
             }
         }
         private string position = HZBannerShowOptions.DEFAULT_POSITION;
+
+        public enum AdMobSize {
+          SMART_BANNER,
+          BANNER,
+          FULL_BANNER,
+          LARGE_BANNER,
+          MEDIUM_RECTANGLE,
+          LEADERBOARD,
+          WIDE_SKYSCRAPER
+        }
+
+        public AdMobSize SelectedAdMobSize {
+          get {
+            return selectedAdMobSize;
+          }
+          set {
+            if (System.Enum.IsDefined(typeof(AdMobSize), value)) {
+              selectedAdMobSize = value;
+            }
+          }
+        }
+
+        private AdMobSize selectedAdMobSize;
+
+        public enum FacebookSize {
+          BANNER_320_50,
+          BANNER_HEIGHT_50,
+          BANNER_HEIGHT_90,
+          BANNER_RECTANGLE_250
+        }
+
+        public FacebookSize SelectedFacebookSize {
+          get {
+            return selectedFacebookSize;
+          }
+          set {
+            if (System.Enum.IsDefined(typeof(FacebookSize), value)) {
+              selectedFacebookSize = value;
+            }
+          }
+        }
+
+        private FacebookSize selectedFacebookSize;
     }
 }

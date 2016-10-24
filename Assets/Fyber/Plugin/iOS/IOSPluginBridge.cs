@@ -15,7 +15,7 @@ namespace FyberPlugin
 		static extern void _Start(string json);
 		
 		[DllImport ("__Internal")]
-		static extern void _Cache(string action);
+		static extern bool _Cache(string action);
 		
 		[DllImport ("__Internal")]
 		static extern void _Request(string json);
@@ -49,9 +49,9 @@ namespace FyberPlugin
 			_Start (json);
 		}
 		
-		public void Cache(string action)	
+		public bool Cache(string action)
 		{	
-			_Cache(action);
+			return _Cache(action);
 		}
 		
 		public void Request(string json)
@@ -87,6 +87,11 @@ namespace FyberPlugin
 		}
 
 		public void GameObjectStarted()	
+		{
+			//DO NOTHING
+		}
+
+		public void ApplicationQuit()
 		{
 			//DO NOTHING
 		}

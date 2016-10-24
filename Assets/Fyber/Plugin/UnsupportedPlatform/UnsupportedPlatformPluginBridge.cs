@@ -12,9 +12,10 @@ namespace FyberPlugin
 			Utils.printWarningMessage();
 		}
 
-        public void Cache(string action)	
+        public bool Cache(string action)
 		{	
 			Utils.printWarningMessage();
+			return false;
 		}
 		
 		public void Request(string json)
@@ -53,7 +54,10 @@ namespace FyberPlugin
 		{
 			Utils.printWarningMessage();
 		}
-
+		public void ApplicationQuit()
+		{
+			Utils.printWarningMessage();
+		}
     }
 #endif
 }

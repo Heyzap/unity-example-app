@@ -31,13 +31,14 @@ namespace FyberPlugin
 				plugin.CallStatic("setPluginParameters", Fyber.Version, Application.unityVersion);
 				plugin.CallStatic("start", json);
 			}
+			
 		}
 
-		public void Cache(string action)
+		public bool Cache(string action)
 		{
-			using (AndroidJavaObject cacheManager = new AndroidJavaObject("com.fyber.unity.cache.CacheWrapper"))
+			using (AndroidJavaClass cacheManager = new AndroidJavaClass("com.fyber.unity.cache.CacheWrapper"))
 			{
-				cacheManager.CallStatic(action);
+				return cacheManager.CallStatic<bool>(action);
 			}
 		}
 
@@ -96,6 +97,11 @@ namespace FyberPlugin
  			{
  				androidNativeMessageJavaClass.CallStatic("resendFailedMessages");
  			}
+		}
+
+		public void ApplicationQuit()
+		{
+			Cache("unregisterOnVideoCacheListener");
 		}
 
 	}

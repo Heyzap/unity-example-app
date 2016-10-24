@@ -43,12 +43,13 @@
 #import "HZVideoAd.h"
 #import "FYBOfferWallViewController.h"
 #import "FYBRequestParameters.h"
+#import "FYBVirtualCurrencyClient.h"
 
 #ifndef NS_ENUM
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"10.0.8"
+#define SDK_VERSION @"10.0.10"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -263,6 +264,15 @@ extern NSString * const HZMediationNetworkCallbackNotification __attribute__((un
  * Presents a view controller that displays integration information and allows fetch/show testing
  */
 + (void)presentMediationDebugViewController;
+
+
+/**
+ *  Retrieves the client for Fyber Virtual Currencies
+ *
+ *  @return The FYBVirtualCurrencyClient singleton
+ *
+ */
++ (FYBVirtualCurrencyClient *)virtualCurrencyClient;
 
 
 #pragma mark - Performance Optimization

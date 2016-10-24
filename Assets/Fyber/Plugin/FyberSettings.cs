@@ -21,21 +21,24 @@ namespace FyberPlugin
 		const string fyberSettingsAssetName = "FyberSettings";
 		const string fyberSettingsPath = "Fyber/Resources";
 		const string fyberSettingsAssetExtension = ".asset";
-		
-		private static FyberSettings instance;
-		
-#if UNITY_EDITOR		
-		static FyberSettings()		
-		{		
-			GetInstance();		
-		}		
-#else	
-		void OnEnable() 		 		
-		{		 		
-			GetInstance();		 		
-		}		 		
-#endif
 
+		private static FyberSettings instance;
+
+#if UNITY_EDITOR
+		static FyberSettings(){
+#if !UNITY_5_4_OR_NEWER
+			GetInstance();
+#endif
+		}
+#else
+		void OnEnable()
+		{
+			GetInstance();
+		}
+#endif
+#if	UNITY_5_4_OR_NEWER && UNITY_EDITOR
+		[InitializeOnLoadMethod]
+#endif
 		private static FyberSettings GetInstance()
 		{
 			if (instance == null)
@@ -52,7 +55,7 @@ namespace FyberPlugin
 					{
 						AssetDatabase.CreateFolder("Assets/Fyber", "Resources");
 					}
-					
+
 					string fullPath = Path.Combine(Path.Combine("Assets", fyberSettingsPath),
 					                               fyberSettingsAssetName + fyberSettingsAssetExtension
 					                               );
@@ -93,7 +96,7 @@ namespace FyberPlugin
 		{
 			return configJson;
 		}
-		
+
 		internal int BundlesCount()
 		{
 			return bundlesCount;

@@ -12,17 +12,13 @@ public class FyberPostProcessBuild
     [PostProcessBuild(500)]
     public static void OnPostProcessBuild( BuildTarget target, string path )
     {
-
-#if UNITY_IPHONE || UNITY_IOS 
+#if UNITY_IPHONE || UNITY_IOS
 #if UNITY_5
         if (target == BuildTarget.iOS)
 #else
         if (target == BuildTarget.iPhone)
-#endif
+#endif // UNITY_5
         {
-            
-
-            
             string folderPath = Path.Combine (Application.dataPath, "Fyber/iOS/fyber-sdk-compat-lib");
             if (Directory.Exists (folderPath)) {
                 Directory.Delete (folderPath, true);
@@ -42,9 +38,10 @@ public class FyberPostProcessBuild
             foreach( var file in files ) 
             {
                 project.ApplyMod(Application.dataPath, file);
-                if (file.Contains("Chartboost"))
+
+                if (file.Contains("NativeX"))
                 {
-                    string unityVersionPlist = "<plist><key>name</key><string>Chartboost</string><key>settings</key><dict><key>FYBUnityVersion</key><string>" + Application.unityVersion +"</string></dict></plist>";
+                    string unityVersionPlist = "<plist><key>name</key><string>Nativex</string><key>settings</key><dict><key>FYBNativeXUnityBuildFlag</key><true /></dict></plist>";
                     PlistUpdater.UpdatePlist(project.projectRootPath, unityVersionPlist);
                 }
             }
@@ -67,14 +64,16 @@ public class FyberPostProcessBuild
             }
 
             pbxProject.WriteToFile(pbxprojPath);
-#endif
+#endif // UNITY_5
         }
-#endif        
+#endif  //UNITY_IPHONE || UNITY_IOS
     }
 
+#if UNITY_IPHONE || UNITY_IOS
     [PostProcessBuild(600)]
     public static void OnPostProcessBuildOrientationFix(BuildTarget target, string pathToBuildProject)
     {
+
         if (PlayerPrefs.GetInt ("FYBPostProcessBuild") == 0)
             return;
         
@@ -115,5 +114,7 @@ public class FyberPostProcessBuild
         
         File.WriteAllText(pathToBuildProject + "/Classes/UnityAppController.mm", newFile.ToString());
     }
+#endif  //UNITY_IPHONE || UNITY_IOS
+
 }
 

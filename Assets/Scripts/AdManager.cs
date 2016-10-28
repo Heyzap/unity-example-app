@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Assertions.Must;
+using UnityEngine.Assertions;
 using System.Collections;
 using System;
 using Heyzap;
@@ -43,10 +43,10 @@ public class AdManager : MonoBehaviour {
     private FyberPlugin.Ad offerWall;
 
     void Awake() {
-        this.adTagTextField.MustNotBeNull();
-        this.bannerControls.MustNotBeNull();
-        this.fullscreenControls.MustNotBeNull();
-        this.console.MustNotBeNull();
+        Assert.IsNotNull(this.adTagTextField, "Set the reference to the adTagTextField in the Unity Editor.");
+        Assert.IsNotNull(this.bannerControls, "Set the reference to the bannerControls in the Unity Editor.");
+        Assert.IsNotNull(this.fullscreenControls, "Set the reference to the fullscreenControls in the Unity Editor.");
+        Assert.IsNotNull(this.console, "Set the reference to the console in the Unity Editor.");
     }
 
     void Start () {
@@ -65,10 +65,13 @@ public class AdManager : MonoBehaviour {
         }
         #endif
 
-        HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
+        // match UI defaults
+        HeyzapAds.ShowDebugLogs();
+        this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
+        this.SelectedAdType = AdType.Interstitial;
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {
-            this.console.Append("BANNER: " + adState + " Tag : " + adTag);
+            this.console.Append("BANNER: " + adState + " Tag: '" + adTag + "'");
             if (adState == "loaded") {
                 Rect dimensions = new Rect();
                 HZBannerAd.GetCurrentBannerDimensions(out dimensions);
@@ -77,21 +80,18 @@ public class AdManager : MonoBehaviour {
         });
 
         HZInterstitialAd.SetDisplayListener(delegate(string adState, string adTag) {
-            this.console.Append("INTERSTITIAL: " + adState + " Tag : " + adTag);
+            this.console.Append("INTERSTITIAL: " + adState + " Tag: '" + adTag + "'");
         });
 
         HZIncentivizedAd.SetDisplayListener(delegate(string adState, string adTag) {
-            this.console.Append("INCENTIVIZED: " + adState + " Tag : " + adTag);
+            this.console.Append("INCENTIVIZED: " + adState + " Tag: '" + adTag + "'");
         });
 
         // HZVideoAd.SetDisplayListener(delegate(string adState, string adTag) {
         //     this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
         // });
-
-        // UI defaults
-        this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
-        this.SelectedAdType = AdType.Interstitial;
-        HeyzapAds.HideDebugLogs(); // no-op
+        
+        HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);   
     }
 
     void OnEnable() {

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.fyber.mediation.inmobi"
     android:versionCode="1"
-    android:versionName="5.2.3-r3" >
+    android:versionName="6.0.0-r1" >
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="24" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,9 +15,11 @@
     <application android:hardwareAccelerated="true" >
         <activity
             android:name="com.inmobi.rendering.InMobiAdActivity"
-            android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize"
+            android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"
             android:hardwareAccelerated="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:resizeableActivity="false"
+            android:theme="@android:style/Theme.NoTitleBar"
+            tools:ignore="UnusedAttribute" />
 
         <receiver
             android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"

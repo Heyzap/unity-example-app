@@ -1,9 +1,9 @@
 {
-  "version": "7.6.0-r3",
+  "version": "7.13.0-r1",
   "group": "Mediation/AdMob",
   "patches": [],
   "libs": [
-    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.6.0-r3.embeddedframework/Fyber_AdMob_7.6.0-r3.framework:<group>"
+    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.13.0-r1.embeddedframework/Fyber_AdMob_7.13.0-r1.framework:<group>"
   ],
   "librarysearchpaths": [],
   "frameworks": [
@@ -13,19 +13,20 @@
     "CoreGraphics.framework",
     "CoreMedia.framework",
     "CoreTelephony.framework",
-    "EventKit.framework",
-    "EventKitUI.framework",
+    "JavaScriptCore.framework",
     "MessageUI.framework",
     "StoreKit.framework:weak",
-    "SystemConfiguration.framework"
+    "SystemConfiguration.framework",
+    "SafariServices.framework",
+    "MobileCoreServices.framework"
   ],
   "frameworksearchpaths": [
-    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.6.0-r3.embeddedframework/"
+    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.13.0-r1.embeddedframework/"
   ],
   "headerpaths": [],
   "files": [],
   "folders": [
-    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.6.0-r3.embeddedframework/Resources"
+    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.13.0-r1.embeddedframework/Resources"
   ],	
   "excludes": [],
   "linkers": [],

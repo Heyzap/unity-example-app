@@ -65,13 +65,7 @@ namespace Heyzap {
         /// Shows an ad
         /// </summary>
         public static void Show() {
-            #if UNITY_ANDROID
-            HZIncentivizedAdAndroid.Show();
-            #endif
-
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZIncentivizedAdIOS.Show();
-            #endif
+            HZIncentivizedAd.ShowWithOptions(null);
         }
 
         /// <summary>
@@ -79,7 +73,17 @@ namespace Heyzap {
         /// </summary>
         /// <param name="showOptions"> The options to show the ad with, or the default options if <c>null</c></param>
         public static void ShowWithOptions(HZIncentivizedShowOptions showOptions) {
-            Show();
+            if (showOptions == null) {
+                showOptions = new HZIncentivizedShowOptions();
+            }
+            
+            #if UNITY_ANDROID
+            HZIncentivizedAdAndroid.ShowWithOptions(showOptions);
+            #endif
+            
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HZIncentivizedAdIOS.ShowWithOptions(showOptions);
+            #endif
         }
             
         /// <summary>
@@ -125,7 +129,7 @@ namespace Heyzap {
         
         protected static void SetCallbackState(string state) {
             if (HZIncentivizedAd.adDisplayListener != null) {
-                HZIncentivizedAd.adDisplayListener(state, HeyzapAds.DEFAULT_TAG);
+                HZIncentivizedAd.adDisplayListener(state, "");
             }
         }
         #endregion
@@ -135,15 +139,15 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HZIncentivizedAdIOS : MonoBehaviour {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_incentivized();
+        private static extern void hz_ads_show_incentivized(string tag);
         [DllImport ("__Internal")]
         private static extern void hz_ads_fetch_incentivized();
         [DllImport ("__Internal")]
         private static extern bool hz_ads_incentivized_is_available();
         
 
-        public static void Show() {
-            hz_ads_show_incentivized();
+        public static void ShowWithOptions(HZIncentivizedShowOptions showOptions) {
+            hz_ads_show_incentivized(showOptions.Tag);
         }
         
         public static void Fetch() {
@@ -159,12 +163,12 @@ namespace Heyzap {
     #if UNITY_ANDROID
     public class HZIncentivizedAdAndroid : MonoBehaviour {
         
-		public static void Show() {
+		public static void ShowWithOptions(HZIncentivizedShowOptions showOptions) {
 			if(Application.platform != RuntimePlatform.Android) return;
 
 			AndroidJNIHelper.debug = false;
 			using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-				jc.CallStatic("showIncentivized"); 
+				jc.CallStatic("showIncentivized", showOptions.Tag); 
 			}
 		}
 

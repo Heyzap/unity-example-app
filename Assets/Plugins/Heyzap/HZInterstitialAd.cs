@@ -44,13 +44,7 @@ namespace Heyzap {
         /// Shows an ad with the default options.
         /// </summary>
         public static void Show() {
-            #if UNITY_ANDROID
-            HZInterstitialAdAndroid.Show();
-            #endif
-
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZInterstitialAdIOS.Show();
-            #endif
+            HZInterstitialAd.ShowWithOptions(null);
         }
 
         /// <summary>
@@ -58,7 +52,17 @@ namespace Heyzap {
         /// </summary>
         /// <param name="showOptions"> The options to show the ad with, or the default options if <c>null</c></param> 
         public static void ShowWithOptions(HZShowOptions showOptions) {
-            Show();
+            if (showOptions == null) {
+                showOptions = new HZShowOptions();
+            }
+
+            #if UNITY_ANDROID
+            HZInterstitialAdAndroid.ShowWithOptions(showOptions);
+            #endif
+            
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HZInterstitialAdIOS.ShowWithOptions(showOptions);
+            #endif
         }
             
         /// <summary>
@@ -121,7 +125,7 @@ namespace Heyzap {
 
         public void SetCallback(string message) {
             if (HZInterstitialAd.adDisplayListener != null) {
-                HZInterstitialAd.adDisplayListener(message, HeyzapAds.DEFAULT_TAG);
+                HZInterstitialAd.adDisplayListener(message, "");
             }
         }
 
@@ -132,14 +136,14 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HZInterstitialAdIOS {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_interstitial();
+        private static extern void hz_ads_show_interstitial(string tag);
         [DllImport ("__Internal")]
         private static extern void hz_ads_fetch_interstitial();
         [DllImport ("__Internal")]
         private static extern bool hz_ads_interstitial_is_available();
 
-        public static void Show() {
-            hz_ads_show_interstitial();
+        public static void ShowWithOptions(HZShowOptions showOptions) {
+            hz_ads_show_interstitial(showOptions.Tag);
         }
 
         public static void Fetch() {
@@ -155,12 +159,12 @@ namespace Heyzap {
     #if UNITY_ANDROID
     public class HZInterstitialAdAndroid {
      
-        public static void Show() {
+        public static void ShowWithOptions(HZShowOptions showOptions) {
         if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showInterstitial"); 
+                jc.CallStatic("showInterstitial", showOptions.Tag); 
             }
         }
 

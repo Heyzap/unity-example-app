@@ -120,8 +120,8 @@ extern "C" {
         });
     }
     
-    void hz_ads_show_interstitial(void) {
-        [HZInterstitialAd show];
+    void hz_ads_show_interstitial(const char *tag) {
+        [HZInterstitialAd showForTag:[NSString stringWithUTF8String:tag]];
     }
     
     void hz_ads_fetch_interstitial(void) {
@@ -132,8 +132,8 @@ extern "C" {
         return [HZInterstitialAd isAvailable];
     }
     
-    void hz_ads_show_incentivized(void) {
-        [HZIncentivizedAd show];
+    void hz_ads_show_incentivized(const char *tag) {
+        [HZIncentivizedAd showForTag:[NSString stringWithUTF8String:tag]];
     }
     
     void hz_ads_fetch_incentivized(void) {
@@ -144,7 +144,7 @@ extern "C" {
         return [HZIncentivizedAd isAvailable];
     }
     
-    void hz_ads_show_banner(const char *position) {
+    void hz_ads_show_banner(const char *position, const char *tag) {
         // After the banner is loaded initially, this function doubles as a way to un-hide the banner.
         if ([HZBannerAdController sharedInstance].bannerView) {
             [HZBannerAdController sharedInstance].bannerView.hidden = NO;
@@ -157,11 +157,21 @@ extern "C" {
         if ([positionStr isEqualToString:@"top"]) {
             pos = HZBannerPositionTop;
         }
+
+        HZBannerAdOptions *options = [[HZBannerAdOptions alloc] init];
+        options.tag = [NSString stringWithUTF8String:tag];
         
         [[HZBannerAdController sharedInstance] placeBannerAtPosition:pos
-                                                             options:nil
-                                                             success:nil
-                                                             failure:nil];
+                                                             options:options
+                                                             success:^(UIView *banner) {
+                                                                // delegate isn't notified by HZBannerAdController on initial fetch, but since Unity devs don't have access to this success callback, we send the didReceiveAd: callback.
+                                                                 [HZBannerDelegate bannerDidReceiveAd:[HZBannerAdController sharedInstance]];
+                                                             }
+                                                             failure:^(NSError *error) {
+                                                                // the delegate should already be called by the HZBannerAdController
+                                                                 NSLog(@"[ Heyzap Unity ] Error fetching banner: %@", error);
+                                                             }
+        ];
     }
     
     char * hz_ads_banner_dimensions(void) {

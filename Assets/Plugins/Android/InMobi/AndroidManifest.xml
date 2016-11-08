@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.fyber.mediation.inmobi"
     android:versionCode="1"
-    android:versionName="6.0.0-r1" >
+    android:versionName="6.0.0-r3" >
 
     <uses-sdk
         android:minSdkVersion="10"

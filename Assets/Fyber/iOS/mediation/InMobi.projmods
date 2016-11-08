@@ -1,11 +1,11 @@
 {
-  "version": "6.0.0-r1",
+  "version": "6.0.0-r2",
   "group": "Mediation/InMobi",
   "patches": [],
   "libs": [    
-    "libsqlite3.0.tbd",
-    "libz.tbd",
-    "Fyber/iOS/mediation/InMobi/Fyber_InMobi_6.0.0-r1.embeddedframework/Fyber_InMobi_6.0.0-r1.framework:<group>"
+    "libsqlite3.0.dylib",
+    "libz.dylib",
+    "Fyber/iOS/mediation/InMobi/Fyber_InMobi_6.0.0-r2.embeddedframework/Fyber_InMobi_6.0.0-r2.framework:<group>"
   ],
   "librarysearchpaths": [],
   "frameworks": [
@@ -25,7 +25,7 @@
     "WebKit.framework"
   ],
 "frameworksearchpaths": [
- "Fyber/iOS/mediation/InMobi/Fyber_InMobi_6.0.0-r1.embeddedframework/"
+ "Fyber/iOS/mediation/InMobi/Fyber_InMobi_6.0.0-r2.embeddedframework/"
 ],
   "headerpaths": [],
   "files": [],
@@ -48,6 +48,8 @@
         <key>SPInMobiInterstitialPlacementId</key>
         <string></string>
         <key>SPInMobiRewardedVideoPlacementId</key>
+        <string></string>
+        <key>SPInMobiBannerPlacementId</key>
         <string></string>
         -->
       </dict>

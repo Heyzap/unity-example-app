@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.fyber.mediation.unityads"
     android:versionCode="1"
-    android:versionName="2.0.2-r1" >
+    android:versionName="2.0.5-r1" >
 
     <uses-sdk
         android:minSdkVersion="10"

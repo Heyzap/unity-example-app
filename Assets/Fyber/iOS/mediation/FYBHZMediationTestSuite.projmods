@@ -1,21 +1,19 @@
 {
-  "version": "10.0.4",
+  "version": "10.2.0",
   "group": "Mediation/FYBHZMediationTestSuite",
   "patches": [],
   "libs": [
-    "Fyber/iOS/mediation/FYBHZMediationTestSuite/FYBHZMediationTestSuiteEF.embeddedframework/FYBHZMediationTestSuiteEF.framework:<group>",
+    "Fyber/iOS/mediation/FYBHZMediationTestSuite/FYBHZMediationTestSuite.framework:<group>",
   ],
   "librarysearchpaths": [],
   "frameworks": [
   ],
   "frameworksearchpaths": [
-    "Fyber/iOS/mediation/FYBHZMediationTestSuite/FYBHZMediationTestSuiteEF.embeddedframework/"
+    "Fyber/iOS/mediation/FYBHZMediationTestSuite/"
   ],
   "headerpaths": [],
   "files": [],
-  "folders": [
-    "Fyber/iOS/mediation/FYBHZMediationTestSuite/FYBHZMediationTestSuiteEF.embeddedframework/Resources"
-  ],
+  "folders": [],
   "excludes": [],
   "linkers": [],
   "plist": []

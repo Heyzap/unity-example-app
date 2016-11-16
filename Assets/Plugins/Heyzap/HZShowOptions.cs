@@ -47,8 +47,64 @@ namespace Heyzap {
         /// Set `HZBannerShowOptions.Position` to this value to show ads at the bottom of the screen.
         /// </summary>
         public const string POSITION_BOTTOM = "bottom";
+
+        /// <summary>
+        /// Set `HZBannerShowOptions.SelectedAdMobSize` to one of these to show ads of the selected size when AdMob is chosen by our mediation to show a banner ad.
+        /// </summary>
+        public enum AdMobSize {
+          /// <summary>
+          /// Portrait-specific on iOS, same as SMART_BANNER_LANDSCAPE on Android
+          /// </summary>
+          SMART_BANNER,
+          /// <summary>
+          /// Landscape-specific on iOS, same as SMART_BANNER on Android
+          /// </summary>
+          SMART_BANNER_LANDSCAPE,
+          BANNER,
+          FULL_BANNER,
+          LARGE_BANNER,
+          /// <summary>
+          /// Not available on iOS, will use LARGE_BANNER instead internally
+          /// </summary>
+          MEDIUM_RECTANGLE,
+          LEADERBOARD,
+          /// <summary>
+          /// Not available on iOS, will use FULL_BANNER instead internally
+          /// </summary>
+          WIDE_SKYSCRAPER
+        }
+
+        /// <summary>
+        /// Set `HZBannerShowOptions.SelectedFacebookSize` to one of these to show ads of the selected size when AdMob is chosen by our mediation to show a banner ad.
+        /// </summary>
+        public enum FacebookSize {
+          BANNER_320_50,
+          BANNER_HEIGHT_50,
+          BANNER_HEIGHT_90,
+          /// <summary>
+          /// Not available on iOS, will use BANNER_HEIGHT_90 instead internally
+          /// </summary>
+          BANNER_RECTANGLE_250
+        }
+
+        /// <summary>
+        /// Set `HZBannerShowOptions.SelectedInmobiSize` to one of these to show ads of the selected size when Inmobi is chosen by our mediation to show a banner ad.
+        /// </summary>
+        public enum InmobiSize {
+          BANNER_320_50,
+          BANNER_320_48,
+          BANNER_300_250,
+          BANNER_120_600,
+          BANNER_468_60,
+          BANNER_728_90,
+          BANNER_1024_768
+        }
         
-        private const string DEFAULT_POSITION = HZBannerShowOptions.POSITION_BOTTOM;
+        private const string        DEFAULT_POSITION            = HZBannerShowOptions.POSITION_BOTTOM;
+        private const AdMobSize     DEFAULT_BANNER_SIZE_ADMOB   = HZBannerShowOptions.AdMobSize.SMART_BANNER;
+        private const FacebookSize  DEFAULT_BANNER_SIZE_FAN     = HZBannerShowOptions.FacebookSize.BANNER_HEIGHT_50;
+        private const InmobiSize    DEFAULT_BANNER_SIZE_INMOBI  = HZBannerShowOptions.InmobiSize.BANNER_320_50;
+
         
         /// <summary>
         /// Gets or sets the position for a banner ad. Can only be set to `HZBannerShowOptions.POSITION_TOP` or `HZBannerShowOptions.POSITION_BOTTOM`.
@@ -67,16 +123,6 @@ namespace Heyzap {
         }
         private string position = HZBannerShowOptions.DEFAULT_POSITION;
 
-        public enum AdMobSize {
-          SMART_BANNER,
-          BANNER,
-          FULL_BANNER,
-          LARGE_BANNER,
-          MEDIUM_RECTANGLE,
-          LEADERBOARD,
-          WIDE_SKYSCRAPER
-        }
-
         public AdMobSize SelectedAdMobSize {
           get {
             return selectedAdMobSize;
@@ -87,15 +133,7 @@ namespace Heyzap {
             }
           }
         }
-
-        private AdMobSize selectedAdMobSize;
-
-        public enum FacebookSize {
-          BANNER_320_50,
-          BANNER_HEIGHT_50,
-          BANNER_HEIGHT_90,
-          BANNER_RECTANGLE_250
-        }
+        private AdMobSize selectedAdMobSize = HZBannerShowOptions.DEFAULT_BANNER_SIZE_ADMOB;
 
         public FacebookSize SelectedFacebookSize {
           get {
@@ -107,7 +145,18 @@ namespace Heyzap {
             }
           }
         }
+        private FacebookSize selectedFacebookSize = HZBannerShowOptions.DEFAULT_BANNER_SIZE_FAN;
 
-        private FacebookSize selectedFacebookSize;
+        public InmobiSize SelectedInmobiSize {
+          get {
+            return selectedInmobiSize;
+          }
+          set {
+            if (System.Enum.IsDefined(typeof(InmobiSize), value)) {
+              selectedInmobiSize = value;
+            }
+          }
+        }
+        private InmobiSize selectedInmobiSize = HZBannerShowOptions.DEFAULT_BANNER_SIZE_INMOBI;
     }
 }

@@ -2,6 +2,7 @@
 import os
 import sys
 import re
+import subprocess
 from distutils import dir_util
 from HZmod_pbxproj import XcodeProject
 
@@ -13,6 +14,9 @@ def edit_pbxproj_file():
             if not re.search('\.xcodeproj', xcodeproj):
                 continue
             xcodeproj = os.path.join(unityProjectTopDirectory, xcodeproj)
+            xcodeVersionString = subprocess.check_output("xcodebuild -version", shell=True)
+            print "Heyzap: using xcode version: ", xcodeVersionString
+
             print "Heyzap: found xcode proj: ", xcodeproj
             for pbxproj in os.listdir(xcodeproj):
                 if not re.search('project\.pbxproj', pbxproj):
@@ -39,8 +43,12 @@ def edit_pbxproj_file():
 
                 # the below paths are relative to the SDKROOT, i.e.: `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/`
                 # Add the Frameworks needed
-                project.add_file_if_doesnt_exist('usr/lib/libxml2.tbd',                       parent=frameworksGroupID, tree='SDKROOT')
-                project.add_file_if_doesnt_exist('usr/lib/libsqlite3.tbd',                    parent=frameworksGroupID, tree='SDKROOT')
+
+                isXcode6 = "Xcode 6" in xcodeVersionString
+                libraryExtension = ".dylib" if isXcode6 else ".tbd"
+
+                project.add_file_if_doesnt_exist('usr/lib/libxml2' + libraryExtension,                       parent=frameworksGroupID, tree='SDKROOT')
+                project.add_file_if_doesnt_exist('usr/lib/libsqlite3' + libraryExtension,                    parent=frameworksGroupID, tree='SDKROOT')
 
                 
                 project.add_file_if_doesnt_exist('System/Library/Frameworks/WebKit.framework',  parent=frameworksGroupID, tree='SDKROOT')
@@ -48,7 +56,7 @@ def edit_pbxproj_file():
                 project.add_file_if_doesnt_exist('System/Library/Frameworks/AdSupport.framework',  parent=frameworksGroupID, tree='SDKROOT')
                 project.add_file_if_doesnt_exist('System/Library/Frameworks/StoreKit.framework',  parent=frameworksGroupID, tree='SDKROOT')
                 project.add_file_if_doesnt_exist('System/Library/Frameworks/CoreTelephony.framework',  parent=frameworksGroupID, tree='SDKROOT')
-                project.add_file_if_doesnt_exist('usr/lib/libz.tbd',                          parent=frameworksGroupID, tree='SDKROOT')
+                project.add_file_if_doesnt_exist('usr/lib/libz' + libraryExtension,                          parent=frameworksGroupID, tree='SDKROOT')
 
                 print "Heyzap: done adding libs, adding flags."
                 # Add -ObjC for the benefit of AppLovin/FAN

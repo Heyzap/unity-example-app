@@ -28,5 +28,9 @@
 
         <service android:name="com.fyber.cache.CacheVideoDownloadService" android:exported="false" />
 
+        <meta-data
+                android:name="FYBVideoPlayerOptionCloseButtonDelay"
+                android:value="-1" />
+
     </application>
 </manifest>

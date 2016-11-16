@@ -144,7 +144,7 @@ extern "C" {
         return [HZIncentivizedAd isAvailable];
     }
     
-    void hz_ads_show_banner(const char *position, const char *tag) {
+    void hz_ads_show_banner(const char *position, const char *tag, const char *admobSizeChar, const char *facebookSizeChar, const char *inmobiSizeChar) {
         // After the banner is loaded initially, this function doubles as a way to un-hide the banner.
         if ([HZBannerAdController sharedInstance].bannerView) {
             [HZBannerAdController sharedInstance].bannerView.hidden = NO;
@@ -158,17 +158,63 @@ extern "C" {
             pos = HZBannerPositionTop;
         }
 
+
         HZBannerAdOptions *options = [[HZBannerAdOptions alloc] init];
         options.tag = [NSString stringWithUTF8String:tag];
+
+        NSString *admobSize = [NSString stringWithUTF8String:admobSizeChar];
+        NSString *facebookSize = [NSString stringWithUTF8String:facebookSizeChar];
+        NSString *inmobiSize = [NSString stringWithUTF8String:inmobiSizeChar];
+
+        if ([admobSize isEqualToString:@"SMART_BANNER"]) {
+            options.admobBannerSize = HZAdMobBannerSizeFlexibleWidthPortrait;
+        } else if ([admobSize isEqualToString:@"SMART_BANNER_LANDSCAPE"]) {
+            options.admobBannerSize = HZAdMobBannerSizeFlexibleWidthLandscape;
+        } else if ([admobSize isEqualToString:@"BANNER"]) {
+            options.admobBannerSize = HZAdMobBannerSizeBanner;
+        } else if ([admobSize isEqualToString:@"LARGE_BANNER"] || [admobSize isEqualToString:@"MEDIUM_RECTANGLE"]) { // iOS doesn't support MEDIUM_RECTANGLE
+            options.admobBannerSize = HZAdMobBannerSizeLargeBanner;
+        } else if ([admobSize isEqualToString:@"LEADERBOARD"]) {
+            options.admobBannerSize = HZAdMobBannerSizeLeaderboard;
+        } else if ([admobSize isEqualToString:@"FULL_BANNER"] || [admobSize isEqualToString:@"WIDE_SKYSCRAPER"]) { // iOS doesn't support WIDE_SKYSCRAPER
+            options.admobBannerSize = HZAdMobBannerSizeFullBanner;
+        }
+        
+        if ([facebookSize isEqualToString:@"BANNER_320_50"]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            options.facebookBannerSize = HZFacebookBannerSize320x50;
+#pragma clang diagnostic pop
+        } else if ([facebookSize isEqualToString:@"BANNER_HEIGHT_50"]) {
+            options.facebookBannerSize = HZFacebookBannerSizeFlexibleWidthHeight50;
+        } else if ([facebookSize isEqualToString:@"BANNER_HEIGHT_90"] || [facebookSize isEqualToString:@"BANNER_RECTANGLE_250"]) { // iOS doesn't support BANNER_RECTANGLE_250
+            options.facebookBannerSize = HZFacebookBannerSizeFlexibleWidthHeight90;
+        }
+
+        if ([inmobiSize isEqualToString:@"BANNER_320_50"]) {
+            options.inmobiBannerSize = HZInmobiBannerSize320x50;
+        } else if ([inmobiSize isEqualToString:@"BANNER_320_48"]) {
+            options.inmobiBannerSize = HZInmobiBannerSize320x48;
+        } else if ([inmobiSize isEqualToString:@"BANNER_300_250"]) {
+            options.inmobiBannerSize = HZInmobiBannerSize300x250;
+        } else if ([inmobiSize isEqualToString:@"BANNER_120_600"]) {
+            options.inmobiBannerSize = HZInmobiBannerSize120x600;
+        } else if ([inmobiSize isEqualToString:@"BANNER_468_60"]) {
+            options.inmobiBannerSize = HZInmobiBannerSize468x60;
+        } else if ([inmobiSize isEqualToString:@"BANNER_728_90"]) {
+            options.inmobiBannerSize = HZInmobiBannerSize728x90;
+        } else if ([inmobiSize isEqualToString:@"BANNER_1024_768"] ) {
+            options.inmobiBannerSize = HZInmobiBannerSize1024x768;
+        }
         
         [[HZBannerAdController sharedInstance] placeBannerAtPosition:pos
                                                              options:options
                                                              success:^(UIView *banner) {
-                                                                // delegate isn't notified by HZBannerAdController on initial fetch, but since Unity devs don't have access to this success callback, we send the didReceiveAd: callback.
+                                                                 // delegate isn't notified by HZBannerAdController on initial fetch, but since Unity devs don't have access to this success callback, we send the didReceiveAd: callback.
                                                                  [HZBannerDelegate bannerDidReceiveAd:[HZBannerAdController sharedInstance]];
                                                              }
                                                              failure:^(NSError *error) {
-                                                                // the delegate should already be called by the HZBannerAdController
+                                                                 // the delegate should already be called by the HZBannerAdController
                                                                  NSLog(@"[ Heyzap Unity ] Error fetching banner: %@", error);
                                                              }
         ];

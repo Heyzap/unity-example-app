@@ -62,6 +62,21 @@ typedef NS_ENUM(NSUInteger, HZAdMobBannerSize){
     HZAdMobBannerSizeFullBanner,
 };
 
+
+/**
+ * The size to use for Inmobi banners
+ */
+typedef NS_ENUM(NSUInteger, HZInmobiBannerSize) {
+    HZInmobiBannerSize320x50,
+    HZInmobiBannerSize320x48,
+    HZInmobiBannerSize300x250,
+    HZInmobiBannerSize120x600,
+    HZInmobiBannerSize468x60,
+    HZInmobiBannerSize728x90,
+    HZInmobiBannerSize1024x768
+};
+
+
 @interface HZBannerAdOptions : NSObject <NSCopying>
 
 /**
@@ -73,6 +88,11 @@ typedef NS_ENUM(NSUInteger, HZAdMobBannerSize){
  *  The size to use for Admob banners.
  */
 @property (nonatomic) HZAdMobBannerSize admobBannerSize;
+
+/**
+ *  The size to use for Inmobi banners.
+ */
+@property (nonatomic) HZInmobiBannerSize inmobiBannerSize;
 
 /**
  *  The view controller to present the ad from.
@@ -87,5 +107,16 @@ typedef NS_ENUM(NSUInteger, HZAdMobBannerSize){
  *  An identifier for the location of the ad, which you can use to disable the ad from your dashboard. If not specified the tag "default" is always used.
  */
 @property (nonatomic, strong) NSString *tag;
+
+/**
+ *  Banner ads have some internal retry logic, to prevent show failures caused by bad network connectivity. Set this time interval to restrict how many seconds Heyzap spends trying to fetch banner ads. This value will only be considered after an initial failure; for instance, a fetchTimeout of 0 will not stop the initial fetch, but it will stop all retries.
+ *
+ *  @b Default: @c DBL_MAX (no timeout).
+ *
+ *  @b Minimum: 0
+ *
+ *  @note Setting this value too low will prevent Heyzap from retrying at all. Give time for slow network requests in this value if you wish to allow Heyzap to retry at least a couple of times before failing (i.e.: at least 60 seconds).
+ */
+@property (nonatomic) NSTimeInterval fetchTimeout;
 
 @end

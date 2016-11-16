@@ -49,7 +49,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"10.1.0"
+#define SDK_VERSION @"10.2.0"
 
 #if __has_feature(objc_modules)
 @import AdSupport;

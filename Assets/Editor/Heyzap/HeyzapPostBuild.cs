@@ -34,7 +34,7 @@ public class HeyzapPostBuild : MonoBehaviour
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = "python2.6",
+                        FileName = "python2.7",
                         Arguments = args,
                         UseShellExecute = false,
                         RedirectStandardOutput = false,

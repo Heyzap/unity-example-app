@@ -144,7 +144,7 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HZBannerAdIOS : MonoBehaviour {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_banner(string position, string tag);
+        private static extern void hz_ads_show_banner(string position, string tag, string admobSize, string facebookSize, string inmobiSize);
         [DllImport ("__Internal")]
         private static extern bool hz_ads_hide_banner();
         [DllImport ("__Internal")]
@@ -153,7 +153,7 @@ namespace Heyzap {
         private static extern string hz_ads_banner_dimensions();
         
         public static void ShowWithOptions(HZBannerShowOptions showOptions) {
-            hz_ads_show_banner(showOptions.Position, showOptions.Tag);
+            hz_ads_show_banner(showOptions.Position, showOptions.Tag, showOptions.SelectedAdMobSize.ToString(), showOptions.SelectedFacebookSize.ToString(), showOptions.SelectedInmobiSize.ToString());
         }
 
         public static bool Hide() {
@@ -216,7 +216,7 @@ namespace Heyzap {
             
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showBanner", showOptions.Position, showOptions.SelectedAdMobSize.ToString(), showOptions.SelectedFacebookSize.ToString(), showOptions.Tag);
+                jc.CallStatic("showBanner", showOptions.Position, showOptions.Tag, showOptions.SelectedAdMobSize.ToString(), showOptions.SelectedFacebookSize.ToString(), showOptions.SelectedInmobiSize.ToString());
             }
         }
 

@@ -1,9 +1,9 @@
 {
-  "version": "2.0.5-r1",
+  "version": "2.0.5-r2",
   "group": "Mediation/UnityAds",
   "patches": [],
   "libs": [
-    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_2.0.5-r1.embeddedframework/Fyber_UnityAds_2.0.5-r1.framework:<group>",
+    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_2.0.5-r2.embeddedframework/Fyber_UnityAds_2.0.5-r2.framework:<group>",
   ],
   "librarysearchpaths": [],
   "frameworks": [
@@ -17,12 +17,12 @@
     "CoreFoundation.framework"
   ],
   "frameworksearchpaths": [
-    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_2.0.5-r1.embeddedframework/"
+    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_2.0.5-r2.embeddedframework/"
   ],
   "headerpaths": [],
   "files": [],
   "folders": [
-    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_2.0.5-r1.embeddedframework/Resources"
+    "Fyber/iOS/mediation/UnityAds/Fyber_UnityAds_2.0.5-r2.embeddedframework/Frameworks"
   ],	
   "excludes": [],
   "linkers": [],

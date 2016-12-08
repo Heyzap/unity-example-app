@@ -1,15 +1,15 @@
 {
-  "version": "4.0.6-r1",
+  "version": "4.0.9-r1",
   "group": "Mediation/Vungle",
   "patches": [],
   "libs": [
     "libz.dylib",
     "libsqlite3.dylib"
-    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_4.0.6-r1.embeddedframework/Fyber_Vungle_4.0.6-r1.framework:<group>"
+    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_4.0.9-r1.embeddedframework/Fyber_Vungle_4.0.9-r1.framework:<group>"
   ],
   "librarysearchpaths":[],
   "frameworks": [
-    "AdSupport.framework:weak",
+    "AdSupport.framework",
     "AudioToolbox.framework",
     "AVFoundation.framework",
     "CFNetwork.framework",
@@ -18,19 +18,18 @@
     "Foundation.framework",
     "MediaPlayer.framework",
     "QuartzCore.framework",
-    "StoreKit.framework:weak",
+    "StoreKit.framework",
     "SystemConfiguration.framework",
     "UIKit.framework",
-    "CoreLocation.framework",
-    "WebKit.framework"
+    "WebKit.framework:weak"
   ],
   "frameworksearchpaths": [
-    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_4.0.6-r1.embeddedframework/"
+    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_4.0.9-r1.embeddedframework/"
   ],
   "headerpaths": [],
   "files": [],
   "folders": [
-    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_4.0.6-r1.embeddedframework/Resources"
+    "Fyber/iOS/mediation/Vungle/Fyber_Vungle_4.0.9-r1.embeddedframework/Resources"
   ],	
   "excludes": [],
   "linkers": [

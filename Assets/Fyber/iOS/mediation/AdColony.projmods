@@ -1,14 +1,14 @@
 {
-  "version": "3.0.4-r2",
+  "version": "2.6.3-r1",
   "group": "Mediation/AdColony",
   "patches": [],
   "libs": [
     "libz.1.2.5.dylib",
-    "Fyber/iOS/mediation/AdColony/Fyber_AdColony_3.0.4-r2.embeddedframework/Fyber_AdColony_3.0.4-r2.framework:<group>"
+    "Fyber/iOS/mediation/AdColony/Fyber_AdColony_2.6.3-r1.embeddedframework/Fyber_AdColony_2.6.3-r1.framework:<group>"
   ],
   "librarysearchpaths":[],
   "frameworks": [
-    "AdSupport.framework",
+    "AdSupport.framework:weak",
     "AudioToolbox.framework",
     "AVFoundation.framework",
     "CoreGraphics.framework",
@@ -16,17 +16,16 @@
     "CoreTelephony.framework",
     "EventKit.framework",
     "EventKitUI.framework",
-    "JavaScriptCore.framework:weak",
     "MediaPlayer.framework",
     "MessageUI.framework",
     "QuartzCore.framework",
-    "Social.framework",
-    "StoreKit.framework",
+    "Social.framework:weak",
+    "StoreKit.framework:weak",
     "SystemConfiguration.framework",
     "WebKit.framework:weak",
   ],
   "frameworksearchpaths": [
-    "Fyber/iOS/mediation/AdColony/Fyber_AdColony_3.0.4-r2.embeddedframework/"
+    "Fyber/iOS/mediation/AdColony/Fyber_AdColony_2.6.3-r1.embeddedframework/"
   ],
   "headerpaths": [
   ],

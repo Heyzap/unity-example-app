@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fyber.mediation.admob"
     android:versionCode="1"
-    android:versionName="9.6.1-r1" >
+    android:versionName="9.8.0-r1" >
 
     <uses-sdk
         android:minSdkVersion="10"

@@ -1,9 +1,9 @@
 {
-  "version": "7.13.0-r1",
+  "version": "7.16.0-r1",
   "group": "Mediation/AdMob",
   "patches": [],
   "libs": [
-    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.13.0-r1.embeddedframework/Fyber_AdMob_7.13.0-r1.framework:<group>"
+    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.16.0-r1.embeddedframework/Fyber_AdMob_7.16.0-r1.framework:<group>"
   ],
   "librarysearchpaths": [],
   "frameworks": [
@@ -21,12 +21,12 @@
     "MobileCoreServices.framework"
   ],
   "frameworksearchpaths": [
-    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.13.0-r1.embeddedframework/"
+    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.16.0-r1.embeddedframework/"
   ],
   "headerpaths": [],
   "files": [],
   "folders": [
-    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.13.0-r1.embeddedframework/Resources"
+    "Fyber/iOS/mediation/AdMob/Fyber_AdMob_7.16.0-r1.embeddedframework/Resources"
   ],	
   "excludes": [],
   "linkers": [],

@@ -2,28 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fyber.mediation.adcolony"
     android:versionCode="1"
-    android:versionName="2.3.6-r2" >
+    android:versionName="3.0.7-r2" >
 
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="23" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application>
         <activity
-            android:name="com.jirbo.adcolony.AdColonyOverlay"
+            android:name="com.adcolony.sdk.AdColonyInterstitialActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+            android:hardwareAccelerated="true" />
         <activity
-            android:name="com.jirbo.adcolony.AdColonyFullscreen"
+            android:name="com.adcolony.sdk.AdColonyAdViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="com.jirbo.adcolony.AdColonyBrowser"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+            android:hardwareAccelerated="true" />
     </application>
 
 </manifest>

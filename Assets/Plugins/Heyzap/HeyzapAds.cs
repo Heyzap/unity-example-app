@@ -250,7 +250,7 @@ namespace Heyzap {
         }
 
         /// <summary>
-        /// Enables verbose debug logging for the Heyzap SDK.
+        /// Enables verbose debug logging for the Heyzap SDK. For third party logging, <see cref="ShowThirdPartyDebugLogs()"/>.
         /// </summary>
         public static void ShowDebugLogs() {
             #if UNITY_ANDROID
@@ -263,7 +263,7 @@ namespace Heyzap {
         }
 
         /// <summary>
-        /// Hides all debug logs coming from the Heyzap SDK.
+        /// Hides all debug logs coming from the Heyzap SDK. For third party logging, <see cref="HideThirdPartyDebugLogs()"/>.
         /// </summary>
         public static void HideDebugLogs() {
             #if UNITY_ANDROID
@@ -298,6 +298,35 @@ namespace Heyzap {
             
             #if UNITY_IPHONE && !UNITY_EDITOR
             HeyzapAdsIOS.HideThirdPartyDebugLogs();
+            #endif
+        }
+
+        /// <summary>
+        /// Set the bundle ID (i.e.: `com.name.of.company.and.app`) on Android and iOS to something other than what you have set in the Unity Editor's Player Settings menu.
+        /// Note: This method MUST be called BEFORE calling `Start` on the SDK.
+        /// This method is mostly useful for debugging purposes; for instance, you might use this to use a test account & bundle ID on debug builds.
+        /// </summary>
+        /// <param name="bundleID">The new bundle ID you want to use. This is how we link this app to your dashboard account on developers.heyzap.com .</param>
+        public static void SetBundleIdentifier(string bundleID) {
+            #if UNITY_ANDROID
+            HeyzapAdsAndroid.SetBundleIdentifier(bundleID);
+            #endif
+            
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HeyzapAdsIOS.SetBundleIdentifier(bundleID);
+            #endif
+        }
+
+        /// <summary>
+        /// Adds the device as a Facebook Audience Network test device, allowing you to receive test ads when FAN would otherwise not give you fill. This API is only supported on iOS.
+        /// </summary>
+        /// <param name="device_id">The Device ID that FAN prints to the iOS console</param>
+        public static void AddFacebookTestDevice(string device_id) {
+            #if UNITY_ANDROID
+            #endif
+            
+            #if UNITY_IPHONE && !UNITY_EDITOR
+            HeyzapAdsIOS.AddFacebookTestDevice(device_id);
             #endif
         }
         #endregion
@@ -420,6 +449,11 @@ namespace Heyzap {
         [DllImport ("__Internal")]
         private static extern void hz_ads_show_third_party_debug_logs();
 
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_set_bundle_identifier(string bundleID);
+
+        [DllImport ("__Internal")]
+        private static extern void hz_add_facebook_test_device(string device_id);
 
         public static void Start(string publisher_id, int options=0) {
             hz_ads_start_app(publisher_id, options);
@@ -463,6 +497,14 @@ namespace Heyzap {
         
         public static void HideThirdPartyDebugLogs() {
             hz_ads_hide_third_party_debug_logs();
+        }
+
+        public static void SetBundleIdentifier(string bundleID) {
+            hz_ads_set_bundle_identifier(bundleID);
+        }
+
+        public static void AddFacebookTestDevice(string device_id) {
+            hz_add_facebook_test_device(device_id);
         }
     }
     #endif
@@ -525,6 +567,13 @@ namespace Heyzap {
             if(Application.platform != RuntimePlatform.Android) return;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
                 jc.CallStatic("hideDebugLogs");
+            }
+        }
+
+        public static void SetBundleIdentifier(string bundleID) {
+            if(Application.platform != RuntimePlatform.Android) return;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.ads.HeyzapAds")) {
+                jc.CallStatic("setBundleId", bundleID);
             }
         }
     }

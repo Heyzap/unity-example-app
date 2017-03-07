@@ -23,8 +23,13 @@
 - (void)registerCoverImageView:(UIView *)view tappable:(BOOL)tappable;
 - (void)registerCallToActionView:(UIView *)view;
 - (void)registerAdvertiserNameView:(UIView *)view tappable:(BOOL)tappable;
+- (void)registerRatingView:(UIView *)view tappable:(BOOL)tappable;
 
 - (void)registerOtherView:(UIView *)view tappable:(BOOL)tappable;
+#if __has_feature(objc_generics)
 - (void)registerOtherViews:(NSArray <UIView *>*)views tappable:(BOOL)tappable;
+#else
+- (void)registerOtherViews:(NSArray *)views tappable:(BOOL)tappable;
+#endif
 
 @end

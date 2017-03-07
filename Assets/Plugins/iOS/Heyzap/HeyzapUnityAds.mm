@@ -301,6 +301,11 @@ extern "C" {
     void hz_ads_hide_third_party_debug_logs(void) {
         [HZLog setThirdPartyLoggingEnabled:NO];
     }
+
+    void hz_ads_set_bundle_identifier(const char *bundle_id) {
+        NSString *bundleID = [NSString stringWithUTF8String:bundle_id];
+        [HeyzapAds setBundleIdentifier:bundleID];
+    }
     
     BOOL hz_chartboost_enabled(void) {
         return [HeyzapAds isNetworkInitialized:HZNetworkChartboost];
@@ -345,5 +350,16 @@ extern "C" {
         }
         HZDLog(@"Requesting Chartboost show interstitial for location: %@",nsLocation);
         [HZUnityAdapterChartboostProxy showInterstitial:nsLocation];
+    }
+    
+    void hz_add_facebook_test_device(const char *device_id) {
+        NSString *deviceID = [NSString stringWithUTF8String:device_id];
+        
+        Class fbAdSettings = NSClassFromString(@"FBAdSettings");
+        if ([fbAdSettings respondsToSelector:@selector(addTestDevice:)]) {
+            [fbAdSettings performSelector:@selector(addTestDevice:) withObject:deviceID];
+        } else {
+            HZELog(@"Couldn't find FBAdSettings, or it didn't respond ");
+        }
     }
 }

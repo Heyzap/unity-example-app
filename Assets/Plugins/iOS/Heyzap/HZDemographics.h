@@ -20,6 +20,6 @@
  *
  *  Networks who use this information: AdColony, AdMob, AppLovin, InMobi.
  */
-@property (nonatomic) CLLocation *location;
+@property (nonatomic, strong) CLLocation *location;
 
 @end

@@ -85,13 +85,16 @@ extern NSString * const HZMediatedNativeAdClickNotification;
 /**
  *  Returns a large image to use in your native ad.
  *
- *  @param preferredOrientation Whether you'd prefer a landscape or portrait image. The default is landscape. This parameter is only used for Heyzap; Facebook only offers one cover image, and AdMob requires that you specify the image orientation when requesting the ad (see `admobPreferredImageOrientation` in `HZFetchOptions`).
+ *  @param preferredOrientation Whether you'd prefer a landscape or portrait image. The default is landscape. This parameter is only used for Heyzap; AdMob requires that you specify the image orientation when requesting the ad (see `admobPreferredImageOrientation` in `HZFetchOptions`), and the other networks only offer one image.
  *
  *  @return The image, or `nil` if none was available.
  *
  *  @warning AdMob does not provide the height and width of the image, so these values will be 0 when using AdMob; use a view that properly handles arbitrarily sized images (e.g. `UIImageView` with `contentMode` set to ``UIViewContentModeScaleAspectFit`), or check the image's size after loading it from the network.
  */
-- (HZNativeAdImage * _Nullable)coverImageWithPreferredOrientation:(HZPreferredImageOrientation)preferredOrientation;
+- (HZNativeAdImage * __nullable)coverImageWithPreferredOrientation:(HZPreferredImageOrientation)preferredOrientation;
+
+
+@property (nonatomic, readonly, nullable) NSNumber *rating;
 
 #pragma mark - Displaying the Native Ad
 
@@ -107,7 +110,7 @@ extern NSString * const HZMediatedNativeAdClickNotification;
  *
  *  @see HZMediatedNativeAdViewRegisterer
  */
-- (void)registerViews:(void(^)(id<HZMediatedNativeAdViewRegisterer> _Nonnull))block;
+- (void)registerViews:(void(^)(id<HZMediatedNativeAdViewRegisterer> __nonnull))block;
 
 /**
  *  Each view you use as part of your native ad must be a subview of this view.
@@ -116,11 +119,11 @@ extern NSString * const HZMediatedNativeAdClickNotification;
  *
  *  For AdMob, a `GADNativeContentAdView` or `GADNativeAppInstallAdView` is returned.
  *  For Facebook, the wrapper view is passed to `registerViewForInteraction:...`
- *  For Heyzap, the wrapper view automatically handles impression and click reporting.
+ *  For Heyzap, AppLovin, and InMobi, the wrapper view automatically handles impression and click reporting.
  *
  *  @return The `UIView` to place your views in.
  */
-- (UIView * _Nonnull)wrapperView;
+- (UIView * __nonnull)wrapperView;
 
 #pragma mark - Native Ad Metadata
 
@@ -177,7 +180,7 @@ extern NSString * const HZMediatedNativeAdClickNotification;
 
 #pragma mark - Utility
 
-NSString * _Nonnull NSStringFromHZMediatedNativeAdType(HZMediatedNativeAdType adType);
+NSString * __nonnull NSStringFromHZMediatedNativeAdType(HZMediatedNativeAdType adType);
 
 @end
 

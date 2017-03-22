@@ -119,10 +119,6 @@ extern const CGSize HZHeyzapExchangeBannerSize728x90;
  */
 @property (nonatomic) CGSize inMobiBannerSize;
 
-#pragma mark - iAd
-
-// iAd does not offer sizing options. Please refer to the `ADBannerView` documentation for information on ad sizes.
-
 /// @name Other Banner Options
 #pragma mark - Other Banner Options
 

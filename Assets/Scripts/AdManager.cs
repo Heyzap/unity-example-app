@@ -34,6 +34,10 @@ public class AdManager : MonoBehaviour {
 
     private string bannerPosition;
 
+    public void UpdateLocation(float latitude, float longitude, float horizAcc, float vertAcc, float alt, double timestamp) {
+        //HZDemographics.SetUserLocation(latitude, longitude, horizAcc, vertAcc, alt, timestamp);
+    }
+
     void Awake() {
         this.adTagTextField.MustNotBeNull();
         this.bannerControls.MustNotBeNull();
@@ -45,6 +49,17 @@ public class AdManager : MonoBehaviour {
         HeyzapAds.NetworkCallbackListener networkCallbackListner = delegate(string network, string callback) {
             this.console.Append("[" + network + "]: " + callback);
         };
+
+        // HZDemographics.SetUserGender(HZDemographics.Gender.MALE);
+        // HZDemographics.SetUserPostalCode("94103");
+        // HZDemographics.SetUserHouseholdIncome(100000);
+        // HZDemographics.SetUserMaritalStatus(HZDemographics.MaritalStatus.SINGLE);
+        // HZDemographics.SetUserEducationLevel(HZDemographics.EducationLevel.BACHELORS_DEGREE);
+        // HZDemographics.SetUserBirthDate("1990-08-05");
+
+        // UnityEngine.Debug.Log ("calling loc service");
+        // TestLocationService locServ = new TestLocationService();
+        // locServ.Start(this.console);
 
         HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
         HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);

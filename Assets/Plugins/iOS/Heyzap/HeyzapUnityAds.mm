@@ -25,6 +25,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+
+#import <CoreLocation/CLLocation.h>
+
 #import "HeyzapAds.h"
 #import "HZInterstitialAd.h"
 #import "HZVideoAd.h"
@@ -32,6 +35,7 @@
 #import "HZBannerAd.h"
 #import "HZUnityAdapterChartboostProxy.h"
 #import "HZLog.h"
+#import "HZDemographics.h"
 
 extern void UnitySendMessage(const char *, const char *, const char *);
 
@@ -143,10 +147,6 @@ extern "C" {
         [HZInterstitialAd showForTag: [NSString stringWithUTF8String: tag]];
     }
     
-    void hz_ads_hide_interstitial(void) {
-        //[HZInterstitialAd hide];
-    }
-    
     void hz_ads_fetch_interstitial(const char *tag) {
         [HZInterstitialAd fetchForTag: [NSString stringWithUTF8String: tag]];
     }
@@ -157,10 +157,6 @@ extern "C" {
     
     void hz_ads_show_video(const char *tag) {
         [HZVideoAd showForTag: [NSString stringWithUTF8String: tag]];
-    }
-    
-    void hz_ads_hide_video(void) {
-        //[HZVideoAd hide];
     }
     
     void hz_ads_fetch_video(const char *tag) {
@@ -174,16 +170,12 @@ extern "C" {
     void hz_ads_show_incentivized(const char *tag) {
         [HZIncentivizedAd showForTag: [NSString stringWithUTF8String: tag]];
     }
-
+    
     void hz_ads_show_incentivized_with_custom_info(const char *tag, const char *customInfo) {
         HZShowOptions *showOptions = [HZShowOptions new];
         showOptions.tag = [NSString stringWithUTF8String: tag];
         showOptions.incentivizedInfo = [NSString stringWithUTF8String: customInfo];
         [HZIncentivizedAd showWithOptions:showOptions];
-    }
-    
-    void hz_ads_hide_incentivized() {
-        //[HZIncentivizedAd hide];
     }
     
     void hz_ads_fetch_incentivized(const char *tag) {
@@ -214,7 +206,7 @@ extern "C" {
                     [banner removeFromSuperview];
                     NSLog(@"Requested a banner before the previous one was destroyed. Ignoring this request.");
                 }
-
+                
             } failure:^(NSError *error) {
                 NSLog(@"Error fetching banner; error = %@",error);
                 [HZBannerDelegate bannerDidFailToReceiveAd: nil error: error];
@@ -263,11 +255,11 @@ extern "C" {
     }
     
     char * hz_ads_get_remote_data(void){
-      NSString *remoteData = [HeyzapAds getRemoteDataJsonString];
-      const char* remoteString = [remoteData UTF8String];
-      char* returnValue = (char*)malloc(sizeof(char)*(strlen(remoteString) + 1));
-      strcpy(returnValue, remoteString);
-      return returnValue;
+        NSString *remoteData = [HeyzapAds getRemoteDataJsonString];
+        const char* remoteString = [remoteData UTF8String];
+        char* returnValue = (char*)malloc(sizeof(char)*(strlen(remoteString) + 1));
+        strcpy(returnValue, remoteString);
+        return returnValue;
     }
     
     void hz_ads_show_mediation_debug_view_controller(void) {
@@ -275,7 +267,9 @@ extern "C" {
     }
     
     bool hz_ads_is_network_initialized(const char *network) {
-        return [HeyzapAds isNetworkInitialized: [NSString stringWithUTF8String: network]];
+        if (network == NULL) { return NO; }
+        
+        return [HeyzapAds isNetworkInitialized:[NSString stringWithUTF8String:network]];
     }
     
     void hz_pause_expensive_work(void) {
@@ -301,11 +295,95 @@ extern "C" {
     void hz_ads_hide_third_party_debug_logs(void) {
         [HZLog setThirdPartyLoggingEnabled:NO];
     }
-
+    
     void hz_ads_set_bundle_identifier(const char *bundle_id) {
+        if (bundle_id == NULL) { return; }
+        
         NSString *bundleID = [NSString stringWithUTF8String:bundle_id];
         [HeyzapAds setBundleIdentifier:bundleID];
     }
+    
+    
+    void hz_demo_set_gender(const char * genderChar) {
+        NSString *gender = [NSString stringWithUTF8String:genderChar];
+        
+        if ([gender isEqualToString:@"MALE"]) {
+            [[HeyzapAds demographicInformation] setUserGender:HZUserGenderMale];
+        } else if ([gender isEqualToString:@"FEMALE"]) {
+            [[HeyzapAds demographicInformation] setUserGender:HZUserGenderFemale];
+        } else if ([gender isEqualToString:@"OTHER"]) {
+            [[HeyzapAds demographicInformation] setUserGender:HZUserGenderOther];
+        } else {
+            [[HeyzapAds demographicInformation] setUserGender:HZUserGenderUnknown];
+        }
+    }
+    
+    void hz_demo_set_location(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp) {
+        CLLocation *location = [[CLLocation alloc] initWithCoordinate:CLLocationCoordinate2DMake(latitude, longitude) altitude:altitude horizontalAccuracy:horizontalAccuracy verticalAccuracy:verticalAccuracy timestamp:[NSDate dateWithTimeIntervalSince1970:timestamp]];
+        [[HeyzapAds demographicInformation] setLocation:location];
+    }
+    
+    void hz_demo_set_postal_code(const char * postalCodeChar) {
+        NSString *postalCode = (postalCodeChar == NULL ? nil : [NSString stringWithUTF8String:postalCodeChar]);
+        [[HeyzapAds demographicInformation] setUserPostalCode:postalCode];
+    }
+    
+    void hz_demo_set_household_income(int householdIncome) {
+        [[HeyzapAds demographicInformation] setUserHouseholdIncome:@(householdIncome)];
+    }
+    
+    void hz_demo_set_marital_status(const char * maritalStatusChar) {
+        NSString *maritalStatus = [NSString stringWithUTF8String:maritalStatusChar];
+        
+        if ([maritalStatus isEqualToString:@"SINGLE"]) {
+            [[HeyzapAds demographicInformation] setUserMaritalStatus:HZUserMaritalStatusSingle];
+        } else if ([maritalStatus isEqualToString:@"MARRIED"]) {
+            [[HeyzapAds demographicInformation] setUserMaritalStatus:HZUserMaritalStatusMarried];
+        } else {
+            [[HeyzapAds demographicInformation] setUserMaritalStatus:HZUserMaritalStatusUnknown];
+        }
+    }
+    
+    void hz_demo_set_education_level(const char * educationLevelChar) {
+        NSString *educationLevel = [NSString stringWithUTF8String:educationLevelChar];
+        
+        if ([educationLevel isEqualToString:@"GRADE_SCHOOL"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationGradeSchool];
+        } else if ([educationLevel isEqualToString:@"HIGH_SCHOOL_UNFINISHED"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationHighSchoolUnfinished];
+        } else if ([educationLevel isEqualToString:@"HIGH_SCHOOL_FINISHED"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationHighSchoolFinished];
+        } else if ([educationLevel isEqualToString:@"COLLEGE_UNFINISHED"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationCollegeUnfinished];
+        } else if ([educationLevel isEqualToString:@"ASSOCIATE_DEGREE"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationAssociateDegree];
+        } else if ([educationLevel isEqualToString:@"BACHELORS_DEGREE"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationBachelorsDegree];
+        } else if ([educationLevel isEqualToString:@"GRADUATE_DEGREE"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationGraduateDegree];
+        } else if ([educationLevel isEqualToString:@"POSTGRADUATE_DEGREE"]) {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationPostGraduateDegree];
+        } else {
+            [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationUnknown];
+        }
+    }
+    
+    void hz_demo_set_birth_date(const char * yyyyMMdd_dateChar) {
+        __block NSDateFormatter *dateFormat;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"yyyy/MM/dd"];
+        });
+        
+        NSDate *parsedDate = nil;
+        if (yyyyMMdd_dateChar != NULL) {
+            parsedDate = [dateFormat dateFromString:[NSString stringWithUTF8String:yyyyMMdd_dateChar]];
+        }
+        
+        [[HeyzapAds demographicInformation] setUserBirthDate:parsedDate];
+    }
+    
     
     BOOL hz_chartboost_enabled(void) {
         return [HeyzapAds isNetworkInitialized:HZNetworkChartboost];

@@ -72,14 +72,9 @@ namespace Heyzap {
         public const int FLAG_NATIVE_ADS_ONLY = 1 << 5; // 32
         /// <summary>
         /// Use this flag to to mark mediated ads as "child-directed". This value will be passed on to networks that support sending such an option (for purposes of the Children's Online Privacy Protection Act (COPPA)).
-        /// Currently, only AdMob uses this option's value. The AdMob setting will be left alone if this flag is not passed when the Heyzap SDK is started.
+        /// Currently, only AdMob, FAN, and Heyzap Exchange use this option's value. This value will be `OR`ed with the per-network server-side setting we provide on your Mediation Settings dashboard.
         /// </summary>
         public const int FLAG_CHILD_DIRECTED_ADS = 1 << 6; // 64
-
-        [Obsolete("Use FLAG_AMAZON instead - we refactored the flags to be consistently named.")]
-        public const int AMAZON = FLAG_AMAZON;
-        [Obsolete("Use FLAG_DISABLE_MEDIATION instead - we refactored the flags to be consistently named.")]
-        public const int DISABLE_MEDIATION = FLAG_DISABLE_MEDIATION;
         #endregion
 
         public const string DEFAULT_TAG = "default";
@@ -98,7 +93,7 @@ namespace Heyzap {
             public const string AUDIO_STARTING = "audio_starting";
             public const string AUDIO_FINISHED = "audio_finished";
 
-            // currently sent in Android, but they were removed for iOS
+            // these banner state callbacks are currently sent in Android, but they were removed for iOS
             public const string BANNER_LOADED = "banner-loaded";
             public const string BANNER_CLICK = "banner-click";
             public const string BANNER_HIDE = "banner-hide";
@@ -136,6 +131,7 @@ namespace Heyzap {
             public const string IAD = "iad";
             public const string LEADBOLT = "leadbolt";
             public const string INMOBI = "inmobi";
+            public const string DOMOB = "domob";
         }
         #endregion
 
@@ -161,6 +157,7 @@ namespace Heyzap {
             HZVideoAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
             HZBannerAd.InitReceiver();
+            HZDemographics.InitReceiver();
 
             #endif
         }
@@ -357,60 +354,6 @@ namespace Heyzap {
             }
             
             return tag;
-        }
-        #endregion
-
-        #region Deprecated methods
-        //-------- Deprecated methods - will be removed in a future version of the SDK -------- //
-        
-        [Obsolete("Use the Start() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void start(string publisher_id, int options) {
-            Start(publisher_id, options);
-        }
-
-        [Obsolete("Use the GetRemoteData() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static string getRemoteData(){
-            return GetRemoteData();
-        }
-
-        [Obsolete("Use the ShowMediationTestSuite() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void showMediationTestSuite() {
-            ShowMediationTestSuite();
-        }
-
-        [Obsolete("Use the IsNetworkInitialized(String) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static Boolean isNetworkInitialized(string network) {
-            return IsNetworkInitialized(network);
-        }
-
-        [Obsolete("Use the SetNetworkCallbackListener(NetworkCallbackListener) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void setNetworkCallbackListener(NetworkCallbackListener listener) {
-            SetNetworkCallbackListener(listener);
-        }
-
-        [Obsolete("Use the PauseExpensiveWork() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void pauseExpensiveWork() {
-            PauseExpensiveWork();
-        }
-
-        [Obsolete("Use the ResumeExpensiveWork() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void resumeExpensiveWork() {
-            ResumeExpensiveWork();
-        }
-
-        [Obsolete("Use the ShowDebugLogs() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void showDebugLogs() {
-            ShowDebugLogs();
-        }
-
-        [Obsolete("Use the HideDebugLogs() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void hideDebugLogs() {
-            HideDebugLogs();
-        }
-
-        [Obsolete("Use the OnBackPressed() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static Boolean onBackPressed() {
-            return OnBackPressed();
         }
         #endregion
     }

@@ -57,7 +57,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.6.10"
+#define SDK_VERSION @"9.8.0"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -66,7 +66,6 @@
 @import MediaPlayer;
 @import QuartzCore;
 @import StoreKit;
-@import iAd;
 @import MobileCoreServices;
 @import Security;
 @import SystemConfiguration;
@@ -105,7 +104,8 @@ typedef NS_ENUM(NSUInteger, HZAdOptions) {
     
     /**
      *  Pass this flag to mark mediated ads as "child-directed". This value will be passed on to networks that support sending such an option (for purposes of the Children's Online Privacy Protection Act (COPPA)).
-     *  Currently, only AdMob is passed this information (see https://developers.google.com/admob/ios/targeting#child-directed_setting ). The AdMob setting will be left alone if this flag is not passed when the Heyzap SDK is started.
+     *  This value will be `OR`ed with our server-side (per mediated network) setting, so setting it on the server, here, or both will enable it.
+     *  Currently, only AdMob, Facebook Audience Network, and Heyzap Exchange are passed this information.
      */
     HZAdOptionsChildDirectedAds = 1 << 6, // 64
 };
@@ -121,7 +121,6 @@ extern NSString * const HZNetworkVungle;
 extern NSString * const HZNetworkChartboost;
 extern NSString * const HZNetworkAdColony;
 extern NSString * const HZNetworkAdMob;
-extern NSString * const HZNetworkIAd;
 extern NSString * const HZNetworkHyprMX;
 extern NSString * const HZNetworkHeyzapExchange;
 extern NSString * const HZNetworkLeadbolt;

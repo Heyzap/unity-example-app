@@ -134,7 +134,7 @@ extern NSString * const kHZBannerAdWillLeaveApplicationNotification;
 /**
  *  An identifier of the ad network.
  * 
- *  Current values: "facebook", "admob", "iad"
+ *  This will be one of the network constants in HeyzapAds.h, e.g. `HZNetworkFacebook`
  */
 @property (nonatomic, strong, readonly) NSString *mediatedNetwork;
 

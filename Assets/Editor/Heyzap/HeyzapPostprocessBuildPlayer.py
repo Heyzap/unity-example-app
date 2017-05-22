@@ -2,6 +2,8 @@
 import os
 import sys
 import re
+import subprocess
+
 from distutils import dir_util
 from HZmod_pbxproj import XcodeProject
 
@@ -12,6 +14,10 @@ def edit_pbxproj_file():
         for xcodeproj in os.listdir(unityProjectTopDirectory):
             if not re.search('\.xcodeproj', xcodeproj):
                 continue
+            
+            xcodeVersionString = subprocess.check_output("xcodebuild -version", shell=True)
+            print "Heyzap: using xcode version: ", xcodeVersionString
+
             xcodeproj = os.path.join(unityProjectTopDirectory, xcodeproj)
             print "Heyzap: found xcode proj: ", xcodeproj
             for pbxproj in os.listdir(xcodeproj):
@@ -39,8 +45,11 @@ def edit_pbxproj_file():
 
                 # the below paths are relative to the SDKROOT, i.e.: `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/`
                 # Add the Frameworks needed
-                project.add_file_if_doesnt_exist('usr/lib/libxml2.dylib',                       parent=frameworksGroupID, tree='SDKROOT')
-                project.add_file_if_doesnt_exist('usr/lib/libsqlite3.dylib',                    parent=frameworksGroupID, tree='SDKROOT')
+                isXcode6 = "Xcode 6" in xcodeVersionString
+                libraryExtension = ".dylib" if isXcode6 else ".tbd"
+
+                project.add_file_if_doesnt_exist('usr/lib/libxml2' + libraryExtension,          parent=frameworksGroupID, tree='SDKROOT')
+                project.add_file_if_doesnt_exist('usr/lib/libsqlite3' + libraryExtension,       parent=frameworksGroupID, tree='SDKROOT')
 
                 # for AdColony
                 project.add_file_if_doesnt_exist('System/Library/Frameworks/WebKit.framework',  parent=frameworksGroupID, tree='SDKROOT')

@@ -79,10 +79,12 @@ namespace Heyzap {
 
         public const string DEFAULT_TAG = "default";
         
-        #region String constants to expect in network callbacks
+        #region String constants to expect in Ad Listener & network callbacks
+        // `NetworkCallback` is a bit of a misnomer. The callback constants here are both for "network callbacks" and for ad listener callbacks. We should refactor these into two classes in the next major SDK.
         public static class NetworkCallback {
             public const string INITIALIZED = "initialized";
             public const string SHOW = "show";
+            public const string SHOW_FAILED = "failed";
             public const string AVAILABLE = "available";
             public const string HIDE = "hide";
             public const string FETCH_FAILED = "fetch_failed";
@@ -132,6 +134,7 @@ namespace Heyzap {
             public const string LEADBOLT = "leadbolt";
             public const string INMOBI = "inmobi";
             public const string DOMOB = "domob";
+            public const string MOPUB = "mopub";
         }
         #endregion
 
@@ -142,14 +145,14 @@ namespace Heyzap {
         /// <param name="publisher_id">Your publisher ID. This can be found on your Heyzap dashboards - see https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements for more information.</param>
         /// <param name="options">A bitmask of options you can pass to this call to change the way Heyzap will work.</param>
         public static void Start(string publisher_id, int options) {
-            #if !UNITY_EDITOR
-
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.Start(publisher_id, options);
-            #endif
-
-            #if UNITY_IPHONE
-            HeyzapAdsIOS.Start(publisher_id, options);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.Start(publisher_id, options);
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.Start(publisher_id, options);
+                #endif
+            #else
+                UnityEngine.Debug.LogError("Call received to start the Heyzap SDK, but the SDK does not function in the editor. You must use a device/emulator to receive/test ads.");
             #endif
 
             HeyzapAds.InitReceiver();
@@ -157,21 +160,23 @@ namespace Heyzap {
             HZVideoAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
             HZBannerAd.InitReceiver();
+            HZOfferwallAd.InitReceiver();
             HZDemographics.InitReceiver();
-
-            #endif
         }
         
         /// <summary>
         /// Returns the remote data you've set on the Heyzap Dashboards, which will be a JSON dictionary in string format.
         /// </summary>
         public static string GetRemoteData(){
-            #if UNITY_ANDROID
-            return HeyzapAdsAndroid.GetRemoteData();
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HeyzapAdsIOS.GetRemoteData();
-            #else 
-            return "{}";
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    return HeyzapAdsAndroid.GetRemoteData();
+                #elif UNITY_IPHONE
+                    return HeyzapAdsIOS.GetRemoteData();
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to retrieve remote data from the Heyzap SDK, but the SDK does not function in the editor. You must use a device/emulator to use the remote data feature.");
+                return "{}";
             #endif
         }
 
@@ -179,12 +184,14 @@ namespace Heyzap {
         /// Shows the mediation test suite.
         /// </summary>
         public static void ShowMediationTestSuite() {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.ShowMediationTestSuite();
-            #endif
-
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ShowMediationTestSuite();
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.ShowMediationTestSuite();
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.ShowMediationTestSuite();
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to show the Heyzap SDK test suite, but the SDK does not function in the editor. You must use a device/emulator to use the test suite.");
             #endif
         }
         
@@ -193,14 +200,14 @@ namespace Heyzap {
         /// </summary>
         /// <returns><c>true</c>, if Heyzap handled the back button press (in which case your code should not do anything else), and <c>false</c> if Heyzap did not handle the back button press (in which case your app may want to do something).</returns>
         public static Boolean OnBackPressed() {
-            #if UNITY_ANDROID
-            return HeyzapAdsAndroid.OnBackPressed();
-
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HeyzapAdsIOS.OnBackPressed();
-
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    return HeyzapAdsAndroid.OnBackPressed();
+                #elif UNITY_IPHONE
+                    return HeyzapAdsIOS.OnBackPressed();
+                #endif
             #else
-            return false;
+                return false;
             #endif
         }
 
@@ -210,14 +217,14 @@ namespace Heyzap {
         /// <returns><c>true</c> if is network initialized the specified network; otherwise, <c>false</c>.</returns>
         /// <param name="network">The name of the network in question. Use the strings in HeyzapAds.Network to ensure the name matches what we expect.</param>
         public static Boolean IsNetworkInitialized(string network) {
-            #if UNITY_ANDROID
-            return HeyzapAdsAndroid.IsNetworkInitialized(network);
-
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HeyzapAdsIOS.IsNetworkInitialized(network);
-
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    return HeyzapAdsAndroid.IsNetworkInitialized(network);
+                #elif UNITY_IPHONE
+                    return HeyzapAdsIOS.IsNetworkInitialized(network);
+                #endif
             #else
-            return false;
+                return false;
             #endif
         }
         
@@ -229,20 +236,24 @@ namespace Heyzap {
         }
         
         /// <summary>
-        /// (iOS only) Pauses expensive work, like ad fetches, until ResumeExpensiveWork() is called. Note that calling this method will affect ad availability.
+        /// Pauses expensive work, like ad fetches, until ResumeExpensiveWork() is called. Note that calling this method will affect ad availability.
         /// </summary>
         public static void PauseExpensiveWork() {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.PauseExpensiveWork();
+                HeyzapAdsIOS.PauseExpensiveWork();
+            #elif UNITY_ANDROID && !UNITY_EDITOR
+                HeyzapAdsAndroid.PauseExpensiveWork();
             #endif
         }
 
         /// <summary>
-        /// (iOS only) Unpauses expensive work, like ad fetches. Only relevant after a call to PauseExpensiveWork().
+        /// Unpauses expensive work, like ad fetches. Only relevant after a call to PauseExpensiveWork().
         /// </summary>
         public static void ResumeExpensiveWork() {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ResumeExpensiveWork();
+                HeyzapAdsIOS.ResumeExpensiveWork();
+            #elif UNITY_ANDROID && !UNITY_EDITOR
+                HeyzapAdsAndroid.ResumeExpensiveWork();
             #endif
         }
 
@@ -250,12 +261,13 @@ namespace Heyzap {
         /// Enables verbose debug logging for the Heyzap SDK. For third party logging, <see cref="ShowThirdPartyDebugLogs()"/>.
         /// </summary>
         public static void ShowDebugLogs() {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.ShowDebugLogs();
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ShowDebugLogs();
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.ShowDebugLogs();
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.ShowDebugLogs();
+                #endif
+            #else
             #endif
         }
 
@@ -263,12 +275,13 @@ namespace Heyzap {
         /// Hides all debug logs coming from the Heyzap SDK. For third party logging, <see cref="HideThirdPartyDebugLogs()"/>.
         /// </summary>
         public static void HideDebugLogs() {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.HideDebugLogs();
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.HideDebugLogs();
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.HideDebugLogs();
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.HideDebugLogs();
+                #endif
+            #else
             #endif
         }
 
@@ -277,9 +290,6 @@ namespace Heyzap {
         /// You should call this method before starting the Heyzap SDK if you wish to enable these logs, since some SDK implementations only consider this parameter when initialized.
         /// </summary>
         public static void ShowThirdPartyDebugLogs() {
-            #if UNITY_ANDROID
-            #endif
-            
             #if UNITY_IPHONE && !UNITY_EDITOR
             HeyzapAdsIOS.ShowThirdPartyDebugLogs();
             #endif
@@ -290,9 +300,6 @@ namespace Heyzap {
         /// Only some networks' logs will be turned off, since some SDK implementations only consider this parameter when initialized.
         /// </summary>
         public static void HideThirdPartyDebugLogs() {
-            #if UNITY_ANDROID
-            #endif
-            
             #if UNITY_IPHONE && !UNITY_EDITOR
             HeyzapAdsIOS.HideThirdPartyDebugLogs();
             #endif
@@ -305,12 +312,13 @@ namespace Heyzap {
         /// </summary>
         /// <param name="bundleID">The new bundle ID you want to use. This is how we link this app to your dashboard account on developers.heyzap.com .</param>
         public static void SetBundleIdentifier(string bundleID) {
-            #if UNITY_ANDROID
-            HeyzapAdsAndroid.SetBundleIdentifier(bundleID);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.SetBundleIdentifier(bundleID);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.SetBundleIdentifier(bundleID);
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.SetBundleIdentifier(bundleID);
+                #endif
+            #else
             #endif
         }
 
@@ -319,9 +327,6 @@ namespace Heyzap {
         /// </summary>
         /// <param name="device_id">The Device ID that FAN prints to the iOS console</param>
         public static void AddFacebookTestDevice(string device_id) {
-            #if UNITY_ANDROID
-            #endif
-            
             #if UNITY_IPHONE && !UNITY_EDITOR
             HeyzapAdsIOS.AddFacebookTestDevice(device_id);
             #endif
@@ -452,7 +457,7 @@ namespace Heyzap {
     }
     #endif
 
-    #if UNITY_ANDROID
+    #if UNITY_ANDROID && !UNITY_EDITOR
     public class HeyzapAdsAndroid : MonoBehaviour {
         public static void Start(string publisher_id, int options=0) {
             if(Application.platform != RuntimePlatform.Android) return;
@@ -510,6 +515,20 @@ namespace Heyzap {
             if(Application.platform != RuntimePlatform.Android) return;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
                 jc.CallStatic("hideDebugLogs");
+            }
+        }
+
+        public static void ResumeExpensiveWork() {
+            if(Application.platform != RuntimePlatform.Android) return;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("resumeExpensiveWork");
+            }
+        }
+
+        public static void PauseExpensiveWork() {
+            if(Application.platform != RuntimePlatform.Android) return;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("pauseExpensiveWork");
             }
         }
 

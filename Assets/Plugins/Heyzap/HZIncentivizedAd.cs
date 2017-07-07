@@ -54,12 +54,15 @@ namespace Heyzap {
         public static void Fetch(string tag) {
             tag = HeyzapAds.TagForString(tag);
 
-            #if UNITY_ANDROID
-            HZIncentivizedAdAndroid.Fetch(tag);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZIncentivizedAdIOS.Fetch(tag);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HZIncentivizedAdAndroid.Fetch(tag);
+                #elif UNITY_IPHONE
+                    HZIncentivizedAdIOS.Fetch(tag);
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to fetch an HZIncentivizedAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
+                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.FETCH_FAILED, tag));
             #endif
         }
 
@@ -78,13 +81,16 @@ namespace Heyzap {
             if (showOptions == null) {
                 showOptions = new HZIncentivizedShowOptions();
             }
-            
-            #if UNITY_ANDROID
-            HZIncentivizedAdAndroid.ShowWithOptions(showOptions);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZIncentivizedAdIOS.ShowWithOptions(showOptions);
+
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HZIncentivizedAdAndroid.ShowWithOptions(showOptions);
+                #elif UNITY_IPHONE
+                    HZIncentivizedAdIOS.ShowWithOptions(showOptions);
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to show an HZIncentivizedAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
+                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Tag));
             #endif
         }
 
@@ -103,12 +109,14 @@ namespace Heyzap {
         public static bool IsAvailable(string tag) {
             tag = HeyzapAds.TagForString(tag);
 
-            #if UNITY_ANDROID
-            return HZIncentivizedAdAndroid.IsAvailable(tag);
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HZIncentivizedAdIOS.IsAvailable(tag);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    return HZIncentivizedAdAndroid.IsAvailable(tag);
+                #elif UNITY_IPHONE
+                    return HZIncentivizedAdIOS.IsAvailable(tag);
+                #endif
             #else
-            return false;
+                return false;
             #endif
         }
         
@@ -138,43 +146,10 @@ namespace Heyzap {
                 HZIncentivizedAd.adDisplayListener(state, tag);
             }
         }
-        #endregion
 
-        #region Deprecated methods
-        //-------- Deprecated methods - will be removed in a future version of the SDK -------- //
-
-        [Obsolete("Use the Fetch() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void fetch() {
-            HZIncentivizedAd.Fetch();
-        }
-        [Obsolete("Use the Fetch(string) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void fetch(string tag) {
-            HZIncentivizedAd.Fetch(tag);
-        }
-
-        [Obsolete("Use the Show() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void show() {
-            HZIncentivizedAd.Show();
-        }
-        [Obsolete("Use ShowWithOptions() to show ads instead of this deprecated method.")]
-        public static void show(string tag) {
-            HZIncentivizedShowOptions showOptions = new HZIncentivizedShowOptions();
-            showOptions.Tag = tag;
-            HZIncentivizedAd.ShowWithOptions(showOptions);
-        }
-
-        [Obsolete("Use the IsAvailable() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static bool isAvailable() {
-            return HZIncentivizedAd.IsAvailable();
-        }
-        [Obsolete("Use the IsAvailable(tag) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static bool isAvailable(string tag) {
-            return HZIncentivizedAd.IsAvailable(tag);
-        }
-
-        [Obsolete("Use the SetDisplayListener(AdDisplayListener) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void setDisplayListener(AdDisplayListener listener) {
-            HZIncentivizedAd.SetDisplayListener(listener);
+        protected static IEnumerator InvokeCallbackNextFrame(string state, string tag) {
+            yield return null; // wait a frame
+            HZIncentivizedAd.SetCallbackStateAndTag(state, tag);
         }
         #endregion
     }
@@ -204,7 +179,7 @@ namespace Heyzap {
     }
     #endif
 
-    #if UNITY_ANDROID
+    #if UNITY_ANDROID && !UNITY_EDITOR
     public class HZIncentivizedAdAndroid : MonoBehaviour {
         
         public static void ShowWithOptions(HZIncentivizedShowOptions showOptions) {

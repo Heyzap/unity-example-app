@@ -50,12 +50,13 @@ namespace Heyzap {
         /// </summary>
         public static void SetUserGender(Gender gender) {
             if (System.Enum.IsDefined(typeof(Gender), gender)) {
-                #if UNITY_ANDROID
-                HeyzapDemographicsAndroid.SetUserGender(gender.ToString());
-                #endif
-                
-                #if UNITY_IPHONE && !UNITY_EDITOR
-                HeyzapDemographicsIOS.SetUserGender(gender.ToString());
+                #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                    #if UNITY_ANDROID
+                        HeyzapDemographicsAndroid.SetUserGender(gender.ToString());
+                    #elif UNITY_IPHONE
+                        HeyzapDemographicsIOS.SetUserGender(gender.ToString());
+                    #endif
+                #else
                 #endif
             }
         }
@@ -64,12 +65,13 @@ namespace Heyzap {
         /// Set the location of the user, if known. The required parameters match the parameters provided by the UnityEngine `LocationInfo` struct - see `https://docs.unity3d.com/ScriptReference/LocationInfo.html` for more information.
         /// </summary>
         public static void SetUserLocation(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp) {
-            #if UNITY_ANDROID
-            HeyzapDemographicsAndroid.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapDemographicsIOS.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapDemographicsAndroid.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+                #elif UNITY_IPHONE
+                    HeyzapDemographicsIOS.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+                #endif
+            #else
             #endif
         }
 
@@ -77,12 +79,13 @@ namespace Heyzap {
         /// Set the postal code (i.e.: the ZIP code in the US) of the user, if known. This is an alternative to setting the exact location but can provide similar benefits to ad revenues / targeting.
         /// </summary>
         public static void SetUserPostalCode(string postalCode) {
-            #if UNITY_ANDROID
-            HeyzapDemographicsAndroid.SetUserPostalCode(postalCode);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapDemographicsIOS.SetUserPostalCode(postalCode);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapDemographicsAndroid.SetUserPostalCode(postalCode);
+                #elif UNITY_IPHONE
+                    HeyzapDemographicsIOS.SetUserPostalCode(postalCode);
+                #endif
+            #else
             #endif
         }
 
@@ -90,12 +93,13 @@ namespace Heyzap {
         /// Set the household income of the user, if known.
         /// </summary>
         public static void SetUserHouseholdIncome(int householdIncome) {
-            #if UNITY_ANDROID
-            HeyzapDemographicsAndroid.SetUserHouseholdIncome(householdIncome);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapDemographicsIOS.SetUserHouseholdIncome(householdIncome);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapDemographicsAndroid.SetUserHouseholdIncome(householdIncome);
+                #elif UNITY_IPHONE
+                    HeyzapDemographicsIOS.SetUserHouseholdIncome(householdIncome);
+                #endif
+            #else
             #endif
         }
 
@@ -109,12 +113,13 @@ namespace Heyzap {
         /// </summary>
         public static void SetUserMaritalStatus(MaritalStatus maritalStatus) {
             if (System.Enum.IsDefined(typeof(MaritalStatus), maritalStatus)) {
-                #if UNITY_ANDROID
-                HeyzapDemographicsAndroid.SetUserMaritalStatus(maritalStatus.ToString());
-                #endif
-                
-                #if UNITY_IPHONE && !UNITY_EDITOR
-                HeyzapDemographicsIOS.SetUserMaritalStatus(maritalStatus.ToString());
+                #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                    #if UNITY_ANDROID
+                        HeyzapDemographicsAndroid.SetUserMaritalStatus(maritalStatus.ToString());
+                    #elif UNITY_IPHONE
+                        HeyzapDemographicsIOS.SetUserMaritalStatus(maritalStatus.ToString());
+                    #endif
+                #else
                 #endif
             }
         }
@@ -135,12 +140,13 @@ namespace Heyzap {
         /// </summary>
         public static void SetUserEducationLevel(EducationLevel educationLevel) {
             if (System.Enum.IsDefined(typeof(EducationLevel), educationLevel)) {
-                #if UNITY_ANDROID
-                HeyzapDemographicsAndroid.SetUserEducationLevel(educationLevel.ToString());
-                #endif
-                
-                #if UNITY_IPHONE && !UNITY_EDITOR
-                HeyzapDemographicsIOS.SetUserEducationLevel(educationLevel.ToString());
+                #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                    #if UNITY_ANDROID
+                        HeyzapDemographicsAndroid.SetUserEducationLevel(educationLevel.ToString());
+                    #elif UNITY_IPHONE
+                        HeyzapDemographicsIOS.SetUserEducationLevel(educationLevel.ToString());
+                    #endif
+                #else
                 #endif
             }
         }
@@ -149,12 +155,13 @@ namespace Heyzap {
         /// Set the birth date of the user, if known, using this format: `YYYY/MM/DD`. Example: `2000/12/31` for December 31st, 2000.
         /// </summary>
         public static void SetUserBirthDate(string yyyyMMdd_date) {
-            #if UNITY_ANDROID
-            HeyzapDemographicsAndroid.SetUserBirthDate(yyyyMMdd_date);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapDemographicsIOS.SetUserBirthDate(yyyyMMdd_date);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapDemographicsAndroid.SetUserBirthDate(yyyyMMdd_date);
+                #elif UNITY_IPHONE
+                    HeyzapDemographicsIOS.SetUserBirthDate(yyyyMMdd_date);
+                #endif
+            #else
             #endif
         }
 
@@ -222,7 +229,7 @@ namespace Heyzap {
     }
     #endif
 
-    #if UNITY_ANDROID
+    #if UNITY_ANDROID && !UNITY_EDITOR
     public class HeyzapDemographicsAndroid : MonoBehaviour {
 
         public static void SetUserGender(string gender) {
@@ -239,7 +246,7 @@ namespace Heyzap {
 
             AndroidJNIHelper.debug = false; 
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-				jc.CallStatic("setUserLocation", latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+                jc.CallStatic("setUserLocation", latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
             }
 
         }

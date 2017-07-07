@@ -29,13 +29,21 @@
 #import <CoreLocation/CLLocation.h>
 
 #import "HeyzapAds.h"
+#import "HZLog.h"
+
 #import "HZInterstitialAd.h"
 #import "HZVideoAd.h"
 #import "HZIncentivizedAd.h"
 #import "HZBannerAd.h"
-#import "HZUnityAdapterChartboostProxy.h"
-#import "HZLog.h"
+
+#import "HZOfferwallAd.h"
+#import "HZOfferwallShowOptions.h"
+#import "HZFyberVirtualCurrencyClient.h"
+
 #import "HZDemographics.h"
+
+#import "HZUnityAdapterChartboostProxy.h"
+
 
 extern void UnitySendMessage(const char *, const char *, const char *);
 
@@ -45,19 +53,20 @@ extern void UnitySendMessage(const char *, const char *, const char *);
 #define HZ_INTERSTITIAL_KLASS @"HZInterstitialAd"
 #define HZ_INCENTIVIZED_KLASS @"HZIncentivizedAd"
 #define HZ_BANNER_KLASS @"HZBannerAd"
+#define HZ_OFFERWALL_KLASS @"HZOfferwallAd"
 
-@interface HeyzapUnityAdDelegate : NSObject<HZAdsDelegate,HZIncentivizedAdDelegate,HZBannerAdDelegate>
+@interface HeyzapUnityAdDelegate : NSObject<HZAdsDelegate, HZIncentivizedAdDelegate, HZBannerAdDelegate, HZFyberVirtualCurrencyClientDelegate>
 
 @property (nonatomic, strong) NSString *klassName;
 
-- (id) initWithKlassName: (NSString *) klassName;
-- (void) sendMessageForKlass: (NSString *) klass withMessage: (NSString *) message andTag: (NSString *) tag;
+- (id)initWithKlassName:(NSString *) klassName;
+- (void)sendMessageForKlass:(NSString *)klass withMessage:(NSString *)message tag:(NSString *)tag;
 
 @end
 
 @implementation HeyzapUnityAdDelegate
 
-- (id) initWithKlassName: (NSString *) klassName {
+- (id)initWithKlassName:(NSString *)klassName {
     self = [super init];
     if (self) {
         _klassName = klassName;
@@ -66,45 +75,78 @@ extern void UnitySendMessage(const char *, const char *, const char *);
     return self;
 }
 
-- (void) didReceiveAdWithTag:(NSString *)tag { [self sendMessageForKlass: self.klassName withMessage: @"available" andTag: tag]; }
 
-- (void) didFailToReceiveAdWithTag:(NSString *)tag { [self sendMessageForKlass: self.klassName withMessage: @"fetch_failed" andTag: tag]; }
+#pragma mark - Forwarding Delegate Callbacks to Unity
 
-- (void) didShowAdWithTag:(NSString *)tag { [self sendMessageForKlass: self.klassName withMessage: @"show" andTag: tag]; }
+- (void)didReceiveAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"available" tag:tag]; }
 
-- (void) didHideAdWithTag:(NSString *)tag { [self sendMessageForKlass: self.klassName withMessage:  @"hide" andTag: tag]; }
+- (void)didFailToReceiveAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"fetch_failed" tag:tag]; }
 
-- (void) didFailToShowAdWithTag:(NSString *)tag andError:(NSError *)error { [self sendMessageForKlass: self.klassName withMessage:  @"failed" andTag: tag]; }
+- (void)didShowAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"show" tag:tag]; }
 
-- (void) didClickAdWithTag:(NSString *)tag { [self sendMessageForKlass: self.klassName withMessage:  @"click" andTag: tag]; }
+- (void)didHideAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"hide" tag:tag]; }
 
-- (void) didCompleteAdWithTag: (NSString *) tag { [self sendMessageForKlass: self.klassName withMessage:  @"incentivized_result_complete" andTag: tag]; }
+- (void)didFailToShowAdWithTag:(NSString *)tag andError:(NSError *)error { [self sendMessageForKlass:self.klassName withMessage:@"failed" tag:tag]; }
 
-- (void) didFailToCompleteAdWithTag: (NSString *) tag { [self sendMessageForKlass: self.klassName withMessage:  @"incentivized_result_incomplete" andTag: tag]; }
+- (void)didClickAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"click" tag:tag]; }
 
-- (void) willStartAudio { [self sendMessageForKlass: self.klassName  withMessage: @"audio_starting" andTag:  @""]; }
+- (void)didCompleteAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"incentivized_result_complete" tag:tag]; }
 
-- (void) didFinishAudio { [self sendMessageForKlass: self.klassName withMessage:  @"audio_finished" andTag:  @""]; }
+- (void)didFailToCompleteAdWithTag:(NSString *)tag { [self sendMessageForKlass:self.klassName withMessage:@"incentivized_result_incomplete" tag:tag]; }
+
+- (void)willStartAudio { [self sendMessageForKlass:self.klassName withMessage:@"audio_starting" tag:@""]; }
+
+- (void)didFinishAudio { [self sendMessageForKlass:self.klassName withMessage:@"audio_finished" tag:@""]; }
 
 - (void)bannerDidReceiveAd:(HZBannerAd *)banner {
-    [self sendMessageForKlass:self.klassName withMessage:@"loaded" andTag:banner.options.tag];
+    [self sendMessageForKlass:self.klassName withMessage:@"loaded" tag:banner.options.tag];
 }
 
 - (void)bannerDidFailToReceiveAd:(HZBannerAd *)banner error:(NSError *)error {
     if (banner != nil) {
-        [self sendMessageForKlass:self.klassName withMessage:@"error" andTag:banner.options.tag];
+        [self sendMessageForKlass:self.klassName withMessage:@"error" tag:banner.options.tag];
     } else {
-        [self sendMessageForKlass:self.klassName withMessage: @"error" andTag: @""];
+        [self sendMessageForKlass:self.klassName withMessage: @"error" tag: @""];
     }
 }
 
 - (void)bannerWasClicked:(HZBannerAd *)banner {
-    [self sendMessageForKlass:self.klassName withMessage:@"click" andTag:banner.options.tag];
+    [self sendMessageForKlass:self.klassName withMessage:@"click" tag:banner.options.tag];
 }
 
-- (void) sendMessageForKlass: (NSString *) klass withMessage: (NSString *) message andTag: (NSString *) tag {
+- (void)sendMessageForKlass:(NSString *)klass withMessage:(NSString *)message tag:(NSString *)tag {
     NSString *unityMessage = [NSString stringWithFormat: @"%@,%@", message, tag];
     UnitySendMessage([klass UTF8String], "SetCallback", [unityMessage UTF8String]);
+}
+
+
+#pragma mark - Offerwall VCS Callbacks
+
+- (void)didReceiveVirtualCurrencyResponse:(HZFyberVirtualCurrencyResponse *)response {
+    NSMutableDictionary<NSString *, NSString *> *responseDict = [NSMutableDictionary new];
+    responseDict[@"LatestTransactionID"] = response.latestTransactionId;
+    responseDict[@"CurrencyID"] = response.currencyId;
+    responseDict[@"CurrencyName"] = response.currencyName;
+    responseDict[@"DeltaOfCurrency"] = [NSString stringWithFormat:@"%f", response.deltaOfCurrency];
+    
+    UnitySendMessage([HZ_OFFERWALL_KLASS UTF8String], "VCSResponse", [[self jsonFromDict:responseDict] UTF8String]);
+}
+
+- (void)didFailToReceiveVirtualCurrencyResponse:(NSError *)error {
+    UnitySendMessage([HZ_OFFERWALL_KLASS UTF8String], "VCSError", [[error localizedDescription] UTF8String]);
+}
+
+- (NSString *)jsonFromDict:(NSDictionary *)dict {
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                       options:0
+                                                         error:&error];
+    if (!jsonData) {
+        NSLog(@"Error converting JSON from VCS response dict: %@", error);
+        return @"";
+    } else {
+        return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
 }
 
 @end
@@ -113,84 +155,104 @@ static HeyzapUnityAdDelegate *HZInterstitialDelegate = nil;
 static HeyzapUnityAdDelegate *HZIncentivizedDelegate = nil;
 static HeyzapUnityAdDelegate *HZVideoDelegate = nil;
 static HeyzapUnityAdDelegate *HZBannerDelegate = nil;
+static HeyzapUnityAdDelegate *HZOfferwallDelegate = nil;
 
 static HZBannerAd *HZCurrentBannerAd = nil;
 
 extern "C" {
+
+#pragma mark - Starting the SDK
+
     void hz_ads_start_app(const char *publisher_id, HZAdOptions flags) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            NSString *publisherID = [NSString stringWithUTF8String: publisher_id];
+            NSString *publisherID = [NSString stringWithUTF8String:publisher_id];
             
-            [HeyzapAds startWithPublisherID: publisherID andOptions: flags andFramework: HZ_FRAMEWORK_NAME];
+            [HeyzapAds startWithPublisherID:publisherID andOptions:flags andFramework:HZ_FRAMEWORK_NAME];
             
-            HZIncentivizedDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName: HZ_INCENTIVIZED_KLASS];
-            [HZIncentivizedAd setDelegate: HZIncentivizedDelegate];
+            HZIncentivizedDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_INCENTIVIZED_KLASS];
+            [HZIncentivizedAd setDelegate:HZIncentivizedDelegate];
             
-            HZInterstitialDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName: HZ_INTERSTITIAL_KLASS];
-            [HZInterstitialAd setDelegate: HZInterstitialDelegate];
+            HZInterstitialDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_INTERSTITIAL_KLASS];
+            [HZInterstitialAd setDelegate:HZInterstitialDelegate];
             
-            HZVideoDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName: HZ_VIDEO_KLASS];
-            [HZVideoAd setDelegate: HZVideoDelegate];
+            HZVideoDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_VIDEO_KLASS];
+            [HZVideoAd setDelegate:HZVideoDelegate];
             
-            HZBannerDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName: HZ_BANNER_KLASS];
+            HZBannerDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_BANNER_KLASS];
+            
+            HZOfferwallDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_OFFERWALL_KLASS];
+            [HZOfferwallAd setDelegate:HZOfferwallDelegate];
+            [[HZFyberVirtualCurrencyClient sharedClient] setDelegate:HZOfferwallDelegate];
             
             [HeyzapAds networkCallbackWithBlock:^(NSString *network, NSString *callback) {
-                NSString *unityMessage = [NSString stringWithFormat: @"%@,%@", network, callback];
+                NSString *unityMessage = [NSString stringWithFormat:@"%@,%@", network, callback];
                 NSString *klassName = @"HeyzapAds";
                 UnitySendMessage([klassName UTF8String], "SetNetworkCallbackMessage", [unityMessage UTF8String]);
             }];
         });
     }
     
+    
+#pragma mark - Interstitial Ads
+    
     void hz_ads_show_interstitial(const char *tag) {
-        [HZInterstitialAd showForTag: [NSString stringWithUTF8String: tag]];
+        [HZInterstitialAd showForTag:[NSString stringWithUTF8String:tag]];
     }
     
     void hz_ads_fetch_interstitial(const char *tag) {
-        [HZInterstitialAd fetchForTag: [NSString stringWithUTF8String: tag]];
+        [HZInterstitialAd fetchForTag:[NSString stringWithUTF8String:tag]];
     }
     
     bool hz_ads_interstitial_is_available(const char *tag) {
-        return [HZInterstitialAd isAvailableForTag: [NSString stringWithUTF8String: tag]];
+        return [HZInterstitialAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
     }
     
+    
+#pragma mark - Video Ads
+    
     void hz_ads_show_video(const char *tag) {
-        [HZVideoAd showForTag: [NSString stringWithUTF8String: tag]];
+        [HZVideoAd showForTag:[NSString stringWithUTF8String:tag]];
     }
     
     void hz_ads_fetch_video(const char *tag) {
-        [HZVideoAd fetchForTag: [NSString stringWithUTF8String: tag]];
+        [HZVideoAd fetchForTag:[NSString stringWithUTF8String:tag]];
     }
     
     bool hz_ads_video_is_available(const char *tag) {
         return [HZVideoAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
     }
     
+    
+#pragma mark - Incentivized Ads
+    
     void hz_ads_show_incentivized(const char *tag) {
-        [HZIncentivizedAd showForTag: [NSString stringWithUTF8String: tag]];
+        [HZIncentivizedAd showForTag:[NSString stringWithUTF8String: tag]];
     }
     
     void hz_ads_show_incentivized_with_custom_info(const char *tag, const char *customInfo) {
         HZShowOptions *showOptions = [HZShowOptions new];
-        showOptions.tag = [NSString stringWithUTF8String: tag];
-        showOptions.incentivizedInfo = [NSString stringWithUTF8String: customInfo];
+        showOptions.tag = [NSString stringWithUTF8String:tag];
+        showOptions.incentivizedInfo = [NSString stringWithUTF8String:customInfo];
         [HZIncentivizedAd showWithOptions:showOptions];
     }
     
     void hz_ads_fetch_incentivized(const char *tag) {
-        [HZIncentivizedAd fetchForTag: [NSString stringWithUTF8String: tag]];
+        [HZIncentivizedAd fetchForTag:[NSString stringWithUTF8String:tag]];
     }
     
     bool hz_ads_incentivized_is_available(const char *tag) {
-        return [HZIncentivizedAd isAvailableForTag: [NSString stringWithUTF8String: tag]];
+        return [HZIncentivizedAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
     }
+    
+    
+#pragma mark - Banner Ads
     
     void hz_ads_show_banner(const char *position, const char *tag) {
         if (!HZCurrentBannerAd) {
             HZBannerPosition pos = HZBannerPositionBottom;
-            NSString *positionStr = [NSString stringWithUTF8String: position];
-            if ([positionStr isEqualToString: @"top"]) {
+            NSString *positionStr = [NSString stringWithUTF8String:position];
+            if ([positionStr isEqualToString:@"top"]) {
                 pos = HZBannerPositionTop;
             }
             
@@ -200,26 +262,26 @@ extern "C" {
             [HZBannerAd placeBannerInView:nil position:pos options:options success:^(HZBannerAd *banner) {
                 if (!HZCurrentBannerAd) {
                     HZCurrentBannerAd = banner;
-                    [HZCurrentBannerAd setDelegate: HZBannerDelegate];
-                    [HZBannerDelegate sendMessageForKlass:[HZBannerDelegate klassName] withMessage:@"loaded" andTag:banner.options.tag];
+                    [HZCurrentBannerAd setDelegate:HZBannerDelegate];
+                    [HZBannerDelegate sendMessageForKlass:[HZBannerDelegate klassName] withMessage:@"loaded" tag:banner.options.tag];
                 } else {
                     [banner removeFromSuperview];
                     NSLog(@"Requested a banner before the previous one was destroyed. Ignoring this request.");
                 }
                 
             } failure:^(NSError *error) {
-                NSLog(@"Error fetching banner; error = %@",error);
-                [HZBannerDelegate bannerDidFailToReceiveAd: nil error: error];
+                NSLog(@"Error fetching banner; error = %@", error);
+                [HZBannerDelegate bannerDidFailToReceiveAd:nil error:error];
             }];
         } else {
             // Unhide the banner
-            [HZCurrentBannerAd setHidden: NO];
+            [HZCurrentBannerAd setHidden:NO];
         }
     }
     
     void hz_ads_hide_banner(void) {
         if (HZCurrentBannerAd) {
-            [HZCurrentBannerAd setHidden: YES];
+            [HZCurrentBannerAd setHidden:YES];
             
         } else {
             NSLog(@"Can't hide banner, there is no banner ad currently loaded.");
@@ -254,6 +316,32 @@ extern "C" {
         return NULL;
     }
     
+    
+#pragma mark - Offerwall Ads
+    
+    void hz_ads_fetch_offerwall(const char *tag) {
+        [HZOfferwallAd fetchForTag:[NSString stringWithUTF8String:tag]];
+    }
+    
+    void hz_ads_show_offerwall(const char *tag, bool shouldCloseAfterFirstClick) {
+        HZOfferwallShowOptions *offerwallOpts = [HZOfferwallShowOptions new];
+        offerwallOpts.shouldCloseAfterFirstClick = shouldCloseAfterFirstClick;
+        offerwallOpts.animatePresentation = YES;
+        offerwallOpts.tag = [NSString stringWithUTF8String:tag];
+        [HZOfferwallAd showWithOptions:offerwallOpts];
+    }
+    
+    bool hz_ads_offerwall_is_available(const char *tag) {
+        return [HZOfferwallAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
+    }
+    
+    void hz_ads_virtual_currency_request(const char *currencyId) {
+        [[HZFyberVirtualCurrencyClient sharedClient] requestDeltaOfCurrency:(currencyId == NULL ? nil : [NSString stringWithUTF8String:currencyId])];
+    }
+    
+    
+#pragma mark - Remote Data
+    
     char * hz_ads_get_remote_data(void){
         NSString *remoteData = [HeyzapAds getRemoteDataJsonString];
         const char* remoteString = [remoteData UTF8String];
@@ -262,15 +350,24 @@ extern "C" {
         return returnValue;
     }
     
+    
+#pragma mark - Test Suite
+    
     void hz_ads_show_mediation_debug_view_controller(void) {
         [HeyzapAds presentMediationDebugViewController];
     }
+    
+    
+#pragma mark - Queries
     
     bool hz_ads_is_network_initialized(const char *network) {
         if (network == NULL) { return NO; }
         
         return [HeyzapAds isNetworkInitialized:[NSString stringWithUTF8String:network]];
     }
+    
+    
+#pragma mark - Temporary Performance Enhancement
     
     void hz_pause_expensive_work(void) {
         [HeyzapAds pauseExpensiveWork];
@@ -279,6 +376,9 @@ extern "C" {
     void hz_resume_expensive_work(void) {
         [HeyzapAds resumeExpensiveWork];
     }
+    
+    
+#pragma mark - Debugging
     
     void hz_ads_show_debug_logs(void) {
         [HZLog setDebugLevel:HZDebugLevelVerbose];
@@ -303,6 +403,19 @@ extern "C" {
         [HeyzapAds setBundleIdentifier:bundleID];
     }
     
+    void hz_add_facebook_test_device(const char *device_id) {
+        NSString *deviceID = [NSString stringWithUTF8String:device_id];
+        
+        Class fbAdSettings = NSClassFromString(@"FBAdSettings");
+        if ([fbAdSettings respondsToSelector:@selector(addTestDevice:)]) {
+            [fbAdSettings performSelector:@selector(addTestDevice:) withObject:deviceID];
+        } else {
+            HZELog(@"Couldn't find FBAdSettings, or it didn't respond.");
+        }
+    }
+    
+    
+#pragma mark - Demographics Setters
     
     void hz_demo_set_gender(const char * genderChar) {
         NSString *gender = [NSString stringWithUTF8String:genderChar];
@@ -385,6 +498,8 @@ extern "C" {
     }
     
     
+#pragma mark - Chartboost-Specific Methods
+    
     BOOL hz_chartboost_enabled(void) {
         return [HeyzapAds isNetworkInitialized:HZNetworkChartboost];
     }
@@ -428,16 +543,5 @@ extern "C" {
         }
         HZDLog(@"Requesting Chartboost show interstitial for location: %@",nsLocation);
         [HZUnityAdapterChartboostProxy showInterstitial:nsLocation];
-    }
-    
-    void hz_add_facebook_test_device(const char *device_id) {
-        NSString *deviceID = [NSString stringWithUTF8String:device_id];
-        
-        Class fbAdSettings = NSClassFromString(@"FBAdSettings");
-        if ([fbAdSettings respondsToSelector:@selector(addTestDevice:)]) {
-            [fbAdSettings performSelector:@selector(addTestDevice:) withObject:deviceID];
-        } else {
-            HZELog(@"Couldn't find FBAdSettings, or it didn't respond ");
-        }
     }
 }

@@ -62,12 +62,15 @@ namespace Heyzap {
                 showOptions = new HZBannerShowOptions();
             }
 
-            #if UNITY_ANDROID
-            HZBannerAdAndroid.ShowWithOptions(showOptions);
-            #endif
-            
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZBannerAdIOS.ShowWithOptions(showOptions);
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HZBannerAdAndroid.ShowWithOptions(showOptions);
+                #elif UNITY_IPHONE
+                    HZBannerAdIOS.ShowWithOptions(showOptions);
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to show an HZBannerAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
+                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Tag));
             #endif
         }
 
@@ -77,15 +80,15 @@ namespace Heyzap {
         /// <returns><c>true</c>, if the dimensions were successfully retrieved, <c>false</c> otherwise.</returns>
         /// <param name="banner">An out param where the dimensions of the current banner ad will be stored, if they are retrieved successfully.</param>
         public static bool GetCurrentBannerDimensions(out Rect banner){
-            #if UNITY_ANDROID
-            return HZBannerAdAndroid.GetCurrentBannerDimensions(out banner);
-
-            #elif UNITY_IPHONE && !UNITY_EDITOR
-            return HZBannerAdIOS.GetCurrentBannerDimensions(out banner);
-
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    return HZBannerAdAndroid.GetCurrentBannerDimensions(out banner);
+                #elif UNITY_IPHONE
+                    return HZBannerAdIOS.GetCurrentBannerDimensions(out banner);
+                #endif
             #else
-            banner = new Rect(0,0,0,0);
-            return false;
+                banner = new Rect(0,0,0,0);
+                return false;
             #endif
         }
 
@@ -93,12 +96,13 @@ namespace Heyzap {
         /// Hides the current banner ad, if there is one, from the view. The next call to ShowWithOptions will unhide the banner ad hidden by this method.
         /// </summary>
         public static void Hide() {
-            #if UNITY_ANDROID
-            HZBannerAdAndroid.Hide();
-            #endif
-
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZBannerAdIOS.Hide();
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HZBannerAdAndroid.Hide();
+                #elif UNITY_IPHONE
+                    HZBannerAdIOS.Hide();
+                #endif
+            #else
             #endif
         }
 
@@ -106,12 +110,13 @@ namespace Heyzap {
         /// Destroys the current banner ad, if there is one. The next call to ShowWithOptions() will create a new banner ad.
         /// </summary>
         public static void Destroy() {
-            #if UNITY_ANDROID
-            HZBannerAdAndroid.Destroy();
-            #endif
-
-            #if UNITY_IPHONE && !UNITY_EDITOR
-            HZBannerAdIOS.Destroy();
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HZBannerAdAndroid.Destroy();
+                #elif UNITY_IPHONE
+                    HZBannerAdIOS.Destroy();
+                #endif
+            #else
             #endif
         }
 
@@ -141,53 +146,10 @@ namespace Heyzap {
                 HZBannerAd.adDisplayListener(state, tag);
             }
         }
-        #endregion
 
-        #region Deprecated methods
-        //-------- Deprecated methods - will be removed in a future version of the SDK -------- //
-
-        [Obsolete("Use ShowWithOptions() to show ads instead of this deprecated method.")]
-        /// <summary>
-        /// Shows a banner ad with the given ad tag and position.
-        /// </summary>
-        /// <param name="position">A string describing the screen position to place the banner ad in; should be one of HZBannerShowOptions.POSITION_TOP or HZBannerShowOptions.POSITION_BOTTOM.</param>
-        /// <param name="tag">The ad tag for the banner ad to be shown.</param>
-        public static void showWithTag(string position, string tag) {
-            HZBannerShowOptions showOptions = new HZBannerShowOptions();
-            showOptions.Position = position;
-            showOptions.Tag = tag;
-            HZBannerAd.ShowWithOptions(showOptions);
-        }
-        
-        [Obsolete("Use ShowWithOptions() to show ads instead of this deprecated method.")]
-        /// <summary>
-        /// Shows a banner ad with the given position and the default ad tag.
-        /// </summary>
-        /// <param name="position">A string describing the screen position to place the banner ad in; should be one of HZBannerShowOptions.POSITION_TOP or HZBannerShowOptions.POSITION_BOTTOM.</param>
-        public static void show(string position) {
-            HZBannerShowOptions showOptions = new HZBannerShowOptions();
-            showOptions.Position = position;
-            HZBannerAd.ShowWithOptions(showOptions);
-        }
-
-        [Obsolete("Use the GetCurrentBannerDimensions(out Rect) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static bool getCurrentBannerDimensions(out Rect banner){
-            return HZBannerAd.GetCurrentBannerDimensions(out banner);
-        }
-
-        [Obsolete("Use the Hide() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void hide() {
-            HZBannerAd.Hide();
-        }
-
-        [Obsolete("Use the Destroy() method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void destroy() {
-            HZBannerAd.Destroy();
-        }
-
-        [Obsolete("Use the SetDisplayListener(AdDisplayListener) method instead - it uses the proper PascalCase for C#. Older versions of our SDK used incorrect casing.")]
-        public static void setDisplayListener(AdDisplayListener listener) {
-            HZBannerAd.SetDisplayListener(listener);
+        protected static IEnumerator InvokeCallbackNextFrame(string state, string tag) {
+            yield return null; // wait a frame
+            HZBannerAd.SetCallbackStateAndTag(state, tag);
         }
         #endregion
     }
@@ -236,7 +198,7 @@ namespace Heyzap {
     }
     #endif
 
-    #if UNITY_ANDROID
+    #if UNITY_ANDROID && !UNITY_EDITOR
     public class HZBannerAdAndroid : MonoBehaviour {
 
         public static bool GetCurrentBannerDimensions(out Rect banner){

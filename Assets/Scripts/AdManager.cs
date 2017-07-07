@@ -11,15 +11,22 @@ public class AdManager : MonoBehaviour {
     [SerializeField]
     private GameObject bannerControls;
     [SerializeField]
-    private GameObject nonBannerControls;
+    private GameObject offerwallControls;
+    [SerializeField]
+    private GameObject standardControls;
     [SerializeField]
     private ScrollingTextArea console;
+    [SerializeField]
+    private Toggle offerwallCloseOnFirstClickToggle;
+    [SerializeField]
+    private Text offerwallCurrencyIdTextField;
 
     private enum AdType {
         Interstitial,
         Video,
         Incentivized,
-        Banner
+        Banner,
+        Offerwall
     }
 
     private AdType _selectedAdType;
@@ -41,7 +48,8 @@ public class AdManager : MonoBehaviour {
     void Awake() {
         this.adTagTextField.MustNotBeNull();
         this.bannerControls.MustNotBeNull();
-        this.nonBannerControls.MustNotBeNull();
+        this.standardControls.MustNotBeNull();
+        this.offerwallControls.MustNotBeNull();
         this.console.MustNotBeNull();
     }
 
@@ -85,12 +93,23 @@ public class AdManager : MonoBehaviour {
             this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
         });
 
-        this.bannerControls.SetActive(false);
-        this.nonBannerControls.SetActive(true);
+        HZOfferwallAd.SetDisplayListener(delegate(string adState, string adTag) {
+            this.console.Append("OFFERWALL: " + adState + " Tag : " + adTag);
+        });
+
+        HZOfferwallAd.SetVirtualCurrencyResponseListener(delegate(VirtualCurrencyResponse response) {
+            this.console.Append("OFFERWALL VCS Response: id:" + response.CurrencyID + " name: '" + response.CurrencyName + "' amount : " + response.DeltaOfCurrency + " trans: " + response.LatestTransactionID);
+        });
+
+        HZOfferwallAd.SetVirtualCurrencyErrorListener(delegate(string errorMsg) {
+            this.console.Append("OFFERWALL VCS Error: " + errorMsg);
+        });
 
         // UI defaults
         this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
         this.SelectedAdType = AdType.Interstitial;
+
+        this.ShowAdTypeControls();
         HeyzapAds.HideDebugLogs();
     }
 
@@ -118,6 +137,12 @@ public class AdManager : MonoBehaviour {
         }
     }
 
+    public void OfferwallSelected(bool selected) {
+        if (selected) {
+            this.SelectedAdType = AdType.Offerwall;
+        }
+    }
+
     public void IsAvailableButton() {
         string tag = this.adTag();
         bool available = false;
@@ -134,6 +159,9 @@ public class AdManager : MonoBehaviour {
             break;
         case AdType.Banner:
             // Not applicable
+            break;
+        case AdType.Offerwall:
+            available = HZOfferwallAd.IsAvailable(tag);
             break;
         }
 
@@ -155,6 +183,9 @@ public class AdManager : MonoBehaviour {
         bannerOptions.Tag = tag;
         bannerOptions.Position = this.bannerPosition;
 
+        HZOfferwallShowOptions offerwallOptions = new HZOfferwallShowOptions();
+        offerwallOptions.ShouldCloseAfterFirstClick = offerwallCloseOnFirstClickToggle.isOn;
+
         this.console.Append("Showing " + this.SelectedAdType.ToString() + " with tag: " + tag);
         switch (this.SelectedAdType) {
             case AdType.Interstitial:
@@ -168,6 +199,9 @@ public class AdManager : MonoBehaviour {
                 break;
             case AdType.Banner:
                 HZBannerAd.ShowWithOptions(bannerOptions);
+                break;
+            case AdType.Offerwall:
+                HZOfferwallAd.ShowWithOptions(offerwallOptions);
                 break;
         }
     }
@@ -184,6 +218,9 @@ public class AdManager : MonoBehaviour {
                 break;
             case AdType.Incentivized:
                 HZIncentivizedAd.Fetch(tag);
+                break;
+            case AdType.Offerwall:
+                HZOfferwallAd.Fetch(tag);
                 break;
         }
     }
@@ -228,6 +265,10 @@ public class AdManager : MonoBehaviour {
         }
     }
 
+    public void VCSRequestButton() {
+        HZOfferwallAd.RequestDeltaOfCurrency(this.currencyId());
+    }
+
     public void ShowMediationTest() {
         this.console.Append("Showing mediation test suite");
         HeyzapAds.ShowMediationTestSuite();
@@ -236,10 +277,16 @@ public class AdManager : MonoBehaviour {
     private void ShowAdTypeControls() {
         if (this.SelectedAdType == AdType.Banner) {
             this.bannerControls.SetActive(true);
-            this.nonBannerControls.SetActive(false);
+            this.standardControls.SetActive(false);
+            this.offerwallControls.SetActive(false);
+        } else if (this.SelectedAdType == AdType.Offerwall) {
+            this.bannerControls.SetActive(false);
+            this.offerwallControls.SetActive(true);
+            this.standardControls.SetActive(false);
         } else {
             this.bannerControls.SetActive(false);
-            this.nonBannerControls.SetActive(true);
+            this.offerwallControls.SetActive(false);
+            this.standardControls.SetActive(true);
         }
     }
 
@@ -249,6 +296,15 @@ public class AdManager : MonoBehaviour {
             return "default";
         } else {
             return tag;
+        }
+    }
+
+    private string currencyId() {
+        string currencyId = this.offerwallCurrencyIdTextField.text;
+        if (currencyId == null || tag.Trim().Length == 0) {
+            return null;
+        } else {
+            return currencyId;
         }
     }
 }

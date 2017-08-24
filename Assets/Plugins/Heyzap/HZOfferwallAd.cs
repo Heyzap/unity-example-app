@@ -1,5 +1,5 @@
 //
-//  HZOfferwallAd.cs
+//  HZOfferWallAd.cs
 //
 //  Copyright 2017 Heyzap, Inc. All Rights Reserved
 //
@@ -35,8 +35,8 @@ namespace Heyzap {
     /// <summary>
     /// Use this class to show offerwall ads.
     /// </summary>
-    public class HZOfferwallAd : MonoBehaviour {
-      
+    public class HZOfferWallAd : MonoBehaviour {
+
         public delegate void AdDisplayListener(string state, string tag);
         private static AdDisplayListener adDisplayListener;
 
@@ -46,42 +46,42 @@ namespace Heyzap {
         public delegate void VirtualCurrencyErrorListener(string errorMsg);
         private static VirtualCurrencyErrorListener virtualCurrencyErrorListener;
 
-        private static HZOfferwallAd _instance = null;
-      
+        private static HZOfferWallAd _instance = null;
+
         //provided since JS can't use default parameters
         /// <summary>
         /// Shows an ad with the default options.
         /// </summary>
         public static void Show() {
-            HZOfferwallAd.ShowWithOptions(null);
+            HZOfferWallAd.ShowWithOptions(null);
         }
         /// <summary>
         /// Shows an ad with the given options.
         /// </summary>
-        /// <param name="showOptions"> The options to show the ad with, or the default options if <c>null</c></param> 
-        public static void ShowWithOptions(HZOfferwallShowOptions showOptions) {
+        /// <param name="showOptions"> The options to show the ad with, or the default options if <c>null</c></param>
+        public static void ShowWithOptions(HZOfferWallShowOptions showOptions) {
             if (showOptions == null) {
-                showOptions = new HZOfferwallShowOptions();
+                showOptions = new HZOfferWallShowOptions();
             }
 
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HZOfferwallAdAndroid.ShowWithOptions(showOptions);
+                    HZOfferWallAdAndroid.ShowWithOptions(showOptions);
                 #elif UNITY_IPHONE
-                    HZOfferwallAdIOS.ShowWithOptions(showOptions);
+                    HZOfferWallAdIOS.ShowWithOptions(showOptions);
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to show an HZOfferwallAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
+                UnityEngine.Debug.LogWarning("Call received to show an HZOfferWallAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
                 _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Tag));
             #endif
         }
-      
+
         //provided since JS can't use default parameters
         /// <summary>
         /// Fetches an ad for the default ad tag.
         /// </summary>
         public static void Fetch() {
-            HZOfferwallAd.Fetch(null);
+            HZOfferWallAd.Fetch(null);
         }
         /// <summary>
         /// Fetches an ad for the given ad tag.
@@ -92,23 +92,23 @@ namespace Heyzap {
 
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HZOfferwallAdAndroid.Fetch(tag);
+                    HZOfferWallAdAndroid.Fetch(tag);
                 #elif UNITY_IPHONE
-                    HZOfferwallAdIOS.Fetch(tag);
+                    HZOfferWallAdIOS.Fetch(tag);
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to fetch an HZOfferwallAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
+                UnityEngine.Debug.LogWarning("Call received to fetch an HZOfferWallAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
                 _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.FETCH_FAILED, tag));
             #endif
         }
-      
+
         //provided since JS can't use default parameters
         /// <summary>
         /// Returns whether or not an ad is available for the default ad tag.
         /// </summary>
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
         public static bool IsAvailable() {
-            return HZOfferwallAd.IsAvailable(null);
+            return HZOfferWallAd.IsAvailable(null);
         }
         /// <summary>
         /// Returns whether or not an ad is available for the given ad tag.
@@ -119,9 +119,9 @@ namespace Heyzap {
 
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    return HZOfferwallAdAndroid.IsAvailable(tag);
+                    return HZOfferWallAdAndroid.IsAvailable(tag);
                 #elif UNITY_IPHONE
-                    return HZOfferwallAdIOS.IsAvailable(tag);
+                    return HZOfferWallAdIOS.IsAvailable(tag);
                 #endif
             #else
                 return false;
@@ -130,17 +130,18 @@ namespace Heyzap {
 
         /// <summary>
         /// Sends a request to the Virtual Currency Server to see if the user has earned virtual currency since the last request.
+        /// The `VirtualCurrencyResponseListener` or the `VirtualCurrencyErrorListener` will receive the response once received.
         /// </summary>
         /// <param name="currencyId">The ID of the currency to request information about. Setting this to NULL will request the default currency.</param>
         public static void RequestDeltaOfCurrency(string currencyId) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HZOfferwallAdAndroid.RequestDeltaOfCurrency(currencyId);
+                    HZOfferWallAdAndroid.RequestDeltaOfCurrency(currencyId);
                 #elif UNITY_IPHONE
-                    HZOfferwallAdIOS.RequestDeltaOfCurrency(currencyId);
+                    HZOfferWallAdIOS.RequestDeltaOfCurrency(currencyId);
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to request a VCS update on HZOfferwallAd, but the SDK does not function in the editor. You must use a device/emulator to do this.");
+                UnityEngine.Debug.LogWarning("Call received to request a VCS update on HZOfferWallAd, but the SDK does not function in the editor. You must use a device/emulator to do this.");
                 _instance.StartCoroutine(InvokeVCSErrorNextFrame("only_works_on_device"));
             #endif
         }
@@ -149,81 +150,81 @@ namespace Heyzap {
         /// Sets the AdDisplayListener for offerwall ads, which will receive callbacks regarding the state of offerwall ads.
         /// </summary>
         public static void SetDisplayListener(AdDisplayListener listener) {
-            HZOfferwallAd.adDisplayListener = listener;
+            HZOfferWallAd.adDisplayListener = listener;
         }
 
         /// <summary>
         /// Sets the VirtualCurrencyResponseListener for offerwall ads, which will receive callbacks in response to a request for a VCS update.
         /// </summary>
         public static void SetVirtualCurrencyResponseListener(VirtualCurrencyResponseListener listener) {
-            HZOfferwallAd.virtualCurrencyResponseListener = listener;
+            HZOfferWallAd.virtualCurrencyResponseListener = listener;
         }
 
         /// <summary>
         /// Sets the VirtualCurrencyErrorListener for offerwall ads, which will receive callbacks regarding errors received after requesting virtual currency updates from the server.
         /// </summary>
         public static void SetVirtualCurrencyErrorListener(VirtualCurrencyErrorListener listener) {
-            HZOfferwallAd.virtualCurrencyErrorListener = listener;
+            HZOfferWallAd.virtualCurrencyErrorListener = listener;
         }
 
         #region Internal methods
         public static void InitReceiver(){
             if (_instance == null) {
-                GameObject receiverObject = new GameObject("HZOfferwallAd");
+                GameObject receiverObject = new GameObject("HZOfferWallAd");
                 DontDestroyOnLoad(receiverObject);
-                _instance = receiverObject.AddComponent<HZOfferwallAd>();
+                _instance = receiverObject.AddComponent<HZOfferWallAd>();
             }
         }
 
         // received from native SDK
         public void SetCallback(string message) {
             string[] displayStateParams = message.Split(',');
-            HZOfferwallAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]); 
+            HZOfferWallAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]);
         }
         protected static void SetCallbackStateAndTag(string state, string tag) {
-            if (HZOfferwallAd.adDisplayListener != null) {
-                HZOfferwallAd.adDisplayListener(state, tag);
+            if (HZOfferWallAd.adDisplayListener != null) {
+                HZOfferWallAd.adDisplayListener(state, tag);
             }
         }
 
         // used for in-editor functionality
         protected static IEnumerator InvokeCallbackNextFrame(string state, string tag) {
             yield return null; // wait a frame
-            HZOfferwallAd.SetCallbackStateAndTag(state, tag);
+            HZOfferWallAd.SetCallbackStateAndTag(state, tag);
         }
 
         // received from native SDK
         public void VCSResponse(string jsonString) {
-            HZOfferwallAd.SendVCSResponse(jsonString);
+            HZOfferWallAd.SendVCSResponse(jsonString);
         }
         protected static void SendVCSResponse(string jsonString) {
-            if (HZOfferwallAd.virtualCurrencyResponseListener != null) {
+            if (HZOfferWallAd.virtualCurrencyResponseListener != null) {
                 VirtualCurrencyResponse response = (VirtualCurrencyResponse)JsonUtility.FromJson<VirtualCurrencyResponse>(jsonString);
-                HZOfferwallAd.virtualCurrencyResponseListener(response);
+                HZOfferWallAd.virtualCurrencyResponseListener(response);
             }
         }
 
         // received from native SDK
         public void VCSError(string errorMsg) {
-            HZOfferwallAd.SendVCSError(errorMsg);
+            HZOfferWallAd.SendVCSError(errorMsg);
         }
         protected static void SendVCSError(string errorMsg) {
-            if (HZOfferwallAd.virtualCurrencyErrorListener != null) {
-                HZOfferwallAd.virtualCurrencyErrorListener(errorMsg);
+            if (HZOfferWallAd.virtualCurrencyErrorListener != null) {
+                HZOfferWallAd.virtualCurrencyErrorListener(errorMsg);
             }
         }
 
         // used for in-editor functionality
         protected static IEnumerator InvokeVCSErrorNextFrame(string errorMsg) {
             yield return null; // wait a frame
-            HZOfferwallAd.SendVCSError(errorMsg);
+            HZOfferWallAd.SendVCSError(errorMsg);
         }
         #endregion
     }
 
     #region Platform-specific translations
     #if UNITY_IPHONE && !UNITY_EDITOR
-    public class HZOfferwallAdIOS : MonoBehaviour {
+    public class HZOfferWallAdIOS : MonoBehaviour {
         [DllImport ("__Internal")]
         private static extern void hz_ads_show_offerwall(string tag, bool shouldCloseAfterFirstClick);
         [DllImport ("__Internal")]
@@ -234,7 +235,7 @@ namespace Heyzap {
         private static extern bool hz_ads_virtual_currency_request(string currencyId);
 
 
-        public static void ShowWithOptions(HZOfferwallShowOptions showOptions) {
+        public static void ShowWithOptions(HZOfferWallShowOptions showOptions) {
             hz_ads_show_offerwall(showOptions.Tag, showOptions.ShouldCloseAfterFirstClick);
         }
 
@@ -253,14 +254,14 @@ namespace Heyzap {
     #endif
 
     #if UNITY_ANDROID && !UNITY_EDITOR
-    public class HZOfferwallAdAndroid : MonoBehaviour {
-      
-        public static void ShowWithOptions(HZOfferwallShowOptions showOptions) {
+    public class HZOfferWallAdAndroid : MonoBehaviour {
+
+        public static void ShowWithOptions(HZOfferWallShowOptions showOptions) {
         if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showOfferwall", showOptions.Tag);
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("showOfferWall", showOptions.Tag);
             }
         }
 
@@ -268,17 +269,17 @@ namespace Heyzap {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("fetchOfferwall", tag); 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("fetchOfferWall", tag);
             }
         }
-          
+
         public static Boolean IsAvailable(string tag) {
             if(Application.platform != RuntimePlatform.Android) return false;
 
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("isOfferwallAvailable", tag);
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                return jc.CallStatic<Boolean>("isOfferWallAvailable", tag);
             }
         }
 
@@ -286,8 +287,8 @@ namespace Heyzap {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("TODO", currencyId);
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("virtualCurrencyRequest", currencyId);
             }
         }
     }

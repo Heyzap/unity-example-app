@@ -45,26 +45,31 @@
 /**
  *  Use this class to request an update from Fyber's Virtual Currency Server (VCS) product regarding how much currency a user has earned since the last time you asked.
  
- *  @discussion Virtual currency can be earned via Offerwall and Rewarded Video views from Fyber. If you only want to use this class for Offerwall rewarding (most publishers) and not for RV rewarding, make sure to set the rewards up on the Fyber dashboard such that RVs don't produce any virtual currency, or at least not the same currency as offerwall interactions so you can tell the difference. Otherwise, you may end up rewarding users twice for RV views from the Fyber ad network.
+ *  @discussion Virtual currency can be earned via OfferWall and Rewarded Video views from Fyber. If you only want to use this class for OfferWall rewarding (most publishers) and not for RV rewarding, make sure to set the rewards up on the Fyber dashboard such that RVs don't produce any virtual currency, or at least not the same currency as offerwall interactions so you can tell the difference. Otherwise, you may end up rewarding users twice for RV views from the Fyber ad network.
  */
 @interface HZFyberVirtualCurrencyClient : NSObject
 
 /**
  *  Accessor for the singleton client. Use this instead of `init`ing your own copy.
  */
-+ (instancetype)sharedClient;
++ (nonnull instancetype)sharedClient;
+
+/**
+ *  Whether or not the Fyber SDK's Virtual Currency Client class is available for us to forward messages to. If `false`, the Fyber SDK is not present & none of the methods here will do anything.
+ */
+- (BOOL)available;
 
 /**
  *  Latest transaction ID for your user and app ID, as reported by the server. It is used to keep track of new transactions between invocations to requestDeltaOfCoins
  */
-@property (nonatomic, copy, readonly) NSString *latestTransactionId;
+@property (nonatomic, copy, readonly, nullable) NSString *latestTransactionId;
 
 /**
  *  The object that acts as the delegate of the virtual currency client
  *
  *  @discussion The delegate must adopt the HZFyberVirtualCurrencyClientDelegate protocol. The delegate is not retained
  */
-@property (weak, nonatomic) id<HZFyberVirtualCurrencyClientDelegate> delegate;
+@property (weak, nonatomic, nullable) id<HZFyberVirtualCurrencyClientDelegate> delegate;
 
 /**
  *  Requests the amount of currency earned since the last time this method was invoked for the default currency
@@ -74,12 +79,12 @@
 /**
  *  Requests the amount of currency earned since the last time this method was invoked for the specified currency
  */
-- (void)requestDeltaOfCurrency:(NSString *)currencyId;
+- (void)requestDeltaOfCurrency:(nullable NSString *)currencyId;
 
 /**
  *  Please use [HZFyberVirtualCurrencyClient sharedClient] instead.
  */
-- (instancetype)init __attribute__((unavailable("This is a singleton class. Use `[HZFyberVirtualCurrencyClient sharedClient]` instead.")));
+- (nullable instancetype)init __attribute__((unavailable("This is a singleton class. Use `[HZFyberVirtualCurrencyClient sharedClient]` instead.")));
 
 @end
 
@@ -89,17 +94,17 @@
 /**
  *  Latest transaction ID for your user and app IDs, as reported by the server. It is used to keep track of new transactions between invocations to requestDeltaOfCoins
  */
-@property (nonatomic, copy) NSString *latestTransactionId;
+@property (nonatomic, copy, nonnull) NSString *latestTransactionId;
 
 /**
  *  The ID of the currency being earned by the user
  */
-@property (nonatomic, copy) NSString *currencyId;
+@property (nonatomic, copy, nonnull) NSString *currencyId;
 
 /**
  *  The name of the currency being earned by the user
  */
-@property (nonatomic, copy) NSString *currencyName;
+@property (nonatomic, copy, nonnull) NSString *currencyName;
 
 /**
  *  Amount of currency earned by the user
@@ -116,9 +121,9 @@
 
 @optional
 
-- (void)didReceiveVirtualCurrencyResponse:(HZFyberVirtualCurrencyResponse *)response;
+- (void)didReceiveVirtualCurrencyResponse:(nonnull HZFyberVirtualCurrencyResponse *)response;
 
-- (void)didFailToReceiveVirtualCurrencyResponse:(NSError *)error;
+- (void)didFailToReceiveVirtualCurrencyResponse:(nonnull NSError *)error;
 
 @end
 

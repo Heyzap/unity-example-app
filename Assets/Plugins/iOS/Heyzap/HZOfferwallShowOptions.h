@@ -1,5 +1,5 @@
 //
-//  HZOfferwallShowOptions.h
+//  HZOfferWallShowOptions.h
 //  Heyzap
 //
 //  Created by Monroe Ekilah on 7/3/17.
@@ -39,13 +39,12 @@
  */
 
 #import "HeyzapAds.h"
-
 #import "HZShowOptions.h"
 
-@interface HZOfferwallShowOptions : HZShowOptions
+@interface HZOfferWallShowOptions : HZShowOptions
 
 /**
- *  Whether or not you would like the Offerwall ad to automatically close itself after the user interacts with their first offer.
+ *  Whether or not you would like the OfferWall ad to automatically close itself after the user interacts with their first offer.
     
     Defaults to `NO`.
  */
@@ -54,7 +53,7 @@
 @property (nonatomic) BOOL animatePresentation;
 
 /**
- *  A dictionary of custom parameters are added to the request when showing the Offerwall. These custom parameters are used for server-side rewarded callbacks.
+ *  A dictionary of custom parameters are added to the request when showing the OfferWall. These custom parameters are used for server-side rewarded callbacks.
  *
  *  @discussion Setting this will clear all previously custom parameters; it won't combine old dictionaries with this one.
  

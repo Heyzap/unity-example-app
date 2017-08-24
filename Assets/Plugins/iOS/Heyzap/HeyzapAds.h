@@ -47,7 +47,9 @@
 #import "HZMediatedNativeAdManager.h"
 #import "HZMediatedNativeAdViewRegisterer.h"
 
-#import "HZOfferwallAd.h"
+#import "HZOfferWallAd.h"
+#import "HZOfferWallShowOptions.h"
+#import "HZFyberVirtualCurrencyClient.h"
 
 #import "HZFetchOptions.h"
 #import "HZShowOptions.h"
@@ -59,7 +61,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.12.0"
+#define SDK_VERSION @"9.12.5"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -134,8 +136,8 @@ extern NSString * const HZNetworkFyber;
 extern NSString * const HZNetworkCallbackInitialized;
 extern NSString * const HZNetworkCallbackShow;
 extern NSString * const HZNetworkCallbackAvailable;
-extern NSString * const HZNetworkCallbackHide;
 extern NSString * const HZNetworkCallbackFetchFailed;
+extern NSString * const HZNetworkCallbackShowFailed;
 extern NSString * const HZNetworkCallbackClick;
 extern NSString * const HZNetworkCallbackDismiss;
 extern NSString * const HZNetworkCallbackIncentivizedResultIncomplete;
@@ -179,7 +181,7 @@ extern NSString * const HZMediationDidFinishAdAudioNotification;
 extern NSString * const HZMediationDidCompleteIncentivizedAdNotification;
 extern NSString * const HZMediationDidFailToCompleteIncentivizedAdNotification;
 
-// Offerwall NSNotifications
+// OfferWall NSNotifications
 extern NSString * const HZFyberDidReceiveVirtualCurrencyResponseNotification;
 extern NSString * const HZFyberDidFailToReceiveVirtualCurrencyResponseNotification;
 

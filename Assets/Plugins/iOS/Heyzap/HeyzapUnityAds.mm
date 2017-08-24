@@ -36,8 +36,8 @@
 #import "HZIncentivizedAd.h"
 #import "HZBannerAd.h"
 
-#import "HZOfferwallAd.h"
-#import "HZOfferwallShowOptions.h"
+#import "HZOfferWallAd.h"
+#import "HZOfferWallShowOptions.h"
 #import "HZFyberVirtualCurrencyClient.h"
 
 #import "HZDemographics.h"
@@ -53,7 +53,7 @@ extern void UnitySendMessage(const char *, const char *, const char *);
 #define HZ_INTERSTITIAL_KLASS @"HZInterstitialAd"
 #define HZ_INCENTIVIZED_KLASS @"HZIncentivizedAd"
 #define HZ_BANNER_KLASS @"HZBannerAd"
-#define HZ_OFFERWALL_KLASS @"HZOfferwallAd"
+#define HZ_OFFERWALL_KLASS @"HZOfferWallAd"
 
 @interface HeyzapUnityAdDelegate : NSObject<HZAdsDelegate, HZIncentivizedAdDelegate, HZBannerAdDelegate, HZFyberVirtualCurrencyClientDelegate>
 
@@ -155,14 +155,14 @@ static HeyzapUnityAdDelegate *HZInterstitialDelegate = nil;
 static HeyzapUnityAdDelegate *HZIncentivizedDelegate = nil;
 static HeyzapUnityAdDelegate *HZVideoDelegate = nil;
 static HeyzapUnityAdDelegate *HZBannerDelegate = nil;
-static HeyzapUnityAdDelegate *HZOfferwallDelegate = nil;
+static HeyzapUnityAdDelegate *HZOfferWallDelegate = nil;
 
 static HZBannerAd *HZCurrentBannerAd = nil;
 
 extern "C" {
-
+    
 #pragma mark - Starting the SDK
-
+    
     void hz_ads_start_app(const char *publisher_id, HZAdOptions flags) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -181,9 +181,9 @@ extern "C" {
             
             HZBannerDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_BANNER_KLASS];
             
-            HZOfferwallDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_OFFERWALL_KLASS];
-            [HZOfferwallAd setDelegate:HZOfferwallDelegate];
-            [[HZFyberVirtualCurrencyClient sharedClient] setDelegate:HZOfferwallDelegate];
+            HZOfferWallDelegate = [[HeyzapUnityAdDelegate alloc] initWithKlassName:HZ_OFFERWALL_KLASS];
+            [HZOfferWallAd setDelegate:HZOfferWallDelegate];
+            [[HZFyberVirtualCurrencyClient sharedClient] setDelegate:HZOfferWallDelegate];
             
             [HeyzapAds networkCallbackWithBlock:^(NSString *network, NSString *callback) {
                 NSString *unityMessage = [NSString stringWithFormat:@"%@,%@", network, callback];
@@ -320,19 +320,19 @@ extern "C" {
 #pragma mark - Offerwall Ads
     
     void hz_ads_fetch_offerwall(const char *tag) {
-        [HZOfferwallAd fetchForTag:[NSString stringWithUTF8String:tag]];
+        [HZOfferWallAd fetchForTag:[NSString stringWithUTF8String:tag]];
     }
     
     void hz_ads_show_offerwall(const char *tag, bool shouldCloseAfterFirstClick) {
-        HZOfferwallShowOptions *offerwallOpts = [HZOfferwallShowOptions new];
+        HZOfferWallShowOptions *offerwallOpts = [HZOfferWallShowOptions new];
         offerwallOpts.shouldCloseAfterFirstClick = shouldCloseAfterFirstClick;
         offerwallOpts.animatePresentation = YES;
         offerwallOpts.tag = [NSString stringWithUTF8String:tag];
-        [HZOfferwallAd showWithOptions:offerwallOpts];
+        [HZOfferWallAd showWithOptions:offerwallOpts];
     }
     
     bool hz_ads_offerwall_is_available(const char *tag) {
-        return [HZOfferwallAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
+        return [HZOfferWallAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
     }
     
     void hz_ads_virtual_currency_request(const char *currencyId) {

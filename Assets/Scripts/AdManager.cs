@@ -93,15 +93,15 @@ public class AdManager : MonoBehaviour {
             this.console.Append("VIDEO: " + adState + " Tag : " + adTag);
         });
 
-        HZOfferwallAd.SetDisplayListener(delegate(string adState, string adTag) {
+        HZOfferWallAd.SetDisplayListener(delegate(string adState, string adTag) {
             this.console.Append("OFFERWALL: " + adState + " Tag : " + adTag);
         });
 
-        HZOfferwallAd.SetVirtualCurrencyResponseListener(delegate(VirtualCurrencyResponse response) {
+        HZOfferWallAd.SetVirtualCurrencyResponseListener(delegate(VirtualCurrencyResponse response) {
             this.console.Append("OFFERWALL VCS Response: id:" + response.CurrencyID + " name: '" + response.CurrencyName + "' amount : " + response.DeltaOfCurrency + " trans: " + response.LatestTransactionID);
         });
 
-        HZOfferwallAd.SetVirtualCurrencyErrorListener(delegate(string errorMsg) {
+        HZOfferWallAd.SetVirtualCurrencyErrorListener(delegate(string errorMsg) {
             this.console.Append("OFFERWALL VCS Error: " + errorMsg);
         });
 
@@ -161,7 +161,7 @@ public class AdManager : MonoBehaviour {
             // Not applicable
             break;
         case AdType.Offerwall:
-            available = HZOfferwallAd.IsAvailable(tag);
+            available = HZOfferWallAd.IsAvailable(tag);
             break;
         }
 
@@ -183,7 +183,7 @@ public class AdManager : MonoBehaviour {
         bannerOptions.Tag = tag;
         bannerOptions.Position = this.bannerPosition;
 
-        HZOfferwallShowOptions offerwallOptions = new HZOfferwallShowOptions();
+        HZOfferWallShowOptions offerwallOptions = new HZOfferWallShowOptions();
         offerwallOptions.ShouldCloseAfterFirstClick = offerwallCloseOnFirstClickToggle.isOn;
 
         this.console.Append("Showing " + this.SelectedAdType.ToString() + " with tag: " + tag);
@@ -201,7 +201,7 @@ public class AdManager : MonoBehaviour {
                 HZBannerAd.ShowWithOptions(bannerOptions);
                 break;
             case AdType.Offerwall:
-                HZOfferwallAd.ShowWithOptions(offerwallOptions);
+                HZOfferWallAd.ShowWithOptions(offerwallOptions);
                 break;
         }
     }
@@ -220,7 +220,7 @@ public class AdManager : MonoBehaviour {
                 HZIncentivizedAd.Fetch(tag);
                 break;
             case AdType.Offerwall:
-                HZOfferwallAd.Fetch(tag);
+                HZOfferWallAd.Fetch(tag);
                 break;
         }
     }
@@ -266,7 +266,7 @@ public class AdManager : MonoBehaviour {
     }
 
     public void VCSRequestButton() {
-        HZOfferwallAd.RequestDeltaOfCurrency(this.currencyId());
+        HZOfferWallAd.RequestDeltaOfCurrency(this.currencyId());
     }
 
     public void ShowMediationTest() {

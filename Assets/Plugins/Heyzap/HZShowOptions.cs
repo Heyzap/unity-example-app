@@ -90,7 +90,7 @@ namespace Heyzap {
     /// <summary>
     /// A set of options that describes how to show an offerwall ad.
     /// </summary>
-    public class HZOfferwallShowOptions : HZShowOptions {
+    public class HZOfferWallShowOptions : HZShowOptions {
         private const bool DEFAULT_SHOULD_CLOSE_AFTER_FIRST_CLICK = true;
 
         /// <summary>
@@ -106,6 +106,6 @@ namespace Heyzap {
                 shouldCloseAfterFirstClick = value;
             }
         }
-        private bool shouldCloseAfterFirstClick = HZOfferwallShowOptions.DEFAULT_SHOULD_CLOSE_AFTER_FIRST_CLICK;
+        private bool shouldCloseAfterFirstClick = HZOfferWallShowOptions.DEFAULT_SHOULD_CLOSE_AFTER_FIRST_CLICK;
     }
 }

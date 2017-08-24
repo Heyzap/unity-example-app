@@ -135,6 +135,7 @@ namespace Heyzap {
             public const string INMOBI = "inmobi";
             public const string DOMOB = "domob";
             public const string MOPUB = "mopub";
+            public const string FYBER_EXCHANGE = "fyber_exchange";
         }
         #endregion
 
@@ -160,7 +161,7 @@ namespace Heyzap {
             HZVideoAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
             HZBannerAd.InitReceiver();
-            HZOfferwallAd.InitReceiver();
+            HZOfferWallAd.InitReceiver();
             HZDemographics.InitReceiver();
         }
         

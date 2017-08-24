@@ -1,5 +1,5 @@
 //
-//  HZOfferwallAd.h
+//  HZOfferWallAd.h
 //  Heyzap
 //
 //  Created by Monroe Ekilah on 6/27/17.
@@ -42,10 +42,10 @@
 
 
 @protocol HZAdsDelegate;
-@class HZOfferwallShowOptions;
+@class HZOfferWallShowOptions;
 
-/** HZOfferwallAd is responsible for fetching and showing offerwall ads. All methods on this class must be called from the main queue. */
-@interface HZOfferwallAd : NSObject
+/** HZOfferWallAd is responsible for fetching and showing offerwall ads. All methods on this class must be called from the main queue. */
+@interface HZOfferWallAd : NSObject
 
 
 #pragma mark - Showing Ads
@@ -71,9 +71,9 @@
 
 /** Shows an offerwall ad with the given options.
  *
- * @param options HZOfferwallShowOptions object containing properties for configuring how the ad is shown.
+ * @param options HZOfferWallShowOptions object containing properties for configuring how the ad is shown.
  */
-+ (void)showWithOptions:(HZOfferwallShowOptions *)options;
++ (void)showWithOptions:(HZOfferWallShowOptions *)options;
 
 #pragma mark - Callbacks
 

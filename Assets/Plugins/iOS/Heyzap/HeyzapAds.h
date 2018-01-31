@@ -61,7 +61,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.12.5"
+#define SDK_VERSION @"9.17.1"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -131,6 +131,7 @@ extern NSString * const HZNetworkLeadbolt;
 extern NSString * const HZNetworkInMobi;
 extern NSString * const HZNetworkDomob;
 extern NSString * const HZNetworkFyber;
+extern NSString * const HZNetworkFractionalMedia;
 
 // General Network Callbacks
 extern NSString * const HZNetworkCallbackInitialized;
@@ -151,16 +152,6 @@ extern NSString * const HZNetworkCallbackBannerClick DEPRECATED_ATTRIBUTE;
 extern NSString * const HZNetworkCallbackBannerHide DEPRECATED_ATTRIBUTE;
 extern NSString * const HZNetworkCallbackBannerDismiss DEPRECATED_ATTRIBUTE;
 extern NSString * const HZNetworkCallbackBannerFetchFailed DEPRECATED_ATTRIBUTE;
-
-// Chartboost Specific Callbacks
-extern NSString * const HZNetworkCallbackChartboostMoreAppsFetchFailed;
-extern NSString * const HZNetworkCallbackChartboostMoreAppsDismiss;
-extern NSString * const HZNetworkCallbackChartboostMoreAppsHide;
-extern NSString * const HZNetworkCallbackChartboostMoreAppsClick;
-extern NSString * const HZNetworkCallbackChartboostMoreAppsShow;
-extern NSString * const HZNetworkCallbackChartboostMoreAppsAvailable;
-extern NSString * const HZNetworkCallbackChartboostMoreAppsClickFailed;
-
 
 // Facebook Specific Callbacks
 extern NSString * const HZNetworkCallbackFacebookLoggingImpression;

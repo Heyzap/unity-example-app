@@ -93,6 +93,13 @@ extern CGSize const HZMoPubBannerSize;
 /** The 728x90 size. This is the default for tablets. */
 extern CGSize const HZMoPubLeaderboardSize;
 
+typedef NS_ENUM(NSUInteger, HZAppLovinBannerSize) {
+    /** The 320x50 size. This is the default for phones. */
+    HZAppLovinBannerSizeBanner,
+    /** The 728x90 size. This is the default for tablets. */
+    HZAppLovinBannerSizeLeaderboard,
+};
+
 @interface HZBannerAdOptions : NSObject <NSCopying>
 
 /**
@@ -125,6 +132,13 @@ extern CGSize const HZMoPubLeaderboardSize;
 @property (nonatomic) CGSize inMobiBannerSize;
 
 @property (nonatomic) CGSize moPubBannerSize;
+
+/**
+ *  If you don't select a size, a default size is used based on the current interface idiom:
+ *  iPhones: `HZAppLovinBannerSizeBanner`
+ *  iPads: `HZAppLovinBannerSizeLeaderboard`
+ */
+@property (nonatomic) HZAppLovinBannerSize appLovinBannerSize;
 
 /// @name Other Banner Options
 #pragma mark - Other Banner Options

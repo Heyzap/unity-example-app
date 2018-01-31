@@ -31,6 +31,8 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <os/log.h>
+
 /**
  *  The level of logging the SDK should do.
  */

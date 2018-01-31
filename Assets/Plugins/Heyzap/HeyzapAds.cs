@@ -106,15 +106,6 @@ namespace Heyzap {
 
             // Facebook Specific
             public const string FACEBOOK_LOGGING_IMPRESSION = "logging_impression";
-
-            // Chartboost Specific
-            public const string CHARTBOOST_MOREAPPS_FETCH_FAILED = "moreapps-fetch_failed";
-            public const string CHARTBOOST_MOREAPPS_HIDE = "moreapps-hide";
-            public const string CHARTBOOST_MOREAPPS_DISMISS = "moreapps-dismiss";
-            public const string CHARTBOOST_MOREAPPS_CLICK = "moreapps-click";
-            public const string CHARTBOOST_MOREAPPS_SHOW = "moreapps-show";
-            public const string CHARTBOOST_MOREAPPS_AVAILABLE = "moreapps-available";
-            public const string CHARTBOOST_MOREAPPS_CLICK_FAILED = "moreapps-click_failed";
         }
         #endregion
 

@@ -261,7 +261,7 @@ namespace Heyzap {
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
-                jc.CallStatic("showOfferWall", showOptions.Tag);
+                jc.CallStatic("showOfferWall", showOptions.Tag, showOptions.ShouldCloseAfterFirstClick);
             }
         }
 

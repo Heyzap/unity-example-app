@@ -12,3 +12,8 @@
 *.pyc*
 Builds/
 *.userprefs
+
+Assets/Plugins/Android/play-services*aar*
+Assets/Plugins/Android/support*aar*
+Assets/Plugins/Android/support*jar*
+Assets/Plugins/Android/appcompat*aar*

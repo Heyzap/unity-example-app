@@ -70,7 +70,8 @@ public class AdManager : MonoBehaviour {
         // locServ.Start(this.console);
 
         HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
-        HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
+		// Same publisher ID as used in snake_heyzapl_only. Use "com.example.android.snake" as package name in Player Settings
+        HeyzapAds.Start("ea5f69c43f6aa67acef0e57bf2f0dbfe", HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {
             this.console.Append("BANNER: " + adState + " Tag : " + adTag);

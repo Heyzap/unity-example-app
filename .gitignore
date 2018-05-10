@@ -8,6 +8,7 @@
 *.csproj
 *.unityproj
 *.sln
+.vs/
 
 *.pyc*
 Builds/

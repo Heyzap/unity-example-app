@@ -180,9 +180,9 @@ namespace Heyzap {
         {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HeyzapAdsAndroid.setGdprConsent(isGdprConsentGiven);
+                    HeyzapAdsAndroid.SetGdprConsent(isGdprConsentGiven);
                 #elif UNITY_IPHONE
-                    HeyzapAdsIOS.setGdprConsent(isGdprConsentGiven);
+                    HeyzapAdsIOS.SetGdprConsent(isGdprConsentGiven);
                 #endif
             #else
                 UnityEngine.Debug.LogWarning("Call received to set the GDPR consent, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent.");
@@ -435,7 +435,7 @@ namespace Heyzap {
             return hz_ads_get_remote_data();
         }
 
-        public static void setGdprConsent(Boolean isGdprConsentGiven) {
+        public static void SetGdprConsent(Boolean isGdprConsentGiven) {
             hz_ads_set_gdpr_consent(isGdprConsentGiven);
         }
 
@@ -520,12 +520,12 @@ namespace Heyzap {
             }
         }
 
-        public static void setGdprConsent(Boolean isGdprConsentGiven) {
+        public static void SetGdprConsent(Boolean isGdprConsentGiven) {
             if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass j = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
-                jc.CallStatic("showNetworkActivity");
+            using (AndroidJavaClass javaClass = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+	            javaClass.CallStatic("setGdprConsent", isGdprConsentGiven);
             }
         }
 

@@ -251,6 +251,12 @@ public class AdManager : MonoBehaviour {
             this.console.Append("Disabling debug logging");
             HeyzapAds.HideDebugLogs();
         }
+	}
+
+    public void GdprSwitch(bool on)
+	{       
+		this.console.Append(on ? "Accepting GDPR" : "Rejecting GDPR");
+		HeyzapAds.SetGdprConsent(on);
     }
 
     public void BannerPositionTop(bool selected) {

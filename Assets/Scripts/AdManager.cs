@@ -253,10 +253,16 @@ public class AdManager : MonoBehaviour {
         }
 	}
 
-    public void GdprSwitch(bool on)
+    public void AcceptGdprButton()
 	{       
-		this.console.Append(on ? "Accepting GDPR" : "Rejecting GDPR");
-		HeyzapAds.SetGdprConsent(on);
+		this.console.Append("Accepting GDPR");
+		HeyzapAds.SetGdprConsent(true);
+	}
+
+    public void RejectGdprButton()
+    {
+        this.console.Append("Rejecting GDPR");
+        HeyzapAds.SetGdprConsent(false);
     }
 
     public void BannerPositionTop(bool selected) {

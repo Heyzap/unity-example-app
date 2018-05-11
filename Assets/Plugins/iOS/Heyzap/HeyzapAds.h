@@ -61,7 +61,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.17.1"
+#define SDK_VERSION @"9.19.1"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -132,6 +132,8 @@ extern NSString * const HZNetworkInMobi;
 extern NSString * const HZNetworkDomob;
 extern NSString * const HZNetworkFyber;
 extern NSString * const HZNetworkFractionalMedia;
+extern NSString * const HZNetworkIronSource;
+extern NSString * const HZNetworkTapjoy;
 
 // General Network Callbacks
 extern NSString * const HZNetworkCallbackInitialized;
@@ -313,6 +315,7 @@ extern NSString * const HZFyberVirtualCurrencyResponseUserInfoKey;
 + (BOOL) isStarted;
 + (void) setDebugLevel:(HZDebugLevel)debugLevel;
 + (void) setDebug:(BOOL)choice;
++ (void) setGDPRConsent:(BOOL)consentGiven;
 + (void) setOptions: (HZAdOptions)options;
 + (void) setFramework: (NSString *) framework;
 + (void) setMediator: (NSString *) mediator;

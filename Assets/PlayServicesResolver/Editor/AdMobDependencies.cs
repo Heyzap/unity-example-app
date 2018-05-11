@@ -18,6 +18,6 @@ public static class AdMobDependencies
         svcSupport.DependOn("com.google.android.gms", "play-services-ads", "LATEST", new string[]{ "extra-google-m2repository" } );
 
         // Marshmallow permissions requires app-compat.
-        svcSupport.DependOn("com.android.support", "appcompat-v7", "23.1.0+");
+        svcSupport.DependOn("com.android.support", "appcompat-v7", "25.3.0+");
     }
 }

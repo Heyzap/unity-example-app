@@ -173,6 +173,23 @@ namespace Heyzap {
         }
 
         /// <summary>
+        /// Sets User's consent under GDPR. Fyber will only be able to show targeted advertising if the user consented. Only call this method if the user explicitly gave or denied consent.
+        /// </summary>
+        /// <param name="isGdprConsentGiven">true if user gave consent to receive targeted advertisement, false otherwise</param>
+        public static void SetGdprConsent(Boolean isGdprConsentGiven)
+        {
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.SetGdprConsent(isGdprConsentGiven);
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.SetGdprConsent(isGdprConsentGiven);
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to set the GDPR consent, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent.");
+            #endif
+        }
+
+        /// <summary>
         /// Shows the mediation test suite.
         /// </summary>
         public static void ShowMediationTestSuite() {
@@ -369,6 +386,9 @@ namespace Heyzap {
         private static extern string hz_ads_get_remote_data();
 
         [DllImport ("__Internal")]
+        private static extern void hz_ads_set_gdpr_consent(Boolean isGdprConsentGiven);
+
+        [DllImport ("__Internal")]
         private static extern bool hz_ads_is_network_initialized(string network);
 
         [DllImport ("__Internal")]
@@ -413,6 +433,10 @@ namespace Heyzap {
 
         public static string GetRemoteData(){
             return hz_ads_get_remote_data();
+        }
+
+        public static void SetGdprConsent(Boolean isGdprConsentGiven) {
+            hz_ads_set_gdpr_consent(isGdprConsentGiven);
         }
 
         public static void PauseExpensiveWork() {
@@ -493,6 +517,15 @@ namespace Heyzap {
 
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
                 return jc.CallStatic<String>("getCustomPublisherData");
+            }
+        }
+
+        public static void SetGdprConsent(Boolean isGdprConsentGiven) {
+            if (Application.platform != RuntimePlatform.Android) return;
+
+            AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass javaClass = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+	            javaClass.CallStatic("setGdprConsent", isGdprConsentGiven);
             }
         }
 

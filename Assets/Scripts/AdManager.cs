@@ -54,7 +54,7 @@ public class AdManager : MonoBehaviour {
     }
 
     void Start () {
-        HeyzapAds.NetworkCallbackListener networkCallbackListner = delegate(string network, string callback) {
+        HeyzapAds.NetworkCallbackListener networkCallbackListener = delegate(string network, string callback) {
             this.console.Append("[" + network + "]: " + callback);
         };
 
@@ -69,7 +69,7 @@ public class AdManager : MonoBehaviour {
         // TestLocationService locServ = new TestLocationService();
         // locServ.Start(this.console);
 
-        HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
+        HeyzapAds.SetNetworkCallbackListener(networkCallbackListener);
         HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {
@@ -251,6 +251,18 @@ public class AdManager : MonoBehaviour {
             this.console.Append("Disabling debug logging");
             HeyzapAds.HideDebugLogs();
         }
+	}
+
+    public void AcceptGdprButton()
+	{       
+		this.console.Append("Accepting GDPR");
+		HeyzapAds.SetGdprConsent(true);
+	}
+
+    public void RejectGdprButton()
+    {
+        this.console.Append("Rejecting GDPR");
+        HeyzapAds.SetGdprConsent(false);
     }
 
     public void BannerPositionTop(bool selected) {

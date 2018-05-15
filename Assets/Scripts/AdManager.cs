@@ -54,7 +54,7 @@ public class AdManager : MonoBehaviour {
     }
 
     void Start () {
-        HeyzapAds.NetworkCallbackListener networkCallbackListner = delegate(string network, string callback) {
+        HeyzapAds.NetworkCallbackListener networkCallbackListener = delegate(string network, string callback) {
             this.console.Append("[" + network + "]: " + callback);
         };
 
@@ -69,7 +69,7 @@ public class AdManager : MonoBehaviour {
         // TestLocationService locServ = new TestLocationService();
         // locServ.Start(this.console);
 
-        HeyzapAds.SetNetworkCallbackListener(networkCallbackListner);
+        HeyzapAds.SetNetworkCallbackListener(networkCallbackListener);
         HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {

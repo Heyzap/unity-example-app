@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions.Must;
-using System.Collections;
 using Heyzap;
 
 public class AdManager : MonoBehaviour {
@@ -69,8 +68,9 @@ public class AdManager : MonoBehaviour {
         // TestLocationService locServ = new TestLocationService();
         // locServ.Start(this.console);
 
-        HeyzapAds.SetNetworkCallbackListener(networkCallbackListener);
-        HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
+		HeyzapAds.SetNetworkCallbackListener(networkCallbackListener);
+		HeyzapAds.ShowDebugLogs();
+		HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
 
         HZBannerAd.SetDisplayListener(delegate(string adState, string adTag) {
             this.console.Append("BANNER: " + adState + " Tag : " + adTag);
@@ -110,7 +110,6 @@ public class AdManager : MonoBehaviour {
         this.SelectedAdType = AdType.Interstitial;
 
         this.ShowAdTypeControls();
-        HeyzapAds.HideDebugLogs();
     }
 
     public void InterstitialSelected(bool selected) {
@@ -254,7 +253,7 @@ public class AdManager : MonoBehaviour {
 	}
 
     public void AcceptGdprButton()
-	{       
+	{
 		this.console.Append("Accepting GDPR");
 		HeyzapAds.SetGdprConsent(true);
 	}

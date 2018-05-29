@@ -10,8 +10,9 @@ This sample app demonstrates the basic functionalities of the Heyzap SDK for Uni
 * A console view prints callbacks and other information from the Heyzap SDK.
     * You can print the Remote JSON data you've set on your Heyzap dashboard to the console view.
 * You can enable and disable debug logging from Heyzap.
+* You can accept or reject the European General Data Protection Regulation (GDPR).
 
-![sample app screenshot](http://i.imgur.com/44T4VJu.png)
+![sample app screenshot](./unity_test_app.png)
 
 ### Setup
 

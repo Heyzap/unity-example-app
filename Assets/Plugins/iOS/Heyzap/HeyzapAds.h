@@ -61,7 +61,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.19.1"
+#define SDK_VERSION @"9.21.0"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -315,7 +315,16 @@ extern NSString * const HZFyberVirtualCurrencyResponseUserInfoKey;
 + (BOOL) isStarted;
 + (void) setDebugLevel:(HZDebugLevel)debugLevel;
 + (void) setDebug:(BOOL)choice;
+
+/**
+ *  Sets the consent status of the user. Heyzap will only be able to show targeted advertising if the user consented.
+ *
+ *  @param consentGiven The consent status of the user
+ *
+ *  @since v9.20.0
+ */
 + (void) setGDPRConsent:(BOOL)consentGiven;
+
 + (void) setOptions: (HZAdOptions)options;
 + (void) setFramework: (NSString *) framework;
 + (void) setMediator: (NSString *) mediator;

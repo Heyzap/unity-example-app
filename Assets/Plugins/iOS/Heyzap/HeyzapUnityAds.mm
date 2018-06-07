@@ -359,12 +359,12 @@ extern "C" {
     
     
 #pragma mark - GDPR
-
+    
     void hz_ads_set_gdpr_consent(BOOL isGdprConsentGiven) {
         [HeyzapAds setGDPRConsent:isGdprConsentGiven];
     }
     
-
+    
 #pragma mark - Queries
     
     bool hz_ads_is_network_initialized(const char *network) {

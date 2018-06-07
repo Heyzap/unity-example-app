@@ -17,14 +17,10 @@ namespace Heyzap {
                 return tag;
             }
             set {
-                if (value != null) {
-                    tag = value;
-                } else {
-                    tag = HeyzapAds.DEFAULT_TAG;
-                }
+                tag = value;
             }
         }
-        private string tag = HeyzapAds.DEFAULT_TAG;     
+        private string tag;
     }
 
     /// <summary>

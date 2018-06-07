@@ -38,7 +38,7 @@ namespace Heyzap {
         public delegate void NetworkCallbackListener(string network, string callback);
 
         private static NetworkCallbackListener networkCallbackListener;
-        private static HeyzapAds _instance = null;
+        private static HeyzapAds _instance;
         
         #region Flags for the call to HeyzapAds.StartWithOptions()
         /// <summary>
@@ -76,8 +76,6 @@ namespace Heyzap {
         /// </summary>
         public const int FLAG_CHILD_DIRECTED_ADS = 1 << 6; // 64
         #endregion
-
-        public const string DEFAULT_TAG = "default";
         
         #region String constants to expect in Ad Listener & network callbacks
         // `NetworkCallback` is a bit of a misnomer. The callback constants here are both for "network callbacks" and for ad listener callbacks. We should refactor these into two classes in the next major SDK.
@@ -300,7 +298,7 @@ namespace Heyzap {
         /// </summary>
         public static void ShowThirdPartyDebugLogs() {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ShowThirdPartyDebugLogs();
+                HeyzapAdsIOS.ShowThirdPartyDebugLogs();
             #endif
         }
 
@@ -310,7 +308,7 @@ namespace Heyzap {
         /// </summary>
         public static void HideThirdPartyDebugLogs() {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.HideThirdPartyDebugLogs();
+                HeyzapAdsIOS.HideThirdPartyDebugLogs();
             #endif
         }
 
@@ -337,7 +335,7 @@ namespace Heyzap {
         /// <param name="device_id">The Device ID that FAN prints to the iOS console</param>
         public static void AddFacebookTestDevice(string device_id) {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.AddFacebookTestDevice(device_id);
+                HeyzapAdsIOS.AddFacebookTestDevice(device_id);
             #endif
         }
         #endregion
@@ -354,20 +352,12 @@ namespace Heyzap {
             }
         }
 
-        public static void InitReceiver(){
+        public static void InitReceiver() {
             if (_instance == null) {
                 GameObject receiverObject = new GameObject("HeyzapAds");
                 DontDestroyOnLoad(receiverObject);
                 _instance = receiverObject.AddComponent<HeyzapAds>();
             }
-        }
-
-        public static string TagForString(string tag) {
-            if (tag == null) {
-                tag = HeyzapAds.DEFAULT_TAG;
-            }
-            
-            return tag;
         }
         #endregion
     }

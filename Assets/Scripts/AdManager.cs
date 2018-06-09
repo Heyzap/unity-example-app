@@ -184,6 +184,7 @@ public class AdManager : MonoBehaviour {
 
         HZOfferWallShowOptions offerwallOptions = new HZOfferWallShowOptions();
         offerwallOptions.ShouldCloseAfterFirstClick = offerwallCloseOnFirstClickToggle.isOn;
+        offerwallOptions.Tag = tag;
 
         this.console.Append("Showing " + this.SelectedAdType.ToString() + " with tag: " + tag);
         switch (this.SelectedAdType) {

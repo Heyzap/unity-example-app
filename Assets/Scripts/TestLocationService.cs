@@ -7,7 +7,7 @@ public class TestLocationService : MonoBehaviour
     private readonly ScrollingTextArea console;
 
     [SerializeField]
-    private readonly AdManager adManager;
+    private AdManager adManager;
 
     public IEnumerator Start()
     {

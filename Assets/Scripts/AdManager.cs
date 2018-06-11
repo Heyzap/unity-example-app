@@ -17,7 +17,7 @@ public class AdManager : MonoBehaviour
     [SerializeField]
     private Toggle offerwallCloseOnFirstClickToggle;
     [SerializeField]
-    private readonly Text offerwallCurrencyIdTextField;
+    private Text offerwallCurrencyIdTextField;
 
     private enum AdType
     {

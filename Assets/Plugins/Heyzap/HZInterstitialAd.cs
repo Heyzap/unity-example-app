@@ -253,7 +253,7 @@ namespace Heyzap {
             }
         }
 
-        public static void Fetch(string tag="default") {
+        public static void Fetch(string tag) {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
@@ -262,7 +262,7 @@ namespace Heyzap {
             }
         }
 
-        public static Boolean IsAvailable(string tag="default") {
+        public static Boolean IsAvailable(string tag) {
             if(Application.platform != RuntimePlatform.Android) return false;
 
             AndroidJNIHelper.debug = false;

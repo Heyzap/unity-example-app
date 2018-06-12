@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Heyzap;
+using System;
 
 public class AdManager : MonoBehaviour
 {
@@ -168,7 +169,7 @@ public class AdManager : MonoBehaviour
 
     public void IsAvailableButton()
     {
-        string tagText = adTagTextField.text;
+        string tagText = getTagOrNull(adTagTextField.text);
         bool available = false;
 
         switch (SelectedAdType)
@@ -196,7 +197,7 @@ public class AdManager : MonoBehaviour
 
     public void ShowButton()
     {
-        string tagText = adTagTextField.text;
+        string tagText = getTagOrNull(adTagTextField.text);
 
         HZShowOptions showOptions = new HZShowOptions
         {
@@ -244,7 +245,7 @@ public class AdManager : MonoBehaviour
 
     public void FetchButton()
     {
-        string tagText = adTagTextField.text;
+        string tagText = getTagOrNull(adTagTextField.text);
         console.Append("Fetching " + SelectedAdType.ToString() + " with tag: " + tagText);
         switch (SelectedAdType)
         {
@@ -261,6 +262,11 @@ public class AdManager : MonoBehaviour
                 HZOfferWallAd.Fetch(tagText);
                 break;
         }
+    }
+
+    private String getTagOrNull(string tagText)
+    {
+        return String.IsNullOrEmpty(tagText) ? null : tagText;
     }
 
     public void HideButton()

@@ -163,10 +163,14 @@ extern "C" {
     
 #pragma mark - Starting the SDK
     
+    NSString* nil_or_string(const char *characters) {
+        return (characters == NULL) ? nil : [NSString stringWithUTF8String:characters];
+    }
+    
     void hz_ads_start_app(const char *publisher_id, HZAdOptions flags) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            NSString *publisherID = [NSString stringWithUTF8String:publisher_id];
+            NSString *publisherID = nil_or_string(publisher_id);
             
             [HeyzapAds startWithPublisherID:publisherID andOptions:flags andFramework:HZ_FRAMEWORK_NAME];
             
@@ -192,57 +196,57 @@ extern "C" {
             }];
         });
     }
-    
+
     
 #pragma mark - Interstitial Ads
     
     void hz_ads_show_interstitial(const char *tag) {
-        [HZInterstitialAd showForTag:[NSString stringWithUTF8String:tag]];
+        [HZInterstitialAd showForTag:nil_or_string(tag)];
     }
     
     void hz_ads_fetch_interstitial(const char *tag) {
-        [HZInterstitialAd fetchForTag:[NSString stringWithUTF8String:tag]];
+        [HZInterstitialAd fetchForTag:nil_or_string(tag)];
     }
     
     bool hz_ads_interstitial_is_available(const char *tag) {
-        return [HZInterstitialAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
+        return [HZInterstitialAd isAvailableForTag:nil_or_string(tag)];
     }
     
     
 #pragma mark - Video Ads
     
     void hz_ads_show_video(const char *tag) {
-        [HZVideoAd showForTag:[NSString stringWithUTF8String:tag]];
+        [HZVideoAd showForTag:nil_or_string(tag)];
     }
     
     void hz_ads_fetch_video(const char *tag) {
-        [HZVideoAd fetchForTag:[NSString stringWithUTF8String:tag]];
+        [HZVideoAd fetchForTag:nil_or_string(tag)];
     }
     
     bool hz_ads_video_is_available(const char *tag) {
-        return [HZVideoAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
+        return [HZVideoAd isAvailableForTag:nil_or_string(tag)];
     }
     
     
 #pragma mark - Incentivized Ads
     
     void hz_ads_show_incentivized(const char *tag) {
-        [HZIncentivizedAd showForTag:[NSString stringWithUTF8String: tag]];
+        [HZIncentivizedAd showForTag:nil_or_string(tag)];
     }
     
     void hz_ads_show_incentivized_with_custom_info(const char *tag, const char *customInfo) {
         HZShowOptions *showOptions = [HZShowOptions new];
-        showOptions.tag = [NSString stringWithUTF8String:tag];
-        showOptions.incentivizedInfo = [NSString stringWithUTF8String:customInfo];
+        showOptions.tag = nil_or_string(tag);
+        showOptions.incentivizedInfo = nil_or_string(customInfo);
         [HZIncentivizedAd showWithOptions:showOptions];
     }
     
     void hz_ads_fetch_incentivized(const char *tag) {
-        [HZIncentivizedAd fetchForTag:[NSString stringWithUTF8String:tag]];
+        [HZIncentivizedAd fetchForTag:nil_or_string(tag)];
     }
     
     bool hz_ads_incentivized_is_available(const char *tag) {
-        return [HZIncentivizedAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
+        return [HZIncentivizedAd isAvailableForTag:nil_or_string(tag)];
     }
     
     
@@ -251,13 +255,13 @@ extern "C" {
     void hz_ads_show_banner(const char *position, const char *tag) {
         if (!HZCurrentBannerAd) {
             HZBannerPosition pos = HZBannerPositionBottom;
-            NSString *positionStr = [NSString stringWithUTF8String:position];
+            NSString *positionStr = nil_or_string(position);
             if ([positionStr isEqualToString:@"top"]) {
                 pos = HZBannerPositionTop;
             }
             
             HZBannerAdOptions *options = [[HZBannerAdOptions alloc] init];
-            options.tag = [NSString stringWithUTF8String:tag];
+            options.tag = nil_or_string(tag);
             
             [HZBannerAd placeBannerInView:nil position:pos options:options success:^(HZBannerAd *banner) {
                 if (!HZCurrentBannerAd) {
@@ -282,7 +286,6 @@ extern "C" {
     void hz_ads_hide_banner(void) {
         if (HZCurrentBannerAd) {
             [HZCurrentBannerAd setHidden:YES];
-            
         } else {
             NSLog(@"Can't hide banner, there is no banner ad currently loaded.");
         }
@@ -320,23 +323,23 @@ extern "C" {
 #pragma mark - Offerwall Ads
     
     void hz_ads_fetch_offerwall(const char *tag) {
-        [HZOfferWallAd fetchForTag:[NSString stringWithUTF8String:tag]];
+        [HZOfferWallAd fetchForTag:nil_or_string(tag)];
     }
     
     void hz_ads_show_offerwall(const char *tag, bool shouldCloseAfterFirstClick) {
         HZOfferWallShowOptions *offerwallOpts = [HZOfferWallShowOptions new];
         offerwallOpts.shouldCloseAfterFirstClick = shouldCloseAfterFirstClick;
         offerwallOpts.animatePresentation = YES;
-        offerwallOpts.tag = [NSString stringWithUTF8String:tag];
+        offerwallOpts.tag = nil_or_string(tag);
         [HZOfferWallAd showWithOptions:offerwallOpts];
     }
     
     bool hz_ads_offerwall_is_available(const char *tag) {
-        return [HZOfferWallAd isAvailableForTag:[NSString stringWithUTF8String:tag]];
+        return [HZOfferWallAd isAvailableForTag:nil_or_string(tag)];
     }
     
     void hz_ads_virtual_currency_request(const char *currencyId) {
-        [[HZFyberVirtualCurrencyClient sharedClient] requestDeltaOfCurrency:(currencyId == NULL ? nil : [NSString stringWithUTF8String:currencyId])];
+        [[HZFyberVirtualCurrencyClient sharedClient] requestDeltaOfCurrency:nil_or_string(currencyId)];
     }
     
     
@@ -370,7 +373,7 @@ extern "C" {
     bool hz_ads_is_network_initialized(const char *network) {
         if (network == NULL) { return NO; }
         
-        return [HeyzapAds isNetworkInitialized:[NSString stringWithUTF8String:network]];
+        return [HeyzapAds isNetworkInitialized:nil_or_string(network)];
     }
     
     
@@ -406,12 +409,12 @@ extern "C" {
     void hz_ads_set_bundle_identifier(const char *bundle_id) {
         if (bundle_id == NULL) { return; }
         
-        NSString *bundleID = [NSString stringWithUTF8String:bundle_id];
+        NSString *bundleID = nil_or_string(bundle_id);
         [HeyzapAds setBundleIdentifier:bundleID];
     }
     
     void hz_add_facebook_test_device(const char *device_id) {
-        NSString *deviceID = [NSString stringWithUTF8String:device_id];
+        NSString *deviceID = nil_or_string(device_id);
         
         Class fbAdSettings = NSClassFromString(@"FBAdSettings");
         if ([fbAdSettings respondsToSelector:@selector(addTestDevice:)]) {
@@ -425,7 +428,7 @@ extern "C" {
 #pragma mark - Demographics Setters
     
     void hz_demo_set_gender(const char * genderChar) {
-        NSString *gender = [NSString stringWithUTF8String:genderChar];
+        NSString *gender = nil_or_string(genderChar);
         
         if ([gender isEqualToString:@"MALE"]) {
             [[HeyzapAds demographicInformation] setUserGender:HZUserGenderMale];
@@ -444,7 +447,7 @@ extern "C" {
     }
     
     void hz_demo_set_postal_code(const char * postalCodeChar) {
-        NSString *postalCode = (postalCodeChar == NULL ? nil : [NSString stringWithUTF8String:postalCodeChar]);
+        NSString *postalCode = nil_or_string(postalCodeChar);
         [[HeyzapAds demographicInformation] setUserPostalCode:postalCode];
     }
     
@@ -453,7 +456,7 @@ extern "C" {
     }
     
     void hz_demo_set_marital_status(const char * maritalStatusChar) {
-        NSString *maritalStatus = [NSString stringWithUTF8String:maritalStatusChar];
+        NSString *maritalStatus = nil_or_string(maritalStatusChar);
         
         if ([maritalStatus isEqualToString:@"SINGLE"]) {
             [[HeyzapAds demographicInformation] setUserMaritalStatus:HZUserMaritalStatusSingle];
@@ -465,7 +468,7 @@ extern "C" {
     }
     
     void hz_demo_set_education_level(const char * educationLevelChar) {
-        NSString *educationLevel = [NSString stringWithUTF8String:educationLevelChar];
+        NSString *educationLevel = nil_or_string(educationLevelChar);
         
         if ([educationLevel isEqualToString:@"GRADE_SCHOOL"]) {
             [[HeyzapAds demographicInformation] setUserEducationLevel:HZUserEducationGradeSchool];
@@ -498,7 +501,7 @@ extern "C" {
         
         NSDate *parsedDate = nil;
         if (yyyyMMdd_dateChar != NULL) {
-            parsedDate = [dateFormat dateFromString:[NSString stringWithUTF8String:yyyyMMdd_dateChar]];
+            parsedDate = [dateFormat dateFromString:nil_or_string(yyyyMMdd_dateChar)];
         }
         
         [[HeyzapAds demographicInformation] setUserBirthDate:parsedDate];
@@ -526,12 +529,12 @@ extern "C" {
     }
     
     void hz_fetch_chartboost_for_location(const char *location) {
-        NSString *nsLocation = [NSString stringWithUTF8String:location];
+        NSString *nsLocation = nil_or_string(location);
         hz_fetch_chartboost_for_location_objc(nsLocation);
     }
     
     bool hz_chartboost_is_available_for_location(const char *location) {
-        NSString *nsLocation = [NSString stringWithUTF8String:location];
+        NSString *nsLocation = nil_or_string(location);
         if (!hz_chartboost_enabled()) {
             HZDLog(@"Chartboost ad is not available because it is not enabled");
             return NO;
@@ -542,13 +545,13 @@ extern "C" {
     }
     
     void hz_show_chartboost_for_location(const char *location) {
-        NSString *nsLocation = [NSString stringWithUTF8String:location];
+        NSString *nsLocation = nil_or_string(location);
         
         if (!hz_chartboost_enabled()) {
             HZDLog(@"Chartboost not enabled yet; not able to show ad.");
             return;
         }
-        HZDLog(@"Requesting Chartboost show interstitial for location: %@",nsLocation);
+        HZDLog(@"Requesting Chartboost show interstitial for location: %@", nsLocation);
         [HZUnityAdapterChartboostProxy showInterstitial:nsLocation];
     }
 }

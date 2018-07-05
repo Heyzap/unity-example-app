@@ -206,7 +206,7 @@ namespace Heyzap {
                         validatedGdprConsentData.Add(entry.Key, entry.Value);
                     }
                 }
-                String gdprConsentDataAsJsonString = getGdprConsentDataAsJsonString(validatedGdprConsentData);
+                String gdprConsentDataAsJsonString = GetGdprConsentDataAsJsonString(validatedGdprConsentData);
                 #if UNITY_ANDROID
                     HeyzapAdsAndroid.SetGdprConsentData(gdprConsentDataAsJsonString);
                 #elif UNITY_IPHONE
@@ -229,7 +229,7 @@ namespace Heyzap {
                     HeyzapAdsIOS.ClearGdprConsentData();
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to set the GDPR consent data, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent data.");
+                UnityEngine.Debug.LogWarning("Call received to clear the GDPR consent data, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent data.");
             #endif
         }
 
@@ -415,7 +415,7 @@ namespace Heyzap {
         }
 
         // Within Uniyt's .NET framework we don't have a stock solution for converting objets to Json so we need to implement a custom solution 
-        static private string getGdprConsentDataAsJsonString(Dictionary<string, string> gdprConsentData)
+        static private string GetGdprConsentDataAsJsonString(Dictionary<string, string> gdprConsentData)
         {
             var entries = gdprConsentData.Select(d =>
                 string.Format("\"{0}\": \"{1}\"", d.Key, d.Value)

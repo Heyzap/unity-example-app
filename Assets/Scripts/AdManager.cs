@@ -270,13 +270,13 @@ public class AdManager : MonoBehaviour {
     public void SetGdprDataA()
     {
         this.console.Append("Set GDPR Data A: ");
-        SetGdprData(getGdprConsentDataA());
+        SetGdprData(GetGdprConsentDataA());
     }
 
     public void SetGdprDataB()
     {
         this.console.Append("Set GDPR Data B: ");
-        SetGdprData(getGdprConsentDataB());
+        SetGdprData(GetGdprConsentDataB());
     }
 
     public void ClearGdprData()
@@ -291,23 +291,31 @@ public class AdManager : MonoBehaviour {
         HeyzapAds.SetGdprConsentData(gdprConsentData);
     }
 
-    private Dictionary<string, string> getGdprConsentDataA()
+    private Dictionary<string, string> GetGdprConsentDataA()
     {
-        // return default data a dicitonary
-        var data = new Dictionary<string, string>();
 
-        data["key_1"] = "value_1";
-        data["key_2"] = "value_2";
-        data["key_3"] = null;
-        return data;
+        var data = null;
+//        // return default data a dicitonary
+//        var data = new Dictionary<string, string>();
+//
+//        data["key_1"] = "value_1";
+//        data["key_2"] = "value_2";
+//        data["key_3"] = null;
+//        return data;
     }
 
-    private Dictionary<string, string> getGdprConsentDataB()
+    private Dictionary<string, string> GetGdprConsentDataB()
     {
-        // return default data a dicitonary
+        
         var data = new Dictionary<string, string>();
-        data["key_1"] = "value_1";
+        string key_1 = null;
+        data[key_1] = "value_1";
         return data;
+        
+        // return default data a dicitonary
+//        var data = new Dictionary<string, string>();
+//        data["key_1"] = "value_1";
+//        return data;
     }    
 
     public void BannerPositionTop(bool selected) {

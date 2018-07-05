@@ -365,8 +365,11 @@ extern "C" {
     }
     
     void hz_ads_set_gdpr_consent_data(const char * gdprConsentDataAsJsonString) {
-        NSData *data = [[NSString stringWithUTF8String:gdprConsentDataAsJsonString] dataUsingEncoding:NSUTF8StringEncoding];
-        NSDictionary<NSString *, NSString *> *gdprConsentData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        NSDictionary<NSString *, NSString *> *gdprConsentData = nil;
+        if (gdprConsentDataAsJsonString != NULL) {
+            NSData *data = [[NSString stringWithUTF8String:gdprConsentDataAsJsonString] dataUsingEncoding:NSUTF8StringEncoding];
+            gdprConsentData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        }
         [HeyzapAds setGDPRConsentData:gdprConsentData];
     }
 

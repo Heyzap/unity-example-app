@@ -287,35 +287,30 @@ public class AdManager : MonoBehaviour {
 
     private void SetGdprData(Dictionary<string, string> gdprConsentData)
     {
-        this.console.Append(gdprConsentData.ToString());
+        string gdprConsentDataAsString = gdprConsentData != null ? gdprConsentData.ToString() : "null";
+        this.console.Append(gdprConsentDataAsString);
         HeyzapAds.SetGdprConsentData(gdprConsentData);
     }
 
     private Dictionary<string, string> GetGdprConsentDataA()
     {
 
-        var data = null;
-//        // return default data a dicitonary
-//        var data = new Dictionary<string, string>();
-//
-//        data["key_1"] = "value_1";
-//        data["key_2"] = "value_2";
-//        data["key_3"] = null;
-//        return data;
+        // return default data a dicitonary
+        var data = new Dictionary<string, string>();
+
+        data["key_1"] = "value_1";
+        data["key_2"] = "value_2";
+        data["key_3"] = null;
+        return data;
     }
 
     private Dictionary<string, string> GetGdprConsentDataB()
     {
         
-        var data = new Dictionary<string, string>();
-        string key_1 = null;
-        data[key_1] = "value_1";
-        return data;
-        
         // return default data a dicitonary
-//        var data = new Dictionary<string, string>();
-//        data["key_1"] = "value_1";
-//        return data;
+        var data = new Dictionary<string, string>();
+        data["key_1"] = "value_1";
+        return data;
     }    
 
     public void BannerPositionTop(bool selected) {

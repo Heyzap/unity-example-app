@@ -197,16 +197,20 @@ namespace Heyzap {
         static public void SetGdprConsentData(Dictionary<string, string> gdprConsentData)
         {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
-                Dictionary<string, string> validatedGdprConsentData = new Dictionary<string, string>();
-
-                foreach(KeyValuePair<string, string> entry in gdprConsentData)
+                string gdprConsentDataAsJsonString = null;
+                if (gdprConsentData != null) 
                 {
-                    if (entry.Value != null)
+                    Dictionary<string, string> validatedGdprConsentData = new Dictionary<string, string>();
+                    foreach(KeyValuePair<string, string> entry in gdprConsentData)
                     {
-                        validatedGdprConsentData.Add(entry.Key, entry.Value);
+                        if (entry.Value != null)
+                        {
+                            validatedGdprConsentData.Add(entry.Key, entry.Value);
+                        }
                     }
+                    gdprConsentDataAsJsonString = GetGdprConsentDataAsJsonString(validatedGdprConsentData);
                 }
-                String gdprConsentDataAsJsonString = GetGdprConsentDataAsJsonString(validatedGdprConsentData);
+
                 #if UNITY_ANDROID
                     HeyzapAdsAndroid.SetGdprConsentData(gdprConsentDataAsJsonString);
                 #elif UNITY_IPHONE

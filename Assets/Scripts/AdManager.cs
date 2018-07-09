@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using UnityEngine.Assertions.Must;
 using Heyzap;
+using System.Collections;
+using System.Collections.Generic;
 
 public class AdManager : MonoBehaviour {
     
@@ -264,6 +266,52 @@ public class AdManager : MonoBehaviour {
         this.console.Append("Rejecting GDPR");
         HeyzapAds.SetGdprConsent(false);
     }
+
+    public void SetGdprDataA()
+    {
+        this.console.Append("Set GDPR Data A: ");
+        SetGdprData(GetGdprConsentDataA());
+    }
+
+    public void SetGdprDataB()
+    {
+        this.console.Append("Set GDPR Data B: ");
+        SetGdprData(GetGdprConsentDataB());
+    }
+
+    public void ClearGdprData()
+    {
+        this.console.Append("Clearing GDPR Data");
+        HeyzapAds.ClearGdprConsentData();
+    }
+
+    private void SetGdprData(Dictionary<string, string> gdprConsentData)
+    {
+        string gdprConsentDataAsString = gdprConsentData != null ? gdprConsentData.ToString() : "null";
+        this.console.Append(gdprConsentDataAsString);
+        HeyzapAds.SetGdprConsentData(gdprConsentData);
+    }
+
+    private Dictionary<string, string> GetGdprConsentDataA()
+    {
+
+        // return default data a dicitonary
+        var data = new Dictionary<string, string>();
+
+        data["key_1"] = "value_1";
+        data["key_2"] = "value_2";
+        data["key_3"] = null;
+        return data;
+    }
+
+    private Dictionary<string, string> GetGdprConsentDataB()
+    {
+        
+        // return default data a dicitonary
+        var data = new Dictionary<string, string>();
+        data["key_1"] = "value_1";
+        return data;
+    }    
 
     public void BannerPositionTop(bool selected) {
         if (selected) {

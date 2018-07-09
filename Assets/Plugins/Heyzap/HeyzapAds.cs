@@ -29,6 +29,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System;
+using System.Linq;
 
 namespace Heyzap {
     /// <summary>
@@ -186,6 +187,53 @@ namespace Heyzap {
                 #endif
             #else
                 UnityEngine.Debug.LogWarning("Call received to set the GDPR consent, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent.");
+            #endif
+        }
+
+        /// <summary>
+        /// Sets User's consent data under GDPR. Heyzap SDK will use this information to provide optimal targeted advertising without infringing GDPR.
+        /// </summary>
+        /// <param name="gdprConsentData">xA Dictionary of key-value pairs containing GDPR related information</param>
+        static public void SetGdprConsentData(Dictionary<string, string> gdprConsentData)
+        {
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                string gdprConsentDataAsJsonString = null;
+                if (gdprConsentData != null) 
+                {
+                    Dictionary<string, string> validatedGdprConsentData = new Dictionary<string, string>();
+                    foreach(KeyValuePair<string, string> entry in gdprConsentData)
+                    {
+                        if (entry.Value != null)
+                        {
+                            validatedGdprConsentData.Add(entry.Key, entry.Value);
+                        }
+                    }
+                    gdprConsentDataAsJsonString = GetGdprConsentDataAsJsonString(validatedGdprConsentData);
+                }
+
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.SetGdprConsentData(gdprConsentDataAsJsonString);
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.SetGdprConsentData(gdprConsentDataAsJsonString);
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to set the GDPR consent data, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent data.");
+            #endif
+        }
+
+        /// <summary>
+        /// Clears all GDPR related information. This means removing any GDPR consent Data and restoring the GDPR consent to "unknown"
+        /// </summary>
+        static public void ClearGdprConsentData()
+        {
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
+                #if UNITY_ANDROID
+                    HeyzapAdsAndroid.ClearGdprConsentData();
+                #elif UNITY_IPHONE
+                    HeyzapAdsIOS.ClearGdprConsentData();
+                #endif
+            #else
+                UnityEngine.Debug.LogWarning("Call received to clear the GDPR consent data, but the SDK does not function in the editor. You must use a device/emulator to set the GDPR consent data.");
             #endif
         }
 
@@ -369,12 +417,22 @@ namespace Heyzap {
             
             return tag;
         }
+
+        // Within Unity's .NET framework we don't have a stock solution for converting objets to Json so we need to implement a custom solution 
+        static private string GetGdprConsentDataAsJsonString(Dictionary<string, string> gdprConsentData)
+        {
+            var entries = gdprConsentData.Select(d =>
+                string.Format("\"{0}\": \"{1}\"", d.Key, d.Value)
+            );
+            return "{" + string.Join(",", entries.ToArray()) + "}";
+        }
         #endregion
     }
 
     #region Platform-specific translations
     #if UNITY_IPHONE && !UNITY_EDITOR
-    public class HeyzapAdsIOS : MonoBehaviour {
+    public class HeyzapAdsIOS : MonoBehaviour
+    {
 
         [DllImport ("__Internal")]
         private static extern void hz_ads_start_app(string publisher_id, int flags);
@@ -387,6 +445,12 @@ namespace Heyzap {
 
         [DllImport ("__Internal")]
         private static extern void hz_ads_set_gdpr_consent(Boolean isGdprConsentGiven);
+
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_set_gdpr_consent_data(string gdprConsentData);
+
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_clear_gdpr_consent_data();
 
         [DllImport ("__Internal")]
         private static extern bool hz_ads_is_network_initialized(string network);
@@ -418,7 +482,7 @@ namespace Heyzap {
         public static void Start(string publisher_id, int options=0) {
             hz_ads_start_app(publisher_id, options);
         }
-        
+
         public static void ShowMediationTestSuite() {
             hz_ads_show_mediation_debug_view_controller();
         }
@@ -439,6 +503,14 @@ namespace Heyzap {
             hz_ads_set_gdpr_consent(isGdprConsentGiven);
         }
 
+        public static void SetGdprConsentData(string gdprConsentData) {
+            hz_ads_set_gdpr_consent_data(gdprConsentData);
+        }
+
+        public static void ClearGdprConsentData() {
+            hz_ads_clear_gdpr_consent_data();
+        }
+
         public static void PauseExpensiveWork() {
             hz_pause_expensive_work();
         }
@@ -450,7 +522,7 @@ namespace Heyzap {
         public static void ShowDebugLogs() {
             hz_ads_show_debug_logs();
         }
-        
+
         public static void HideDebugLogs() {
             hz_ads_hide_debug_logs();
         }
@@ -458,7 +530,7 @@ namespace Heyzap {
         public static void ShowThirdPartyDebugLogs() {
             hz_ads_show_third_party_debug_logs();
         }
-        
+
         public static void HideThirdPartyDebugLogs() {
             hz_ads_hide_third_party_debug_logs();
         }
@@ -474,7 +546,8 @@ namespace Heyzap {
     #endif
 
     #if UNITY_ANDROID && !UNITY_EDITOR
-    public class HeyzapAdsAndroid : MonoBehaviour {
+    public class HeyzapAdsAndroid : MonoBehaviour
+    {
         public static void Start(string publisher_id, int options=0) {
             if(Application.platform != RuntimePlatform.Android) return;
 
@@ -525,7 +598,25 @@ namespace Heyzap {
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass javaClass = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
-	            javaClass.CallStatic("setGdprConsent", isGdprConsentGiven);
+                javaClass.CallStatic("setGdprConsent", isGdprConsentGiven);
+            }
+        }
+
+        public static void SetGdprConsentData(String gdprConsentData) {
+            if (Application.platform != RuntimePlatform.Android) return;
+
+            AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass javaClass = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                javaClass.CallStatic("setGdprConsentData", gdprConsentData);
+            }
+        }
+
+        public static void ClearGdprConsentData() {
+            if (Application.platform != RuntimePlatform.Android) return;
+
+            AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass javaClass = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                javaClass.CallStatic("clearGdprConsentData");
             }
         }
 

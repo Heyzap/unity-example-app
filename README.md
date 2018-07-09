@@ -11,6 +11,8 @@ This sample app demonstrates the basic functionalities of the Heyzap SDK for Uni
     * You can print the Remote JSON data you've set on your Heyzap dashboard to the console view.
 * You can enable and disable debug logging from Heyzap.
 * You can accept or reject the European General Data Protection Regulation (GDPR).
+* You can set pre-set values for GDPR Consent data (see AdManager.cs to inspect pre-set values) 
+* you can clear GDPR Consent Data.
 
 ![sample app screenshot](./unity_test_app.png)
 

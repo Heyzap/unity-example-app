@@ -418,7 +418,7 @@ namespace Heyzap {
             return tag;
         }
 
-        // Within Uniyt's .NET framework we don't have a stock solution for converting objets to Json so we need to implement a custom solution 
+        // Within Unity's .NET framework we don't have a stock solution for converting objets to Json so we need to implement a custom solution 
         static private string GetGdprConsentDataAsJsonString(Dictionary<string, string> gdprConsentData)
         {
             var entries = gdprConsentData.Select(d =>

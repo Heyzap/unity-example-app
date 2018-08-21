@@ -21,64 +21,160 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	
-	<application android:theme="@style/UnityThemeSelector" android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="false" android:isGame="true" android:banner="@drawable/app_banner" tools:replace="android:theme" android:networkSecurityConfig="@xml/network_security_config">
+	<application
+		android:theme="@style/UnityThemeSelector"
+		android:icon="@drawable/app_icon"
+		android:label="@string/app_name"
+		android:debuggable="false"
+		android:isGame="true"
+		android:banner="@drawable/app_banner"
+		tools:replace="android:theme"
+		android:networkSecurityConfig="@xml/network_security_config">
 		
 		<!-- Unity -->
-		<activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name" android:screenOrientation="fullSensor" android:launchMode="singleTask" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection">
+		<activity 
+			android:name="com.unity3d.player.UnityPlayerActivity"
+			android:label="@string/app_name"
+			android:screenOrientation="fullSensor"
+			android:launchMode="singleTask"
+			android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 				<category android:name="android.intent.category.LEANBACK_LAUNCHER" />
 			</intent-filter>
-			<meta-data android:name="unityplayer.UnityActivity" android:value="true" />
+			<meta-data
+				android:name="unityplayer.UnityActivity"
+				android:value="true" />
 		</activity>
 		
 		<!-- Google Play Services -->
-		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+		<meta-data
+			android:name="com.google.android.gms.version"
+			android:value="@integer/google_play_services_version" />
 		
 		<!-- Chartboost -->
-		<activity android:name="com.chartboost.sdk.CBImpressionActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:excludeFromRecents="true" android:hardwareAccelerated="true" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.chartboost.sdk.CBImpressionActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:excludeFromRecents="true"
+			android:hardwareAccelerated="true"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 		
 		<!-- AdColony -->
-		<activity android:name="com.adcolony.sdk.AdColonyInterstitialActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:hardwareAccelerated="true"/>
-		<activity android:name="com.adcolony.sdk.AdColonyAdViewActivity" android:configChanges="keyboardHidden|orientation|screenSize" android:hardwareAccelerated="true"/>
+		<activity
+			android:name="com.adcolony.sdk.AdColonyInterstitialActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:hardwareAccelerated="true"/>
+		<activity
+			android:name="com.adcolony.sdk.AdColonyAdViewActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:hardwareAccelerated="true"/>
 		
 		<!-- AdMob -->
-		<activity android:name="com.google.android.gms.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:theme="@android:style/Theme.Translucent" />
+		<activity
+			android:name="com.google.android.gms.ads.AdActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+			android:theme="@android:style/Theme.Translucent" />
 		
 		<!-- AppLovin -->
-		<activity android:name="com.applovin.adview.AppLovinInterstitialActivity" android:configChanges="orientation|screenSize" />
-		<activity android:name="com.applovin.adview.AppLovinConfirmationActivity" android:configChanges="orientation|screenSize" />
-		<meta-data android:name="applovin.sdk.key" android:value="** YOUR SDK KEY **" />
+		<activity
+			android:name="com.applovin.adview.AppLovinInterstitialActivity"
+			android:configChanges="orientation|screenSize" />
+		<activity
+			android:name="com.applovin.adview.AppLovinConfirmationActivity"
+			android:configChanges="orientation|screenSize" />
+		<meta-data
+			android:name="applovin.sdk.key"
+			android:value="** YOUR SDK KEY **" />
 
 		<!-- Facebook -->
-		<activity android:name="com.facebook.ads.AudienceNetworkActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
+		<activity
+			android:name="com.facebook.ads.AudienceNetworkActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize" />
 
 		<!-- Heyzap -->
-		<activity android:name="com.heyzap.sdk.ads.FyberRewardedWrapperActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" android:hardwareAccelerated="true" android:theme="@android:style/Theme.Translucent" />
-		<activity android:name="com.heyzap.sdk.ads.FyberOfferWallWrapperActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
+		<activity
+			android:name="com.heyzap.sdk.ads.FyberRewardedWrapperActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize"
+			android:hardwareAccelerated="true"
+			android:theme="@android:style/Theme.Translucent" />
+		<activity
+			android:name="com.heyzap.sdk.ads.FyberOfferWallWrapperActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
 
 		<!-- Fyber -->
-		<activity android:name="com.fyber.ads.interstitials.InterstitialActivity" android:configChanges="screenSize|orientation" android:theme="@android:style/Theme.Translucent" />
-		<meta-data android:name="FYBVideoPlayerOptionCloseButtonDelay" android:value="-1" />
+		<activity
+			android:name="com.fyber.ads.interstitials.InterstitialActivity"
+			android:configChanges="screenSize|orientation"
+			android:theme="@android:style/Theme.Translucent" />
+		<meta-data
+			android:name="FYBVideoPlayerOptionCloseButtonDelay"
+			android:value="-1" />
 
 		<!-- HyprMX -->
-		<activity android:name="com.hyprmx.android.sdk.activity.HyprMXOfferViewerActivity" android:hardwareAccelerated="true" android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" android:label="HyprMX SDK" android:launchMode="singleTop" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-		<activity android:name="com.hyprmx.android.sdk.activity.HyprMXRequiredInformationActivity" android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-		<activity android:name="com.hyprmx.android.sdk.activity.HyprMXNoOffersActivity" android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-		<activity android:name="com.hyprmx.android.sdk.videoplayer.HyprMXVideoPlayerActivity" android:hardwareAccelerated="true" android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.hyprmx.android.sdk.activity.HyprMXOfferViewerActivity"
+			android:hardwareAccelerated="true"
+			android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+			android:label="HyprMX SDK"
+			android:launchMode="singleTop"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.hyprmx.android.sdk.activity.HyprMXRequiredInformationActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.hyprmx.android.sdk.activity.HyprMXNoOffersActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.hyprmx.android.sdk.videoplayer.HyprMXVideoPlayerActivity"
+			android:hardwareAccelerated="true"
+			android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
 		<!-- InMobi -->
-		<activity android:name="com.inmobi.rendering.InMobiAdActivity" android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout" android:hardwareAccelerated="true" android:resizeableActivity="false" android:theme="@android:style/Theme.NoTitleBar" tools:ignore="UnusedAttribute" />
-		<receiver android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver" android:enabled="true" android:exported="true" >
+		<activity
+			android:name="com.inmobi.rendering.InMobiAdActivity"
+			android:configChanges="keyboardHidden|orientation|keyboard|smallestScreenSize|screenSize|screenLayout"
+			android:hardwareAccelerated="true"
+			android:resizeableActivity="false"
+			android:theme="@android:style/Theme.NoTitleBar"
+			tools:ignore="UnusedAttribute" />
+		<receiver
+			android:name="com.inmobi.commons.core.utilities.uid.ImIdShareBroadCastReceiver"
+			android:enabled="true"
+			android:exported="true" >
 			<intent-filter>
 				<action android:name="com.inmobi.share.id" />
 			</intent-filter>
 		</receiver>
-		<service android:name="com.inmobi.signals.activityrecognition.ActivityRecognitionManager" android:enabled="true" />
+		<service
+			android:name="com.inmobi.signals.activityrecognition.ActivityRecognitionManager"
+			android:enabled="true" />
 		
 		<!-- Apptracker-->
-		<activity android:name="com.apptracker.android.module.AppModuleActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" android:hardwareAccelerated="false"/>
+		<activity
+			android:name="com.apptracker.android.module.AppModuleActivity"
+			android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+			android:hardwareAccelerated="false"/>
+
+		<!-- IronSource -->
+		<activity
+            android:name="com.ironsource.sdk.controller.ControllerActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true" />
+		<activity
+            android:name="com.ironsource.sdk.controller.InterstitialActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
+		<activity
+            android:name="com.ironsource.sdk.controller.OpenUrlActivity"
+            android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:theme="@android:style/Theme.Translucent" />
 
 	</application>
 

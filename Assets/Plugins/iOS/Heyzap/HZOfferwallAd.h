@@ -122,7 +122,7 @@
 /**
  *  Fetches an offerwall ad for each of the given tags with an optional completion handler.
  *
- *  @param tag        An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
+ *  @param tags       An NSArray of NSString* identifiers for the location of ads which you can use to disable ads from your dashboard.
  *  @param completion A block called when an ad for each tag is fetched or fails to fetch. `result` states whether the fetch was sucessful; the error object describes the issue, if there was one.
  */
 + (void)fetchForTags:(NSArray *)tags withCompletion:(void (^)(BOOL result, NSError *error))completion;

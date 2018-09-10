@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="NO">
+    <dependencies>
+        <development version="7000" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FYBIntegrationAnalyzerViewController">
+            <connections>
+                <outlet property="tableView" destination="Ium-uV-DrB" id="TaO-Za-aMs"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="E27-8B-ndz"/>
+                <outlet property="warningLabel" destination="6Gu-oF-jql" id="P31-uM-OOD"/>
+                <outlet property="warningView" destination="bb2-b4-8R4" id="3iV-WW-Dp1"/>
+                <outlet property="warningViewHeight" destination="IAT-MV-4fb" id="cYy-IF-1h5"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bb2-b4-8R4">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="40"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6Gu-oF-jql" preferredMaxLayoutWidth="0">
+                            <rect key="frame" x="20" y="0.0" width="560" height="40"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="0.33375572538992515" blue="0.31552981173011629" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="6Gu-oF-jql" secondAttribute="trailing" constant="20" id="F4s-7l-6Ue"/>
+                        <constraint firstAttribute="height" constant="40" id="IAT-MV-4fb"/>
+                        <constraint firstItem="6Gu-oF-jql" firstAttribute="leading" secondItem="bb2-b4-8R4" secondAttribute="leading" constant="20" id="VT5-t9-Dif"/>
+                        <constraint firstAttribute="bottom" secondItem="6Gu-oF-jql" secondAttribute="bottom" id="aQS-gg-abG"/>
+                        <constraint firstItem="6Gu-oF-jql" firstAttribute="top" secondItem="bb2-b4-8R4" secondAttribute="top" id="ktl-JF-YyS"/>
+                    </constraints>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Ium-uV-DrB">
+                    <rect key="frame" x="0.0" y="40" width="600" height="560"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="Ium-uV-DrB" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8Yh-wA-xP7"/>
+                <constraint firstAttribute="trailing" secondItem="Ium-uV-DrB" secondAttribute="trailing" id="Acm-Ef-Ljw"/>
+                <constraint firstAttribute="bottom" secondItem="Ium-uV-DrB" secondAttribute="bottom" id="Jo7-Vx-Xh8"/>
+                <constraint firstItem="bb2-b4-8R4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ZMt-Mz-42x"/>
+                <constraint firstItem="bb2-b4-8R4" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="eJw-0g-PsY"/>
+                <constraint firstAttribute="trailing" secondItem="bb2-b4-8R4" secondAttribute="trailing" id="fCH-sH-Rxf"/>
+                <constraint firstItem="Ium-uV-DrB" firstAttribute="top" secondItem="bb2-b4-8R4" secondAttribute="bottom" id="hfb-5j-0lE"/>
+            </constraints>
+            <point key="canvasLocation" x="35.5" y="74.5"/>
+        </view>
+    </objects>
+</document>

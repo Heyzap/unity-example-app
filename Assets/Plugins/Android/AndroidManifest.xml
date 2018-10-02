@@ -153,12 +153,6 @@
 		<service
 			android:name="com.inmobi.signals.activityrecognition.ActivityRecognitionManager"
 			android:enabled="true" />
-		
-		<!-- Apptracker-->
-		<activity
-			android:name="com.apptracker.android.module.AppModuleActivity"
-			android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-			android:hardwareAccelerated="false"/>
 
 		<!-- IronSource -->
 		<activity
@@ -175,6 +169,19 @@
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.Translucent" />
+			
+		<!-- Vungle -->
+		<activity
+			android:name="com.vungle.warren.ui.VungleActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+			android:launchMode="singleTop"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.vungle.warren.ui.VungleFlexViewActivity"
+			android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize"
+			android:hardwareAccelerated="true"
+			android:launchMode="singleTop"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
 	</application>
 

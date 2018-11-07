@@ -166,6 +166,11 @@ extern "C" {
     NSString* nil_or_string(const char *characters) {
         return (characters == NULL) ? nil : [NSString stringWithUTF8String:characters];
     }
+
+    void hz_ads_set_plugin_version(const char *pluginVersion) {
+        NSString *pluginVersionString = nil_or_string(pluginVersion);
+        [HeyzapAds setPluginVersion:pluginVersionString];
+    }
     
     void hz_ads_start_app(const char *publisher_id, HZAdOptions flags) {
         static dispatch_once_t onceToken;

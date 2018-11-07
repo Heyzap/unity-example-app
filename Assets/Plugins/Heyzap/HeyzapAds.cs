@@ -139,8 +139,10 @@ namespace Heyzap {
         public static void Start(string publisher_id, int options) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
+                    HeyzapAdsAndroid.SetPluginVersion(Version);
                     HeyzapAdsAndroid.Start(publisher_id, options);
                 #elif UNITY_IPHONE
+                    HeyzapAdsIOS.SetPluginVersion(Version);
                     HeyzapAdsIOS.Start(publisher_id, options);
                 #endif
             #else
@@ -424,6 +426,8 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HeyzapAdsIOS : MonoBehaviour
     {
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_set_plugin_version(string pluginVersion);
 
         [DllImport ("__Internal")]
         private static extern void hz_ads_start_app(string publisher_id, int flags);
@@ -469,6 +473,10 @@ namespace Heyzap {
 
         [DllImport ("__Internal")]
         private static extern void hz_add_facebook_test_device(string device_id);
+
+        public static void SetPluginVersion(string pluginVersion) {
+            hz_ads_set_plugin_version(pluginVersion);
+        }
 
         public static void Start(string publisher_id, int options=0) {
             hz_ads_start_app(publisher_id, options);
@@ -539,6 +547,14 @@ namespace Heyzap {
     #if UNITY_ANDROID && !UNITY_EDITOR
     public class HeyzapAdsAndroid : MonoBehaviour
     {
+        public static void SetPluginVersion(string pluginVersion) {
+            if (Application.platform != RuntimePlatform.Android) return;
+             AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("addCustomParameter", "plugin_version", pluginVersion);
+            }
+        }
+        
         public static void Start(string publisher_id, int options=0) {
             if(Application.platform != RuntimePlatform.Android) return;
 

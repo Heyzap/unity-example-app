@@ -367,6 +367,19 @@ extern "C" {
         [HeyzapAds setGDPRConsent:isGdprConsentGiven];
     }
     
+    void hz_ads_set_gdpr_consent_data(const char * gdprConsentDataAsJsonString) {
+        NSDictionary<NSString *, NSString *> *gdprConsentData = nil;
+        if (gdprConsentDataAsJsonString != NULL) {
+            NSData *data = [[NSString stringWithUTF8String:gdprConsentDataAsJsonString] dataUsingEncoding:NSUTF8StringEncoding];
+            gdprConsentData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        }
+        [HeyzapAds setGDPRConsentData:gdprConsentData];
+    }
+
+    void hz_ads_clear_gdpr_consent_data() {
+        [HeyzapAds clearGDPRConsentData];
+    }
+
     
 #pragma mark - Queries
     

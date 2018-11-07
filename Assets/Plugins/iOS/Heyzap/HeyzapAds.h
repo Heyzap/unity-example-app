@@ -61,7 +61,7 @@
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
 
-#define SDK_VERSION @"9.21.0"
+#define SDK_VERSION @"9.50.0"
 
 #if __has_feature(objc_modules)
 @import AdSupport;
@@ -324,6 +324,22 @@ extern NSString * const HZFyberVirtualCurrencyResponseUserInfoKey;
  *  @since v9.20.0
  */
 + (void) setGDPRConsent:(BOOL)consentGiven;
+
+/**
+ *  Sets the consent data.
+ *
+ *  @param gdprConsentData The consent data
+ *
+ *  @since v9.21.0
+ */
++ (void)setGDPRConsentData:(NSDictionary<NSString *, NSString *> *)gdprConsentData;
+
+/**
+ *  Clears the consent data of the user.
+ *
+ *  @since v9.21.0
+ */
++ (void)clearGDPRConsentData;
 
 + (void) setOptions: (HZAdOptions)options;
 + (void) setFramework: (NSString *) framework;

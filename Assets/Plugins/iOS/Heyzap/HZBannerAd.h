@@ -37,6 +37,7 @@ extern NSString * const kHZBannerAdWasClickedNotification;
 extern NSString * const kHZBannerAdWillPresentModalViewNotification;
 extern NSString * const kHZBannerAdDidDismissModalViewNotification;
 extern NSString * const kHZBannerAdWillLeaveApplicationNotification;
+extern NSString * const kHZBannerAdDidResizeNotification;
 
 
 @class HZBannerAd;
@@ -82,6 +83,11 @@ extern NSString * const kHZBannerAdWillLeaveApplicationNotification;
  *  Called when a user clicks a banner ad that causes them to leave the application.
  */
 - (void)bannerWillLeaveApplication:(HZBannerAd *)banner;
+
+/**
+ *  Called when a user clicks a banner ad that causes it's resizing.
+ */
+- (void)banner:(HZBannerAd *)banner didResizeToFrame:(CGRect)frame;
 
 @end
 

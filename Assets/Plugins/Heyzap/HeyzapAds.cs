@@ -36,6 +36,7 @@ namespace Heyzap {
     /// Heyzap wrapper for iOS and Android via Unity. For more information, see https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements .
     /// </summary>
     public class HeyzapAds : MonoBehaviour {
+        public const string Version = "9.51.0";
         public delegate void NetworkCallbackListener(string network, string callback);
 
         private static NetworkCallbackListener networkCallbackListener;

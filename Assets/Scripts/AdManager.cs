@@ -298,9 +298,9 @@ public class AdManager : MonoBehaviour {
         // return default data a dicitonary
         var data = new Dictionary<string, string>();
 
-        data["key_1"] = "value_1";
-        data["key_2"] = "value_2";
-        data["key_3"] = null;
+        data["key_A1"] = "value_A1";
+        data["key_A2"] = "value_A2";
+        data["key_A3"] = null;
         return data;
     }
 
@@ -309,7 +309,7 @@ public class AdManager : MonoBehaviour {
         
         // return default data a dicitonary
         var data = new Dictionary<string, string>();
-        data["key_1"] = "value_1";
+        data["key_B1"] = "value_B1";
         return data;
     }    
 

@@ -187,6 +187,24 @@
 			android:hardwareAccelerated="true"
 			android:launchMode="singleTop"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+			
+		<!-- Tapjoy -->
+		<activity
+			android:name="com.tapjoy.TJAdUnitActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:hardwareAccelerated="true"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+		<activity
+			android:name="com.tapjoy.mraid.view.ActionHandler"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+		<activity
+			android:name="com.tapjoy.mraid.view.Browser"
+			android:configChanges="orientation|keyboardHidden|screenSize" />
+		<activity
+			android:name="com.tapjoy.TJContentActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:theme="@android:style/Theme.Translucent.NoTitleBar"
+			android:hardwareAccelerated="true" />
 
 	</application>
 

@@ -8,8 +8,7 @@ namespace Heyzap {
     public class HZShowOptions {
 
         /// <summary>
-        /// An identifier for the location of the ad, which you can use to disable the ad from your dashboard. If not specified the tag "default" is always used.
-        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
+        /// An identifier for the location of the ad, which you can use to disable the ad from your dashboard.
         /// </summary>
         /// <value>The tag.</value>
         public string Tag {
@@ -17,14 +16,10 @@ namespace Heyzap {
                 return tag;
             }
             set {
-                if (value != null) {
-                    tag = value;
-                } else {
-                    tag = HeyzapAds.DEFAULT_TAG;
-                }
+                tag = value;
             }
         }
-        private string tag = HeyzapAds.DEFAULT_TAG;     
+        private string tag;
     }
 
     /// <summary>
@@ -36,7 +31,6 @@ namespace Heyzap {
         /// <summary>
         /// When an incentivized video is completed, this string will be sent to your server via our server-to-server callbacks. Set it to anything you want to pass to your server regarding this incentivized video view (i.e.: a username, user ID, level name, etc.), or leave it empty if you don't need to use it / aren't using server callbacks for incentivized video.
         /// More information about using this feature can be found at https://developers.heyzap.com/docs/advanced-publishing .
-        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
         /// </summary>
         public string IncentivizedInfo {
             get {
@@ -96,7 +90,6 @@ namespace Heyzap {
         /// <summary>
         /// When an incentivized video is completed, this string will be sent to your server via our server-to-server callbacks. Set it to anything you want to pass to your server regarding this incentivized video view (i.e.: a username, user ID, level name, etc.), or leave it empty if you don't need to use it / aren't using server callbacks for incentivized video.
         /// More information about using this feature can be found at https://developers.heyzap.com/docs/advanced-publishing .
-        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
         /// </summary>
         public bool ShouldCloseAfterFirstClick {
             get {

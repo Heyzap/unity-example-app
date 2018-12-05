@@ -46,7 +46,7 @@ namespace Heyzap {
         public delegate void VirtualCurrencyErrorListener(string errorMsg);
         private static VirtualCurrencyErrorListener virtualCurrencyErrorListener;
 
-        private static HZOfferWallAd _instance = null;
+        private static HZOfferWallAd _instance;
 
         //provided since JS can't use default parameters
         /// <summary>
@@ -88,8 +88,6 @@ namespace Heyzap {
         /// </summary>
         /// <param name="tag">The ad tag to fetch an ad for.</param>
         public static void Fetch(string tag) {
-            tag = HeyzapAds.TagForString(tag);
-
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
                     HZOfferWallAdAndroid.Fetch(tag);
@@ -115,8 +113,6 @@ namespace Heyzap {
         /// </summary>
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
         public static bool IsAvailable(string tag) {
-            tag = HeyzapAds.TagForString(tag);
-
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
                     return HZOfferWallAdAndroid.IsAvailable(tag);

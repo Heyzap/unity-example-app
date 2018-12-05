@@ -37,7 +37,7 @@ namespace Heyzap {
     /// </summary>
     public class HZDemographics : MonoBehaviour {
 
-        private static HZDemographics _instance = null;
+        private static HZDemographics _instance;
 
         public enum Gender {
             UNKNOWN,

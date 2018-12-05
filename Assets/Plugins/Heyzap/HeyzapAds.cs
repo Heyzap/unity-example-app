@@ -36,10 +36,11 @@ namespace Heyzap {
     /// Heyzap wrapper for iOS and Android via Unity. For more information, see https://developers.heyzap.com/docs/unity_sdk_setup_and_requirements .
     /// </summary>
     public class HeyzapAds : MonoBehaviour {
+        public const string Version = "9.51.0";
         public delegate void NetworkCallbackListener(string network, string callback);
 
         private static NetworkCallbackListener networkCallbackListener;
-        private static HeyzapAds _instance = null;
+        private static HeyzapAds _instance;
         
         #region Flags for the call to HeyzapAds.StartWithOptions()
         /// <summary>
@@ -77,8 +78,6 @@ namespace Heyzap {
         /// </summary>
         public const int FLAG_CHILD_DIRECTED_ADS = 1 << 6; // 64
         #endregion
-
-        public const string DEFAULT_TAG = "default";
         
         #region String constants to expect in Ad Listener & network callbacks
         // `NetworkCallback` is a bit of a misnomer. The callback constants here are both for "network callbacks" and for ad listener callbacks. We should refactor these into two classes in the next major SDK.
@@ -140,8 +139,10 @@ namespace Heyzap {
         public static void Start(string publisher_id, int options) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
+                    HeyzapAdsAndroid.SetPluginVersion(Version);
                     HeyzapAdsAndroid.Start(publisher_id, options);
                 #elif UNITY_IPHONE
+                    HeyzapAdsIOS.SetPluginVersion(Version);
                     HeyzapAdsIOS.Start(publisher_id, options);
                 #endif
             #else
@@ -348,7 +349,7 @@ namespace Heyzap {
         /// </summary>
         public static void ShowThirdPartyDebugLogs() {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.ShowThirdPartyDebugLogs();
+                HeyzapAdsIOS.ShowThirdPartyDebugLogs();
             #endif
         }
 
@@ -358,7 +359,7 @@ namespace Heyzap {
         /// </summary>
         public static void HideThirdPartyDebugLogs() {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.HideThirdPartyDebugLogs();
+                HeyzapAdsIOS.HideThirdPartyDebugLogs();
             #endif
         }
 
@@ -385,7 +386,7 @@ namespace Heyzap {
         /// <param name="device_id">The Device ID that FAN prints to the iOS console</param>
         public static void AddFacebookTestDevice(string device_id) {
             #if UNITY_IPHONE && !UNITY_EDITOR
-            HeyzapAdsIOS.AddFacebookTestDevice(device_id);
+                HeyzapAdsIOS.AddFacebookTestDevice(device_id);
             #endif
         }
         #endregion
@@ -402,20 +403,12 @@ namespace Heyzap {
             }
         }
 
-        public static void InitReceiver(){
+        public static void InitReceiver() {
             if (_instance == null) {
                 GameObject receiverObject = new GameObject("HeyzapAds");
                 DontDestroyOnLoad(receiverObject);
                 _instance = receiverObject.AddComponent<HeyzapAds>();
             }
-        }
-
-        public static string TagForString(string tag) {
-            if (tag == null) {
-                tag = HeyzapAds.DEFAULT_TAG;
-            }
-            
-            return tag;
         }
 
         // Within Unity's .NET framework we don't have a stock solution for converting objets to Json so we need to implement a custom solution 
@@ -433,6 +426,8 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HeyzapAdsIOS : MonoBehaviour
     {
+        [DllImport ("__Internal")]
+        private static extern void hz_ads_set_plugin_version(string pluginVersion);
 
         [DllImport ("__Internal")]
         private static extern void hz_ads_start_app(string publisher_id, int flags);
@@ -478,6 +473,10 @@ namespace Heyzap {
 
         [DllImport ("__Internal")]
         private static extern void hz_add_facebook_test_device(string device_id);
+
+        public static void SetPluginVersion(string pluginVersion) {
+            hz_ads_set_plugin_version(pluginVersion);
+        }
 
         public static void Start(string publisher_id, int options=0) {
             hz_ads_start_app(publisher_id, options);
@@ -548,6 +547,14 @@ namespace Heyzap {
     #if UNITY_ANDROID && !UNITY_EDITOR
     public class HeyzapAdsAndroid : MonoBehaviour
     {
+        public static void SetPluginVersion(string pluginVersion) {
+            if (Application.platform != RuntimePlatform.Android) return;
+             AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) {
+                jc.CallStatic("addCustomParameter", "plugin_version", pluginVersion);
+            }
+        }
+        
         public static void Start(string publisher_id, int options=0) {
             if(Application.platform != RuntimePlatform.Android) return;
 

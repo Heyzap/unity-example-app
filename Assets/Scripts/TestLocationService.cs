@@ -1,19 +1,17 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
-using Heyzap;
 
 public class TestLocationService : MonoBehaviour
 {
     [SerializeField]
-    private ScrollingTextArea console;
+    private readonly ScrollingTextArea console;
 
     [SerializeField]
     private AdManager adManager;
 
     public IEnumerator Start()
     {
-        UnityEngine.Debug.Log ("location service start");
+        UnityEngine.Debug.Log("location service start");
         // First, check if user has location service enabled
         // if (!Input.location.isEnabledByUser){
         //     console.Append("Location disabled by user... quitting");

@@ -39,7 +39,7 @@ namespace Heyzap {
         public delegate void AdDisplayListener(string state, string tag);
 
         private static AdDisplayListener adDisplayListener;
-        private static HZBannerAd _instance = null;
+        private static HZBannerAd _instance;
 
         // these are reproduced here for convenience since they were here in old SDK versions
         /// <summary>

@@ -111,23 +111,24 @@ namespace Heyzap {
         #endregion
 
         #region Network names
-        public static class Network {
+        public static class Network
+        {
+            public const string ADCOLONY = "adcolony";
+            public const string ADMOB = "admob";
+            public const string APPLOVIN = "applovin";
+            public const string CHARTBOOST = "chartboost";
+            public const string FACEBOOK = "facebook";
+            public const string FYBER_EXCHANGE = "fyber_exchange";
             public const string HEYZAP = "heyzap";
             public const string HEYZAP_CROSS_PROMO = "heyzap_cross_promo";
             public const string HEYZAP_EXCHANGE = "heyzap_exchange";
-            public const string FACEBOOK = "facebook";
-            public const string UNITYADS = "unityads";
-            public const string APPLOVIN = "applovin";
-            public const string VUNGLE = "vungle";
-            public const string CHARTBOOST = "chartboost";
-            public const string ADCOLONY = "adcolony";
-            public const string ADMOB = "admob";
-            public const string IAD = "iad";
-            public const string LEADBOLT = "leadbolt";
+            public const string HYPRMX = "hyprmx";
             public const string INMOBI = "inmobi";
-            public const string DOMOB = "domob";
+            public const string IRON_SOURCE = "iron_source";
             public const string MOPUB = "mopub";
-            public const string FYBER_EXCHANGE = "fyber_exchange";
+            public const string TAPJOY = "tapjoy";
+            public const string UNITYADS = "unityads";
+            public const string VUNGLE = "vungle";
         }
         #endregion
 

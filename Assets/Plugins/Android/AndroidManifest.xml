@@ -98,25 +98,6 @@
 			android:name="com.facebook.ads.AudienceNetworkActivity"
 			android:configChanges="keyboardHidden|orientation|screenSize" />
 
-		<!-- Heyzap -->
-		<activity
-			android:name="com.heyzap.sdk.ads.FyberRewardedWrapperActivity"
-			android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize"
-			android:hardwareAccelerated="true"
-			android:theme="@android:style/Theme.Translucent" />
-		<activity
-			android:name="com.heyzap.sdk.ads.FyberOfferWallWrapperActivity"
-			android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
-
-		<!-- Fyber -->
-		<activity
-			android:name="com.fyber.ads.interstitials.InterstitialActivity"
-			android:configChanges="screenSize|orientation"
-			android:theme="@android:style/Theme.Translucent" />
-		<meta-data
-			android:name="FYBVideoPlayerOptionCloseButtonDelay"
-			android:value="-1" />
-
 		<!-- HyprMX -->
 		<activity
 			android:name="com.hyprmx.android.sdk.activity.HyprMXOfferViewerActivity"

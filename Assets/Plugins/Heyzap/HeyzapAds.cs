@@ -153,7 +153,6 @@ namespace Heyzap {
             HZVideoAd.InitReceiver();
             HZIncentivizedAd.InitReceiver();
             HZBannerAd.InitReceiver();
-            HZOfferWallAd.InitReceiver();
             HZDemographics.InitReceiver();
         }
         

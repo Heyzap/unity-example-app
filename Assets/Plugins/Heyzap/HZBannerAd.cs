@@ -36,10 +36,10 @@ namespace Heyzap {
     /// Use this class to show banner ads.
     /// </summary>
     public class HZBannerAd : MonoBehaviour {
-        public delegate void AdDisplayListener(string state, string tag);
+        public delegate void AdDisplayListener(string state, string placement);
 
         private static AdDisplayListener adDisplayListener;
-        private static HZBannerAd _instance = null;
+        private static HZBannerAd _instance;
 
         // these are reproduced here for convenience since they were here in old SDK versions
         /// <summary>
@@ -70,7 +70,7 @@ namespace Heyzap {
                 #endif
             #else
                 UnityEngine.Debug.LogWarning("Call received to show an HZBannerAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
-                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Tag));
+                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Placement));
             #endif
         }
 
@@ -138,18 +138,18 @@ namespace Heyzap {
         
         public void SetCallback(string message) {
             string[] displayStateParams = message.Split(',');
-            HZBannerAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]); 
+            HZBannerAd.SetCallbackStateAndPlacement(displayStateParams[0], displayStateParams[1]); 
         }
       
-        protected static void SetCallbackStateAndTag(string state, string tag) {
+        protected static void SetCallbackStateAndPlacement(string state, string placement) {
             if (HZBannerAd.adDisplayListener != null) {
-                HZBannerAd.adDisplayListener(state, tag);
+                HZBannerAd.adDisplayListener(state, placement);
             }
         }
 
-        protected static IEnumerator InvokeCallbackNextFrame(string state, string tag) {
+        protected static IEnumerator InvokeCallbackNextFrame(string state, string placement) {
             yield return null; // wait a frame
-            HZBannerAd.SetCallbackStateAndTag(state, tag);
+            HZBannerAd.SetCallbackStateAndPlacement(state, placement);
         }
         #endregion
     }
@@ -158,7 +158,7 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HZBannerAdIOS : MonoBehaviour {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_banner(string position, string tag);
+        private static extern void hz_ads_show_banner(string position, string placement);
         [DllImport ("__Internal")]
         private static extern bool hz_ads_hide_banner();
         [DllImport ("__Internal")]
@@ -168,7 +168,7 @@ namespace Heyzap {
 
 
         public static void ShowWithOptions(HZBannerShowOptions showOptions) {
-            hz_ads_show_banner(showOptions.Position, showOptions.Tag);
+            hz_ads_show_banner(showOptions.Position, showOptions.Placement);
         }
 
         public static bool Hide() {
@@ -230,7 +230,7 @@ namespace Heyzap {
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showBanner", showOptions.Tag, showOptions.Position);
+                jc.CallStatic("showBanner", showOptions.Placement, showOptions.Position);
             }
         }
 

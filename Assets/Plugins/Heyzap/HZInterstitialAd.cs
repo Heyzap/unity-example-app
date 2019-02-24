@@ -35,9 +35,9 @@ namespace Heyzap {
     /// </summary>
     public class HZInterstitialAd : MonoBehaviour {
 
-        public delegate void AdDisplayListener(string state, string tag);
+        public delegate void AdDisplayListener(string state, string placement);
         private static AdDisplayListener adDisplayListener;
-        private static HZInterstitialAd _instance = null;
+        private static HZInterstitialAd _instance;
 
         //provided since JS can't use default parameters
         /// <summary>
@@ -63,57 +63,53 @@ namespace Heyzap {
                     HZInterstitialAdIOS.ShowWithOptions(showOptions);
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to show an HZInterstitalAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
-                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Tag));
+                UnityEngine.Debug.LogWarning("Call received to show an HZInterstitialAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
+                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Placement));
             #endif
         }
 
         //provided since JS can't use default parameters
         /// <summary>
-        /// Fetches an ad for the default ad tag.
+        /// Fetches an ad for the default placement name.
         /// </summary>
         public static void Fetch() {
             HZInterstitialAd.Fetch(null);
         }
         /// <summary>
-        /// Fetches an ad for the given ad tag.
+        /// Fetches an ad for the given placement name.
         /// </summary>
-        /// <param name="tag">The ad tag to fetch an ad for.</param>
-        public static void Fetch(string tag) {
-            tag = HeyzapAds.TagForString(tag);
-
+        /// <param name="placement">The placement name to fetch an ad for.</param>
+        public static void Fetch(string placement) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HZInterstitialAdAndroid.Fetch(tag);
+                    HZInterstitialAdAndroid.Fetch(placement);
                 #elif UNITY_IPHONE
-                    HZInterstitialAdIOS.Fetch(tag);
+                    HZInterstitialAdIOS.Fetch(placement);
                 #endif
             #else
                 UnityEngine.Debug.LogWarning("Call received to fetch an HZInterstitialAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
-                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.FETCH_FAILED, tag));
+                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.FETCH_FAILED, placement));
             #endif
         }
-      
+
         //provided since JS can't use default parameters
         /// <summary>
-        /// Returns whether or not an ad is available for the default ad tag.
+        /// Returns whether or not an ad is available for the default placement name.
         /// </summary>
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
         public static bool IsAvailable() {
             return HZInterstitialAd.IsAvailable(null);
         }
         /// <summary>
-        /// Returns whether or not an ad is available for the given ad tag.
+        /// Returns whether or not an ad is available for the given placement name.
         /// </summary>
         /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
-        public static bool IsAvailable(string tag) {
-            tag = HeyzapAds.TagForString(tag);
-
+        public static bool IsAvailable(string placement) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    return HZInterstitialAdAndroid.IsAvailable(tag);
+                    return HZInterstitialAdAndroid.IsAvailable(placement);
                 #elif UNITY_IPHONE
-                    return HZInterstitialAdIOS.IsAvailable(tag);
+                    return HZInterstitialAdIOS.IsAvailable(placement);
                 #endif
             #else
                 return false;
@@ -183,18 +179,18 @@ namespace Heyzap {
 
         public void SetCallback(string message) {
             string[] displayStateParams = message.Split(',');
-            HZInterstitialAd.SetCallbackStateAndTag(displayStateParams[0], displayStateParams[1]); 
+            HZInterstitialAd.SetCallbackStateAndPlacement(displayStateParams[0], displayStateParams[1]); 
         }
 
-        protected static void SetCallbackStateAndTag(string state, string tag) {
+        protected static void SetCallbackStateAndPlacement(string state, string placement) {
             if (HZInterstitialAd.adDisplayListener != null) {
-                HZInterstitialAd.adDisplayListener(state, tag);
+                HZInterstitialAd.adDisplayListener(state, placement);
             }
         }
 
-        protected static IEnumerator InvokeCallbackNextFrame(string state, string tag) {
+        protected static IEnumerator InvokeCallbackNextFrame(string state, string placement) {
             yield return null; // wait a frame
-            HZInterstitialAd.SetCallbackStateAndTag(state, tag);
+            HZInterstitialAd.SetCallbackStateAndPlacement(state, placement);
         }
         #endregion
     }
@@ -203,11 +199,11 @@ namespace Heyzap {
     #if UNITY_IPHONE && !UNITY_EDITOR
     public class HZInterstitialAdIOS {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_interstitial(string tag);
+        private static extern void hz_ads_show_interstitial(string placement);
         [DllImport ("__Internal")]
-        private static extern void hz_ads_fetch_interstitial(string tag);
+        private static extern void hz_ads_fetch_interstitial(string placement);
         [DllImport ("__Internal")]
-        private static extern bool hz_ads_interstitial_is_available(string tag);
+        private static extern bool hz_ads_interstitial_is_available(string placement);
         [DllImport ("__Internal")]
         private static extern void hz_fetch_chartboost_for_location(string location);
         [DllImport ("__Internal")]
@@ -217,15 +213,15 @@ namespace Heyzap {
 
 
         public static void ShowWithOptions(HZShowOptions showOptions) {
-            hz_ads_show_interstitial(showOptions.Tag);
+            hz_ads_show_interstitial(showOptions.Placement);
         }
 
-        public static void Fetch(string tag) {
-            hz_ads_fetch_interstitial(tag);
+        public static void Fetch(string placement) {
+            hz_ads_fetch_interstitial(placement);
         }
 
-        public static bool IsAvailable(string tag) {
-            return hz_ads_interstitial_is_available(tag);
+        public static bool IsAvailable(string placement) {
+            return hz_ads_interstitial_is_available(placement);
         }
 
 
@@ -253,25 +249,25 @@ namespace Heyzap {
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("showInterstitial", showOptions.Tag); 
+                jc.CallStatic("showInterstitial", showOptions.Placement); 
             }
         }
 
-        public static void Fetch(string tag="default") {
+        public static void Fetch(string placement) {
             if(Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("fetchInterstitial", tag); 
+                jc.CallStatic("fetchInterstitial", placement); 
             }
         }
 
-        public static Boolean IsAvailable(string tag="default") {
+        public static Boolean IsAvailable(string placement) {
             if(Application.platform != RuntimePlatform.Android) return false;
 
             AndroidJNIHelper.debug = false;
             using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                return jc.CallStatic<Boolean>("isInterstitialAvailable", tag);
+                return jc.CallStatic<Boolean>("isInterstitialAvailable", placement);
             }
         }
 

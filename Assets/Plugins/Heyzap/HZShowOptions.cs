@@ -8,49 +8,43 @@ namespace Heyzap {
     public class HZShowOptions {
 
         /// <summary>
-        /// An identifier for the location of the ad, which you can use to disable the ad from your dashboard. If not specified the tag "default" is always used.
-        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
+        /// An identifier for the location of the ad, which you can use to disable the ad from your dashboard.
         /// </summary>
-        /// <value>The tag.</value>
-        public string Tag {
+        /// <value>The placement name.</value>
+        public string Placement {
             get {
-                return tag;
+                return placement;
             }
             set {
-                if (value != null) {
-                    tag = value;
-                } else {
-                    tag = HeyzapAds.DEFAULT_TAG;
-                }
+                placement = value;
             }
         }
-        private string tag = HeyzapAds.DEFAULT_TAG;     
+        private string placement;
     }
 
     /// <summary>
-    /// A set of options that describes how to show an incentivized ad.
+    /// A set of options that describes how to show an rewarded ad.
     /// </summary>
-    public class HZIncentivizedShowOptions : HZShowOptions {
-        private const string DEFAULT_INCENTIVIZED_INFO = "";
+    public class HZRewardedShowOptions : HZShowOptions {
+        private const string DEFAULT_REWARDED_INFO = "";
 
         /// <summary>
-        /// When an incentivized video is completed, this string will be sent to your server via our server-to-server callbacks. Set it to anything you want to pass to your server regarding this incentivized video view (i.e.: a username, user ID, level name, etc.), or leave it empty if you don't need to use it / aren't using server callbacks for incentivized video.
+        /// When an rewarded video is completed, this string will be sent to your server via our server-to-server callbacks. Set it to anything you want to pass to your server regarding this rewarded video view (i.e.: a username, user ID, level name, etc.), or leave it empty if you don't need to use it / aren't using server callbacks for rewarded video.
         /// More information about using this feature can be found at https://developers.heyzap.com/docs/advanced-publishing .
-        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
         /// </summary>
-        public string IncentivizedInfo {
+        public string RewardedInfo {
             get {
-                return incentivizedInfo;
+                return rewardedInfo;
             }
             set {
                 if (value != null) {
-                    incentivizedInfo = value;
+                    rewardedInfo = value;
                 } else {
-                    incentivizedInfo = HZIncentivizedShowOptions.DEFAULT_INCENTIVIZED_INFO;
+                    rewardedInfo = HZRewardedShowOptions.DEFAULT_REWARDED_INFO;
                 }
             }
         }
-        private string incentivizedInfo = HZIncentivizedShowOptions.DEFAULT_INCENTIVIZED_INFO;
+        private string rewardedInfo = HZRewardedShowOptions.DEFAULT_REWARDED_INFO;
     }
 
     /// <summary>
@@ -85,27 +79,5 @@ namespace Heyzap {
             }
         }
         private string position = HZBannerShowOptions.DEFAULT_POSITION;
-    }
-
-    /// <summary>
-    /// A set of options that describes how to show an offerwall ad.
-    /// </summary>
-    public class HZOfferWallShowOptions : HZShowOptions {
-        private const bool DEFAULT_SHOULD_CLOSE_AFTER_FIRST_CLICK = true;
-
-        /// <summary>
-        /// When an incentivized video is completed, this string will be sent to your server via our server-to-server callbacks. Set it to anything you want to pass to your server regarding this incentivized video view (i.e.: a username, user ID, level name, etc.), or leave it empty if you don't need to use it / aren't using server callbacks for incentivized video.
-        /// More information about using this feature can be found at https://developers.heyzap.com/docs/advanced-publishing .
-        /// Guaranteed to be non-null - will be set to the default value if the setter is called with `null`.
-        /// </summary>
-        public bool ShouldCloseAfterFirstClick {
-            get {
-                return shouldCloseAfterFirstClick;
-            }
-            set {
-                shouldCloseAfterFirstClick = value;
-            }
-        }
-        private bool shouldCloseAfterFirstClick = HZOfferWallShowOptions.DEFAULT_SHOULD_CLOSE_AFTER_FIRST_CLICK;
     }
 }

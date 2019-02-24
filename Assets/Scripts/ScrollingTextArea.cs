@@ -15,7 +15,7 @@ public class ScrollingTextArea : MonoBehaviour {
     private GUIStyle consoleTextStyle;
     private GUIStyle consoleBackgroundStyle;
     void Start () {
-        consoleBackgroundTexture = new Texture2D(1,1);
+        consoleBackgroundTexture = new Texture2D(1, 1);
         for(var i = 0; i < consoleBackgroundTexture.width; i++)
         {
             for(var j = 0; j < consoleBackgroundTexture.height; j++)
@@ -23,8 +23,10 @@ public class ScrollingTextArea : MonoBehaviour {
                 consoleBackgroundTexture.SetPixel(i, j, new Color(0f, 0f, 0f, 0.7f));
             }
         }
-        consoleTextStyle = new GUIStyle();
-        consoleTextStyle.fontSize = 28;
+        consoleTextStyle = new GUIStyle
+        {
+            fontSize = 28
+        };
         consoleTextStyle.normal.textColor = Color.white;
         consoleTextStyle.richText = true;
         consoleBackgroundStyle = new GUIStyle();

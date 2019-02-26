@@ -45,8 +45,8 @@
 		<!-- Facebook -->
 		<activity android:name="com.facebook.ads.AudienceNetworkActivity" android:configChanges="keyboardHidden|orientation|screenSize" />
 		<!-- Heyzap -->
-		<activity android:name="com.heyzap.sdk.ads.FyberRewardedWrapperActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" android:hardwareAccelerated="true" android:theme="@android:style/Theme.Translucent" />
-		<activity android:name="com.heyzap.sdk.ads.FyberOfferWallWrapperActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
+		<activity android:name=".ads.FyberRewardedWrapperActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" android:hardwareAccelerated="true" android:theme="@android:style/Theme.Translucent" />
+		<activity android:name=".ads.FyberOfferWallWrapperActivity" android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize" />
 		<!-- HyprMX -->
 		<activity android:name="com.hyprmx.android.sdk.activity.HyprMXOfferViewerActivity" android:hardwareAccelerated="true" android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" android:label="HyprMX SDK" android:launchMode="singleTop" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 		<activity android:name="com.hyprmx.android.sdk.activity.HyprMXRequiredInformationActivity" android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />

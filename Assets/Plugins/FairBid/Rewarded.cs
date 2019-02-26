@@ -1,6 +1,4 @@
-//  HZRewardedAd.cs
-//
-//  Copyright 2015 Heyzap, Inc. All Rights Reserved
+﻿//  Copyright 2019 Fyber. All Rights Reserved
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -30,76 +28,54 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System;
 
-namespace Heyzap {
+namespace FairBid {
     /// <summary>
     /// Use this class to show rewarded ads.
     /// </summary>
-    public class HZRewardedAd : MonoBehaviour {
+    public class Rewarded : MonoBehaviour {
         
         public delegate void AdDisplayListener(string state, string placement);
         private static AdDisplayListener adDisplayListener;
-        private static HZRewardedAd _instance;
+        private static Rewarded _instance;
 
-        //provided since JS can't use default parameters
         /// <summary>
-        /// Requests an ad for the default placement name.
-        /// </summary>
-        public static void Request() {
-            HZRewardedAd.Request(null);
-        }
-        /// <summary>
-        /// Fetches an ad for the given placement name.
+        /// Requests an ad for the given placement name.
         /// </summary>
         /// <param name="placement">The placement name to request an ad for.</param>
         public static void Request(string placement) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HZRewardedAdAndroid.Fetch(placement);
+                    RewardedAndroid.Request(placement);
                 #elif UNITY_IPHONE
-                    HZRewardedAdIOS.Fetch(placement);
+                    RewardedIOS.Request(placement);
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to fetch an HZRewardedAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
-                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.FETCH_FAILED, placement));
+                UnityEngine.Debug.LogWarning("Call received to request an Rewarded, but the SDK does not function in the editor. You must use a device/emulator to request/show ads.");
+                _instance.StartCoroutine(InvokeCallbackNextFrame(FairBidSDK.NetworkCallback.REQUEST_FAILED, placement));
             #endif
         }
 
-        //provided since JS can't use default parameters
-        /// <summary>
-        /// Shows an ad with the default options.
-        /// </summary>
-        public static void Show() {
-            HZRewardedAd.ShowWithOptions(null);
-        }
         /// <summary>
         /// Shows an ad with the given options.
         /// </summary>
         /// <param name="showOptions"> The options to show the ad with, or the default options if <c>null</c></param>
-        public static void ShowWithOptions(HZRewardedShowOptions showOptions) {
+        public static void ShowWithOptions(RewardedShowOptions showOptions) {
             if (showOptions == null) {
-                showOptions = new HZRewardedShowOptions();
+                showOptions = new RewardedShowOptions();
             }
 
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HZRewardedAdAndroid.ShowWithOptions(showOptions);
+                    RewardedAndroid.ShowWithOptions(showOptions);
                 #elif UNITY_IPHONE
-                    HZRewardedAdIOS.ShowWithOptions(showOptions);
+                    RewardedIOS.ShowWithOptions(showOptions);
                 #endif
             #else
-                UnityEngine.Debug.LogWarning("Call received to show an HZRewardedAd, but the SDK does not function in the editor. You must use a device/emulator to fetch/show ads.");
-                _instance.StartCoroutine(InvokeCallbackNextFrame(HeyzapAds.NetworkCallback.SHOW_FAILED, showOptions.Placement));
+                UnityEngine.Debug.LogWarning("Call received to show an Rewarded, but the SDK does not function in the editor. You must use a device/emulator to request/show ads.");
+                _instance.StartCoroutine(InvokeCallbackNextFrame(FairBidSDK.NetworkCallback.SHOW_FAILED, showOptions.Placement));
             #endif
         }
 
-        //provided since JS can't use default parameters
-        /// <summary>
-        /// Returns whether or not an ad is available for the default placement name.
-        /// </summary>
-        /// <returns><c>true</c>, if an ad is available, <c>false</c> otherwise.</returns>
-        public static bool IsAvailable() {
-            return HZRewardedAd.IsAvailable(null);
-        }
         /// <summary>
         /// Returns whether or not an ad is available for the given placement name.
         /// </summary>
@@ -107,9 +83,9 @@ namespace Heyzap {
         public static bool IsAvailable(string placement) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    return HZRewardedAdAndroid.IsAvailable(placement);
+                    return RewardedAndroid.IsAvailable(placement);
                 #elif UNITY_IPHONE
-                    return HZRewardedAdIOS.IsAvailable(placement);
+                    return RewardedIOS.IsAvailable(placement);
                 #endif
             #else
                 return false;
@@ -120,87 +96,87 @@ namespace Heyzap {
         /// Sets the AdDisplayListener for rewarded ads, which will receive callbacks regarding the state of rewarded ads.
         /// </summary>
         public static void SetDisplayListener(AdDisplayListener listener) {
-            HZRewardedAd.adDisplayListener = listener;
+            adDisplayListener = listener;
         }
 
         #region Internal methods
         public static void InitReceiver(){
             if (_instance == null) {
-                GameObject receiverObject = new GameObject("HZRewardedAd");
+                GameObject receiverObject = new GameObject("Rewarded");
                 DontDestroyOnLoad(receiverObject);
-                _instance = receiverObject.AddComponent<HZRewardedAd>();
+                _instance = receiverObject.AddComponent<Rewarded>();
             }
         }
 
         public void SetCallback(string message) {
             string[] displayStateParams = message.Split(',');
-            HZRewardedAd.SetCallbackStateAndPlacement(displayStateParams[0], displayStateParams[1]); 
+            SetCallbackStateAndPlacement(displayStateParams[0], displayStateParams[1]); 
         }
         
         protected static void SetCallbackStateAndPlacement(string state, string placement) {
-            if (HZRewardedAd.adDisplayListener != null) {
-                HZRewardedAd.adDisplayListener(state, placement);
+            if (adDisplayListener != null) {
+                adDisplayListener(state, placement);
             }
         }
 
         protected static IEnumerator InvokeCallbackNextFrame(string state, string placement) {
             yield return null; // wait a frame
-            HZRewardedAd.SetCallbackStateAndPlacement(state, placement);
+            SetCallbackStateAndPlacement(state, placement);
         }
         #endregion
     }
 
     #region Platform-specific translations
     #if UNITY_IPHONE && !UNITY_EDITOR
-    public class HZRewardedAdIOS : MonoBehaviour {
+    public class RewardedIOS : MonoBehaviour {
         [DllImport ("__Internal")]
-        private static extern void hz_ads_show_rewarded_with_custom_info(string placement, string rewardedInfo);
+        private static extern void fyb_sdk_request_rewarded(string placement);
         [DllImport ("__Internal")]
-        private static extern void hz_ads_fetch_rewarded(string placement);
+        private static extern void fyb_sdk_show_rewarded_with_custom_info(string placement, string rewardedInfo);
         [DllImport ("__Internal")]
-        private static extern bool hz_ads_rewarded_is_available(string placement);
+        private static extern bool fyb_sdk_rewarded_is_available(string placement);
         
 
-        public static void ShowWithOptions(HZRewardedShowOptions showOptions) {
-            hz_ads_show_rewarded_with_custom_info(showOptions.Placement, showOptions.RewardedInfo);
+        public static void ShowWithOptions(RewardedShowOptions showOptions) {
+            fyb_sdk_show_rewarded_with_custom_info(showOptions.Placement, showOptions.RewardedInfo);
         }
         
-        public static void Fetch(string placement) {
-            hz_ads_fetch_rewarded(placement);
+        public static void Request(string placement) {
+            fyb_sdk_request_rewarded(placement);
         }
         
         public static bool IsAvailable(string placement) {
-            return hz_ads_rewarded_is_available(placement);
+            return fyb_sdk_rewarded_is_available(placement);
         }
     }
     #endif
 
     #if UNITY_ANDROID && !UNITY_EDITOR
-    public class HZRewardedAdAndroid : MonoBehaviour {
+    public class RewardedAndroid : MonoBehaviour {
         
-        public static void ShowWithOptions(HZRewardedShowOptions showOptions) {
-            if(Application.platform != RuntimePlatform.Android) return;
+        public static void Request(string placement) {
+            if (Application.platform != RuntimePlatform.Android) return;
             
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
+                jc.CallStatic("requestRewarded", placement); 
+            }
+        }
+        
+        public static void ShowWithOptions(RewardedShowOptions showOptions) {
+            if (Application.platform != RuntimePlatform.Android) return;
+            
+            AndroidJNIHelper.debug = false;
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("showRewarded", showOptions.Placement, showOptions.RewardedInfo); 
             }
         }
         
-        public static void Fetch(string placement) {
-            if(Application.platform != RuntimePlatform.Android) return;
-            
-            AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
-                jc.CallStatic("fetchRewarded", placement); 
-            }
-        }
-        
         public static Boolean IsAvailable(string placement) {
-            if(Application.platform != RuntimePlatform.Android) return false;
+            if (Application.platform != RuntimePlatform.Android) return false;
             
             AndroidJNIHelper.debug = false;
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 return jc.CallStatic<Boolean>("isRewardedAvailable", placement);
             }
         }

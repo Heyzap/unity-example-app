@@ -1,7 +1,7 @@
+﻿//
+//  Demographics.cs
 //
-//  HZDemographics.cs
-//
-//  Copyright 2017 Heyzap, Inc. All Rights Reserved
+//  Copyright 2019 Fyber. All Rights Reserved
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -31,13 +31,13 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System;
 
-namespace Heyzap {
+namespace FairBid {
     /// <summary>
     /// Use this class to pass information about a user to mediated ad networks that want the data. This kind of data is optional but can improve ad revenues.
     /// </summary>
-    public class HZDemographics : MonoBehaviour {
+    public class Demographics : MonoBehaviour {
 
-        private static HZDemographics _instance;
+        private static Demographics _instance;
 
         public enum Gender {
             UNKNOWN,
@@ -49,12 +49,12 @@ namespace Heyzap {
         /// Set the gender of the user, if known, using the provided enum.
         /// </summary>
         public static void SetUserGender(Gender gender) {
-            if (System.Enum.IsDefined(typeof(Gender), gender)) {
+            if (Enum.IsDefined(typeof(Gender), gender)) {
                 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                     #if UNITY_ANDROID
-                        HeyzapDemographicsAndroid.SetUserGender(gender.ToString());
+                        DemographicsAndroid.SetUserGender(gender.ToString());
                     #elif UNITY_IPHONE
-                        HeyzapDemographicsIOS.SetUserGender(gender.ToString());
+                        DemographicsIOS.SetUserGender(gender.ToString());
                     #endif
                 #else
                 #endif
@@ -67,9 +67,9 @@ namespace Heyzap {
         public static void SetUserLocation(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HeyzapDemographicsAndroid.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+                    DemographicsAndroid.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
                 #elif UNITY_IPHONE
-                    HeyzapDemographicsIOS.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+                    DemographicsIOS.SetUserLocation(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
                 #endif
             #else
             #endif
@@ -81,9 +81,9 @@ namespace Heyzap {
         public static void SetUserPostalCode(string postalCode) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HeyzapDemographicsAndroid.SetUserPostalCode(postalCode);
+                    DemographicsAndroid.SetUserPostalCode(postalCode);
                 #elif UNITY_IPHONE
-                    HeyzapDemographicsIOS.SetUserPostalCode(postalCode);
+                    DemographicsIOS.SetUserPostalCode(postalCode);
                 #endif
             #else
             #endif
@@ -95,9 +95,9 @@ namespace Heyzap {
         public static void SetUserHouseholdIncome(int householdIncome) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HeyzapDemographicsAndroid.SetUserHouseholdIncome(householdIncome);
+                    DemographicsAndroid.SetUserHouseholdIncome(householdIncome);
                 #elif UNITY_IPHONE
-                    HeyzapDemographicsIOS.SetUserHouseholdIncome(householdIncome);
+                    DemographicsIOS.SetUserHouseholdIncome(householdIncome);
                 #endif
             #else
             #endif
@@ -108,6 +108,7 @@ namespace Heyzap {
             SINGLE,
             MARRIED
         }
+
         /// <summary>
         /// Set the marital status of the user, if known, using the provided enum.
         /// </summary>
@@ -115,9 +116,9 @@ namespace Heyzap {
             if (System.Enum.IsDefined(typeof(MaritalStatus), maritalStatus)) {
                 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                     #if UNITY_ANDROID
-                        HeyzapDemographicsAndroid.SetUserMaritalStatus(maritalStatus.ToString());
+                        DemographicsAndroid.SetUserMaritalStatus(maritalStatus.ToString());
                     #elif UNITY_IPHONE
-                        HeyzapDemographicsIOS.SetUserMaritalStatus(maritalStatus.ToString());
+                        DemographicsIOS.SetUserMaritalStatus(maritalStatus.ToString());
                     #endif
                 #else
                 #endif
@@ -135,6 +136,7 @@ namespace Heyzap {
             GRADUATE_DEGREE,
             POSTGRADUATE_DEGREE
         }
+
         /// <summary>
         /// Set the highest education level already achieved by the user, if known, using the provided enum.
         /// </summary>
@@ -142,9 +144,9 @@ namespace Heyzap {
             if (System.Enum.IsDefined(typeof(EducationLevel), educationLevel)) {
                 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                     #if UNITY_ANDROID
-                        HeyzapDemographicsAndroid.SetUserEducationLevel(educationLevel.ToString());
+                        DemographicsAndroid.SetUserEducationLevel(educationLevel.ToString());
                     #elif UNITY_IPHONE
-                        HeyzapDemographicsIOS.SetUserEducationLevel(educationLevel.ToString());
+                        DemographicsIOS.SetUserEducationLevel(educationLevel.ToString());
                     #endif
                 #else
                 #endif
@@ -157,9 +159,9 @@ namespace Heyzap {
         public static void SetUserBirthDate(string yyyyMMdd_date) {
             #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IPHONE)
                 #if UNITY_ANDROID
-                    HeyzapDemographicsAndroid.SetUserBirthDate(yyyyMMdd_date);
+                    DemographicsAndroid.SetUserBirthDate(yyyyMMdd_date);
                 #elif UNITY_IPHONE
-                    HeyzapDemographicsIOS.SetUserBirthDate(yyyyMMdd_date);
+                    DemographicsIOS.SetUserBirthDate(yyyyMMdd_date);
                 #endif
             #else
             #endif
@@ -168,11 +170,11 @@ namespace Heyzap {
 
         #region Internal methods
 
-        public static void InitReceiver(){
+        public static void InitReceiver() {
             if (_instance == null) {
-                GameObject receiverObject = new GameObject("HZDemographics");
+                GameObject receiverObject = new GameObject("Demographics");
                 DontDestroyOnLoad(receiverObject);
-                _instance = receiverObject.AddComponent<HZDemographics>();
+                _instance = receiverObject.AddComponent<Demographics>();
             }
         }
 
@@ -182,70 +184,70 @@ namespace Heyzap {
 
     #region Platform-specific translations
     #if UNITY_IPHONE && !UNITY_EDITOR
-    public class HeyzapDemographicsIOS : MonoBehaviour {
+    public class DemographicsIOS : MonoBehaviour {
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_gender(string gender);
+        private static extern void fyb_demo_set_gender(string gender);
         public static void SetUserGender(string gender) {
-            hz_demo_set_gender(gender);
+            fyb_demo_set_gender(gender);
         }
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_location(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp);
+        private static extern void fyb_demo_set_location(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp);
         public static void SetUserLocation(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp) {
-            hz_demo_set_location(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
+            fyb_demo_set_location(latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
         }
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_postal_code(string postalCode);
+        private static extern void fyb_demo_set_postal_code(string postalCode);
         public static void SetUserPostalCode(string postalCode) {
-            hz_demo_set_postal_code(postalCode);
+            fyb_demo_set_postal_code(postalCode);
         }
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_household_income(int householdIncome);
+        private static extern void fyb_demo_set_household_income(int householdIncome);
         public static void SetUserHouseholdIncome(int householdIncome) {
-            hz_demo_set_household_income(householdIncome);
+            fyb_demo_set_household_income(householdIncome);
         }
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_marital_status(string maritalStatus);
+        private static extern void fyb_demo_set_marital_status(string maritalStatus);
         public static void SetUserMaritalStatus(string maritalStatus) {
-            hz_demo_set_marital_status(maritalStatus);
+            fyb_demo_set_marital_status(maritalStatus);
         }
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_education_level(string educationLevel);
+        private static extern void fyb_demo_set_education_level(string educationLevel);
         public static void SetUserEducationLevel(string educationLevel) {
-            hz_demo_set_education_level(educationLevel);
+            fyb_demo_set_education_level(educationLevel);
         }
 
         [DllImport ("__Internal")]
-        private static extern void hz_demo_set_birth_date(string yyyyMMdd_date);
+        private static extern void fyb_demo_set_birth_date(string yyyyMMdd_date);
         public static void SetUserBirthDate(string yyyyMMdd_date) {
-            hz_demo_set_birth_date(yyyyMMdd_date);
+            fyb_demo_set_birth_date(yyyyMMdd_date);
         }
 
     }
     #endif
 
     #if UNITY_ANDROID && !UNITY_EDITOR
-    public class HeyzapDemographicsAndroid : MonoBehaviour {
+    public class DemographicsAndroid : MonoBehaviour {
 
         public static void SetUserGender(string gender) {
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserGender", gender);
             }
         }
 
         public static void SetUserLocation(float latitude, float longitude, float horizontalAccuracy, float verticalAccuracy, float altitude, double timestamp) {
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserLocation", latitude, longitude, horizontalAccuracy, verticalAccuracy, altitude, timestamp);
             }
 
@@ -253,50 +255,50 @@ namespace Heyzap {
 
         public static void SetUserPostalCode(string postalCode) {
 
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserPostalCode", postalCode);
             }
         }
 
         public static void SetUserHouseholdIncome(int householdIncome) {
 
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserHouseholdIncome", householdIncome);
             }
         }
 
         public static void SetUserMaritalStatus(string maritalStatus) {
 
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserMaritalStatus", maritalStatus);
             }
         }
 
         public static void SetUserEducationLevel(string educationLevel) {
 
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserEducationLevel", educationLevel);
             }
         }
 
         public static void SetUserBirthDate(string yyyyMMdd_date) {
 
-            if(Application.platform != RuntimePlatform.Android) return;
+            if (Application.platform != RuntimePlatform.Android) return;
 
             AndroidJNIHelper.debug = false; 
-            using (AndroidJavaClass jc = new AndroidJavaClass("com.heyzap.sdk.extensions.unity3d.UnityHelper")) { 
+            using (AndroidJavaClass jc = new AndroidJavaClass("com.fyber.fairbid.sdk.extensions.unity3d.UnityHelper")) { 
                 jc.CallStatic("setUserBirthDate", yyyyMMdd_date);
             }
         }

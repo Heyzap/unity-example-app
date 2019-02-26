@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using FairBid;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
-using Heyzap;
 using System.Collections.Generic;
 
 public class AdManager : MonoBehaviour {
@@ -26,7 +26,7 @@ public class AdManager : MonoBehaviour {
         get { return selectedAdType; }
         set {
             selectedAdType = value;
-            this.console.Append("AdType: " + value.ToString());
+            console.Append("AdType: " + value.ToString());
             ShowAdTypeControls();
         }
     }
@@ -34,11 +34,10 @@ public class AdManager : MonoBehaviour {
     private string bannerPosition;
 
     public void UpdateLocation(float latitude, float longitude, float horizAcc, float vertAcc, float alt, double timestamp) {
-        //HZDemographics.SetUserLocation(latitude, longitude, horizAcc, vertAcc, alt, timestamp);
+        //Demographics.SetUserLocation(latitude, longitude, horizAcc, vertAcc, alt, timestamp);
     }
 
-    void Awake()
-    {
+    void Awake() {
         Assert.IsNotNull(placementTextField);
         Assert.IsNotNull(bannerControls);
         Assert.IsNotNull(standardControls);
@@ -46,77 +45,77 @@ public class AdManager : MonoBehaviour {
     }
 
     void Start () {
-        HeyzapAds.NetworkCallbackListener networkCallbackListener = delegate(string network, string callback) {
-            this.console.Append("[" + network + "]: " + callback);
+        FairBidSDK.NetworkCallbackListener networkCallbackListener = delegate(string network, string callback) {
+            console.Append("[" + network + "]: " + callback);
         };
 
-        // HZDemographics.SetUserGender(HZDemographics.Gender.MALE);
-        // HZDemographics.SetUserPostalCode("94103");
-        // HZDemographics.SetUserHouseholdIncome(100000);
-        // HZDemographics.SetUserMaritalStatus(HZDemographics.MaritalStatus.SINGLE);
-        // HZDemographics.SetUserEducationLevel(HZDemographics.EducationLevel.BACHELORS_DEGREE);
-        // HZDemographics.SetUserBirthDate("1990-08-05");
+        // Demographics.SetUserGender(Demographics.Gender.MALE);
+        // Demographics.SetUserPostalCode("94103");
+        // Demographics.SetUserHouseholdIncome(100000);
+        // Demographics.SetUserMaritalStatus(Demographics.MaritalStatus.SINGLE);
+        // Demographics.SetUserEducationLevel(Demographics.EducationLevel.BACHELORS_DEGREE);
+        // Demographics.SetUserBirthDate("1990-08-05");
 
         // UnityEngine.Debug.Log ("calling loc service");
         // TestLocationService locServ = new TestLocationService();
-        // locServ.Start(this.console);
+        // locServ.Start(console);
 
-		HeyzapAds.SetNetworkCallbackListener(networkCallbackListener);
-		HeyzapAds.ShowDebugLogs();
-		HeyzapAds.Start("ENTER_YOUR_PUBLISHER_ID_HERE", HeyzapAds.FLAG_NO_OPTIONS);
+        FairBidSDK.SetNetworkCallbackListener(networkCallbackListener);
+        FairBidSDK.ShowDebugLogs();
+        FairBidSDK.Start("ENTER_YOUR_PUBLISHER_ID_HERE", FairBidSDK.FLAG_NO_OPTIONS);
 
-        HZBannerAd.SetDisplayListener(delegate(string adState, string placement) {
-            this.console.Append("BANNER: " + adState + " Placement : " + placement);
+        Banner.SetDisplayListener(delegate(string adState, string placement) {
+            console.Append("BANNER: " + adState + " Placement : " + placement);
             if (adState == "loaded") {
                 Rect dimensions = new Rect();
-                HZBannerAd.GetCurrentBannerDimensions(out dimensions);
-                this.console.Append(string.Format("    (x,y): ({0},{1}) - WxH: {2}x{3}", dimensions.x, dimensions.y, dimensions.width, dimensions.height));
+                Banner.GetCurrentBannerDimensions(out dimensions);
+                console.Append(string.Format("    (x,y): ({0},{1}) - WxH: {2}x{3}", dimensions.x, dimensions.y, dimensions.width, dimensions.height));
             }
         });
 
-        HZInterstitialAd.SetDisplayListener(delegate(string adState, string placement) {
-            this.console.Append("INTERSTITIAL: " + adState + " Placement : " + placement);
+        Interstitial.SetDisplayListener(delegate(string adState, string placement) {
+            console.Append("INTERSTITIAL: " + adState + " Placement : " + placement);
         });
 
-        HZRewardedAd.SetDisplayListener(delegate(string adState, string placement) {
-            this.console.Append("REWARDED: " + adState + " Placement : " + placement);
+        Rewarded.SetDisplayListener(delegate(string adState, string placement) {
+            console.Append("REWARDED: " + adState + " Placement : " + placement);
         });
 
         // UI defaults
-        this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
-        this.SelectedAdType = AdType.Interstitial;
+        bannerPosition = BannerShowOptions.POSITION_TOP;
+        SelectedAdType = AdType.Interstitial;
 
-        this.ShowAdTypeControls();
+        ShowAdTypeControls();
     }
 
     public void InterstitialSelected(bool selected) {
         if (selected) {
-            this.SelectedAdType = AdType.Interstitial;
+            SelectedAdType = AdType.Interstitial;
         }
     }
 
     public void RewardedSelected(bool selected) {
         if (selected) {
-            this.SelectedAdType = AdType.Rewarded;
+            SelectedAdType = AdType.Rewarded;
         }
     }
 
     public void BannerSelected(bool selected) {
         if (selected) {
-            this.SelectedAdType = AdType.Banner;
+            SelectedAdType = AdType.Banner;
         }
     }
 
     public void IsAvailableButton() {
-        string placementName = this.GetPlacementName();
+        string placementName = GetPlacementName();
         bool available = false;
 
-        switch (this.SelectedAdType) {
+        switch (SelectedAdType) {
             case AdType.Interstitial:
-                available = HZInterstitialAd.IsAvailable(placementName);
+                available = Interstitial.IsAvailable(placementName);
                 break;
             case AdType.Rewarded:
-                available = HZRewardedAd.IsAvailable(placementName);
+                available = Rewarded.IsAvailable(placementName);
                 break;
             case AdType.Banner:
                 // Not applicable
@@ -124,128 +123,119 @@ public class AdManager : MonoBehaviour {
         }
 
         string availabilityMessage = available ? "available" : "not available";
-        console.Append(this.SelectedAdType.ToString() + " with placement: " + placementName + " is " + availabilityMessage);
+        console.Append(SelectedAdType.ToString() + " with placement: " + placementName + " is " + availabilityMessage);
     }
 
     public void ShowButton() {
-        string placementName = this.GetPlacementName();
+        string placementName = GetPlacementName();
         if (placementName == "") {
             console.Append("Cannot show without providing a valid placement name");
         } else {
-            HZShowOptions showOptions = new HZShowOptions
+            ShowOptions showOptions = new ShowOptions
             {
                 Placement = placementName
             };
 
-            HZRewardedShowOptions rewardedOptions = new HZRewardedShowOptions
+            RewardedShowOptions rewardedOptions = new RewardedShowOptions
             {
                 Placement = placementName,
                 RewardedInfo = "test app rewarded info!"
             };
 
-            HZBannerShowOptions bannerOptions = new HZBannerShowOptions
+            BannerShowOptions bannerOptions = new BannerShowOptions
             {
                 Placement = placementName,
-                Position = this.bannerPosition
+                Position = bannerPosition
             };
 
-            console.Append("Showing " + this.SelectedAdType.ToString() + " with placement: " + placementName);
-            switch (this.SelectedAdType)
-            {
+            console.Append("Showing " + SelectedAdType.ToString() + " with placement: " + placementName);
+            switch (SelectedAdType) {
                 case AdType.Interstitial:
-                    HZInterstitialAd.ShowWithOptions(showOptions);
+                    Interstitial.ShowWithOptions(showOptions);
                     break;
                 case AdType.Rewarded:
-                    HZRewardedAd.ShowWithOptions(rewardedOptions);
+                    Rewarded.ShowWithOptions(rewardedOptions);
                     break;
                 case AdType.Banner:
-                    HZBannerAd.ShowWithOptions(bannerOptions);
+                    Banner.ShowWithOptions(bannerOptions);
                     break;
             }
         }
     }
 
     public void RequestButton() {
-        string placementName = this.GetPlacementName();
+        string placementName = GetPlacementName();
         if (placementName == "") {
             console.Append("Cannot request without providing a valid placement name");
         } else {
-            console.Append("Requesting " + this.SelectedAdType.ToString() + " with placement : " + placementName);
-            switch (this.SelectedAdType) {
+            console.Append("Requesting " + SelectedAdType.ToString() + " with placement : " + placementName);
+            switch (SelectedAdType) {
                 case AdType.Interstitial:
-                    HZInterstitialAd.Fetch(placementName);
+                    Interstitial.Request(placementName);
                     break;
                 case AdType.Rewarded:
-                    HZRewardedAd.Request(placementName);
+                    Rewarded.Request(placementName);
                     break;
             }
         }
     }
 
     public void HideButton() {
-        if (this.SelectedAdType == AdType.Banner) {
-            this.console.Append("Hiding Banner");
-            HZBannerAd.Hide();
+        if (SelectedAdType == AdType.Banner) {
+            console.Append("Hiding Banner");
+            Banner.Hide();
         }
     }
 
     public void DestroyButton() {
-        if (this.SelectedAdType == AdType.Banner) {
-            this.console.Append("Destroying Banner");
-            HZBannerAd.Destroy();
+        if (SelectedAdType == AdType.Banner) {
+            console.Append("Destroying Banner");
+            Banner.Destroy();
         }
     }
 
     public void DebugLogSwitch(bool on) {
         if (on) {
-            this.console.Append("Enabling debug logging");
-            HeyzapAds.ShowDebugLogs();
+            console.Append("Enabling debug logging");
+            FairBidSDK.ShowDebugLogs();
         } else {
-            this.console.Append("Disabling debug logging");
-            HeyzapAds.HideDebugLogs();
+            console.Append("Disabling debug logging");
+            FairBidSDK.HideDebugLogs();
         }
 	}
 
-    public void AcceptGdprButton()
-	{
-		this.console.Append("Accepting GDPR");
-		HeyzapAds.SetGdprConsent(true);
+    public void AcceptGdprButton() {
+        console.Append("Accepting GDPR");
+        FairBidSDK.SetGdprConsent(true);
 	}
 
-    public void RejectGdprButton()
-    {
-        this.console.Append("Rejecting GDPR");
-        HeyzapAds.SetGdprConsent(false);
+    public void RejectGdprButton() {
+        console.Append("Rejecting GDPR");
+        FairBidSDK.SetGdprConsent(false);
     }
 
-    public void SetGdprDataA()
-    {
-        this.console.Append("Set GDPR Data A: ");
+    public void SetGdprDataA() {
+        console.Append("Set GDPR Data A: ");
         SetGdprData(GetGdprConsentDataA());
     }
 
-    public void SetGdprDataB()
-    {
-        this.console.Append("Set GDPR Data B: ");
+    public void SetGdprDataB() {
+        console.Append("Set GDPR Data B: ");
         SetGdprData(GetGdprConsentDataB());
     }
 
-    public void ClearGdprData()
-    {
-        this.console.Append("Clearing GDPR Data");
-        HeyzapAds.ClearGdprConsentData();
+    public void ClearGdprData() {
+        console.Append("Clearing GDPR Data");
+        FairBidSDK.ClearGdprConsentData();
     }
 
-    private void SetGdprData(Dictionary<string, string> gdprConsentData)
-    {
+    private void SetGdprData(Dictionary<string, string> gdprConsentData) {
         string gdprConsentDataAsString = gdprConsentData != null ? gdprConsentData.ToString() : "null";
-        this.console.Append(gdprConsentDataAsString);
-        HeyzapAds.SetGdprConsentData(gdprConsentData);
+        console.Append(gdprConsentDataAsString);
+        FairBidSDK.SetGdprConsentData(gdprConsentData);
     }
 
-    private Dictionary<string, string> GetGdprConsentDataA()
-    {
-        // return default data a dicitonary
+    private Dictionary<string, string> GetGdprConsentDataA() {
         var data = new Dictionary<string, string>();
 
         data["key_A1"] = "value_A1";
@@ -254,9 +244,7 @@ public class AdManager : MonoBehaviour {
         return data;
     }
 
-    private Dictionary<string, string> GetGdprConsentDataB()
-    {
-        // return default data a dicitonary
+    private Dictionary<string, string> GetGdprConsentDataB() {
         var data = new Dictionary<string, string>();
         data["key_B1"] = "value_B1";
         return data;
@@ -264,36 +252,35 @@ public class AdManager : MonoBehaviour {
 
     public void BannerPositionTop(bool selected) {
         if (selected) {
-            this.bannerPosition = HZBannerShowOptions.POSITION_TOP;
+            bannerPosition = BannerShowOptions.POSITION_TOP;
         }
     }
 
     public void BannerPositionBottom(bool selected) {
         if (selected) {
-            this.bannerPosition = HZBannerShowOptions.POSITION_BOTTOM;
+            bannerPosition = BannerShowOptions.POSITION_BOTTOM;
         }
     }
 
     public void ShowTestSuite() {
-        this.console.Append("Showing Test Suite");
-        HeyzapAds.ShowTestSuite();
+        console.Append("Showing Test Suite");
+        FairBidSDK.ShowTestSuite();
     }
 
     private void ShowAdTypeControls() {
-        if (this.SelectedAdType == AdType.Banner) {
-            this.bannerControls.SetActive(true);
-            this.standardControls.SetActive(false);
+        if (SelectedAdType == AdType.Banner) {
+            bannerControls.SetActive(true);
+            standardControls.SetActive(false);
         } else {
-            this.bannerControls.SetActive(false);
-            this.standardControls.SetActive(true);
+            bannerControls.SetActive(false);
+            standardControls.SetActive(true);
         }
     }
 
     private string GetPlacementName() {
-        string placementName = this.placementTextField.text;
+        string placementName = placementTextField.text;
         if (placementName == null || placementName.Trim().Length == 0) {
-            switch (this.SelectedAdType)
-            {
+            switch (SelectedAdType) {
                 case AdType.Interstitial:
                     return "interstitial";
                 case AdType.Rewarded:

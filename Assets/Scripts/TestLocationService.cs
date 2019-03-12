@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using Heyzap;
+using FairBid;
 
 public class TestLocationService : MonoBehaviour
 {
